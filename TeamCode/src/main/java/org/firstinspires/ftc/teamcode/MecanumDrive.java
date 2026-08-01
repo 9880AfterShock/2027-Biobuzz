@@ -61,7 +61,7 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 1;
+        public double inPerTick = 32*0.03937007874*Math.PI/2000; //diameter of the wheel in mm (32), to inches, to circumference (PI), divided by CPR (2000)
         public double lateralInPerTick = inPerTick;
         public double trackWidthTicks = 0;
 
@@ -218,8 +218,6 @@ public final class MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: make sure your config has motors with these names (or change them)
-        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
