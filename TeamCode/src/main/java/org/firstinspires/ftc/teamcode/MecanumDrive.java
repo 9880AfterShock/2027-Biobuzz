@@ -61,13 +61,13 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 32*0.03937007874*Math.PI/2000; //diameter of the wheel in mm (32), to inches, to circumference (PI), divided by CPR (2000)
+        public double inPerTick = 0.00197896; //32*0.03937008*Math.PI/2000; //diameter of the wheel in mm (32), to inches, to circumference (PI), divided by CPR (2000)
         public double lateralInPerTick = inPerTick;
         public double trackWidthTicks = 0;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
+        public double kS = 1.2352511848414944;
+        public double kV = 0.00023459183204838755;
         public double kA = 0;
 
         // path profile parameters (in inches)
@@ -231,8 +231,6 @@ public final class MecanumDrive {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
-        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         lazyImu = new LazyHardwareMapImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
