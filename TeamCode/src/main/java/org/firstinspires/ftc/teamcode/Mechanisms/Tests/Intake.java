@@ -16,7 +16,7 @@ public class Intake {
     public static double targetPos;
     public static double targetPower;
 
-    public static final double retractedPos = 0.125;
+    public static final double retractedPos = 0.126;
     public static final double extendedPos = 0.38;
     public static final double intakingPower = 1.0;
     public static final double ejectingPower = -1.0;
