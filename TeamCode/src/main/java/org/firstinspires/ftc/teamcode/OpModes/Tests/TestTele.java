@@ -38,6 +38,8 @@ public class TestTele extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
+//        telemetry.setMsTransmissionInterval(100);
+
         while (opModeIsActive()) {
             //Tick Functions
             Drivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_trigger > 0.5, gamepad1.back);
