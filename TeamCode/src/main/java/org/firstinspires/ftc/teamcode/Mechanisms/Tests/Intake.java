@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
 public class Intake {
@@ -74,7 +75,10 @@ public class Intake {
         }
 
         opmode.telemetry.addData("Intaking", intaking);
-        opmode.telemetry.addData("Resting", intaking);
-        opmode.telemetry.addData("Ejecting", intaking);
+
+        opmode.telemetry.addData("Resting", restArm);
+        opmode.telemetry.addData("Ejecting", ejecting);
+
+        opmode.telemetry.addData("Intake Roller Amps", roller.getCurrent(CurrentUnit.AMPS));
     }
 }

@@ -11,8 +11,9 @@ import org.firstinspires.ftc.teamcode.Sensors.Gyro;
 
 import java.util.List;
 
-@Disabled
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TestTeleOp")
+
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="Test TeleOp")
+
 public class TestTele extends LinearOpMode {
     public static List<LynxModule> allHubs;
 
@@ -37,6 +38,9 @@ public class TestTele extends LinearOpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+
+
+//        telemetry.setMsTransmissionInterval(100);
 
         while (opModeIsActive()) {
             //Tick Functions

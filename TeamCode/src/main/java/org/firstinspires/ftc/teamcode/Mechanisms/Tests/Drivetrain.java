@@ -48,6 +48,10 @@ public class Drivetrain {
         rightFrontPower = 0.0;
         leftBackPower = 0.0;
         rightBackPower = 0.0;
+
+
+        Drivetrain.opmode = opmode;
+
     }
 
     public static void updateDrive(double x, double y, double rotation, boolean slowMode, boolean resetIMU){
