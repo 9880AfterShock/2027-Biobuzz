@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.Sensors.Gyro;
 
 import java.util.List;
 
-@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="Test TeleOp")
 public class TestTele extends LinearOpMode {
     public static List<LynxModule> allHubs;
