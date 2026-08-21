@@ -21,11 +21,11 @@ public class LocalizationTest extends LinearOpMode {
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-//            Gyro.init(this);
+            Gyro.init(this);
 
             waitForStart();
 
-//            Gyro.resetYaw();
+            Gyro.resetYaw();
 
             while (opModeIsActive()) {
                 drive.setDrivePowers(new PoseVelocity2d(
@@ -42,7 +42,7 @@ public class LocalizationTest extends LinearOpMode {
                 telemetry.addData("x", pose.position.x);
                 telemetry.addData("y", pose.position.y);
                 telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
-//                telemetry.addData("heading (deg) control hub IMU", Math.toDegrees(Gyro.getYawRadians()));
+                telemetry.addData("heading (deg) control hub IMU", Math.toDegrees(Gyro.getYawRadians()));
                 telemetry.update();
 
                 TelemetryPacket packet = new TelemetryPacket();
