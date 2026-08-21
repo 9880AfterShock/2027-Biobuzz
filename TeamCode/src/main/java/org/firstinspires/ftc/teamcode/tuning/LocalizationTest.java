@@ -25,6 +25,8 @@ public class LocalizationTest extends LinearOpMode {
 
             waitForStart();
 
+            Gyro.resetYaw();
+
             while (opModeIsActive()) {
                 drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
