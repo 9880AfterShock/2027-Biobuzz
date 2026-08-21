@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
@@ -17,8 +16,8 @@ public class Intake {
     public static double targetPos;
     public static double targetPower;
 
-    public static final double retractedPos = 0.0;
-    public static final double extendedPos = 1.0;
+    public static final double retractedPos = 0.126;
+    public static final double extendedPos = 0.38;
     public static final double intakingPower = 1.0;
     public static final double ejectingPower = -1.0;
     public static final double idlePower = 0.0;
@@ -29,8 +28,8 @@ public class Intake {
 
         roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        roller.setDirection(DcMotorSimple.Direction.FORWARD);
-//        roller.setDirection(DcMotorSimple.Direction.REVERSE);
+      //  roller.setDirection(DcMotorSimple.Direction.FORWARD);
+        roller.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Intake.opmode = opmode;
     }
@@ -76,6 +75,7 @@ public class Intake {
         }
 
         opmode.telemetry.addData("Intaking", intaking);
+
         opmode.telemetry.addData("Resting", restArm);
         opmode.telemetry.addData("Ejecting", ejecting);
 
