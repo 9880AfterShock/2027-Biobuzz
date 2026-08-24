@@ -62,12 +62,12 @@ public final class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 0.001978956; //32*0.03937008*Math.PI/2000; //diameter of the wheel in mm (32), to inches, to circumference (PI), divided by CPR (2000)
-        public double lateralInPerTick = 0.0014573709729097952;
-        public double trackWidthTicks = 7135.5526643632975;
+        public double lateralInPerTick = 0.0014125946162645872;
+        public double trackWidthTicks = 7249.790947755224;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.1303356764959522;
-        public double kV = 0.00023942297840956245;
+        public double kS = 1.1957640747662888;
+        public double kV = 0.00023330632057908841;
         public double kA = 0.00004;
 
         // path profile parameters (in inches)
