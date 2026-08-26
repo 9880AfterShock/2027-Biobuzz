@@ -21,7 +21,7 @@ public class TestAuto extends LinearOpMode {
         double speed = 60;
 
         Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
-        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));
+        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(0.0));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPos);
 
