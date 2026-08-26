@@ -5,6 +5,12 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 public class MeepMeepVisualizer {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(700);
@@ -25,10 +31,21 @@ public class MeepMeepVisualizer {
                 .turn(Math.toRadians(90))
                 .build());
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_JUICE_DARK)
+
+        Image img = null;
+        try { img = ImageIO.read(new File("Fields/Blank_Field_6_by_6.png")); }
+        catch(IOException e) {}
+
+        meepMeep.setBackground(img)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
                 .start();
+
+//        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_JUICE_DARK)
+//                .setDarkMode(true)
+//                .setBackgroundAlpha(0.95f)
+//                .addEntity(myBot)
+//                .start();
     }
 }
