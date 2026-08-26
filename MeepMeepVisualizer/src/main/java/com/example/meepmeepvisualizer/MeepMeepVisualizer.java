@@ -21,11 +21,11 @@ public class MeepMeepVisualizer {
                 .setDimensions(17.0,427.175/25.4)
                 .build();
 
-        Pose2d startPose = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
-        Pose2d endPose = new Pose2d(24.0, 24.0, Math.toRadians(90.0));
+        Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
+        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));
 
         myBot.runAction(
-                Paths.directPath(myBot, startPose, endPose, 60)
+                Paths.directPath(myBot, startPos, endPos, 60)
         );
 
 //        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
