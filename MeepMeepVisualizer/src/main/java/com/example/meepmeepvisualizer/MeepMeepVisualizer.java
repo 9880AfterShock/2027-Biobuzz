@@ -22,9 +22,9 @@ public class MeepMeepVisualizer {
                 .setDimensions(17.0,427.175/25.4)
                 .build();
 
-        double speed = 60;
 
-        double tileSize = 24;
+        double speed = 60;
+        double tileSize = 12;
         Pose2d startPos = new Pose2d(tileSize*0, tileSize*0, Math.toRadians(0.0));
         Pose2d pos1 = new Pose2d(tileSize*1, tileSize*0, Math.toRadians(0.0));
         Pose2d pos2 = new Pose2d(tileSize*1, tileSize*1, Math.toRadians(0.0));
