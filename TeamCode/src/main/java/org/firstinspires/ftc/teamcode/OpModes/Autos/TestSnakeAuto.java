@@ -44,17 +44,17 @@ public class TestSnakeAuto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        Paths.directPath(drive, startPos, pos1, 60),
-                        Paths.directPath(drive, pos1, pos2, 60),
-                        Paths.directPath(drive, pos2, pos3, 60),
-                        Paths.directPath(drive, pos3, pos4, 60),
-                        Paths.directPath(drive, pos4, pos5, 60),
-                        Paths.directPath(drive, pos5, pos6, 60),
-                        Paths.directPath(drive, pos6, pos7, 60),
-                        Paths.directPath(drive, pos7, pos8, 60),
-                        Paths.directPath(drive, pos8, pos9, 60),
-                        Paths.directPath(drive, pos9, pos10, 60),
-                        Paths.directPath(drive, pos10, endPos, 60)
+                        Paths.directPath(drive, startPos, pos1, speed),
+                        Paths.directPath(drive, pos1, pos2, speed),
+                        Paths.directPath(drive, pos2, pos3, speed),
+                        Paths.directPath(drive, pos3, pos4, speed),
+                        Paths.directPath(drive, pos4, pos5, speed),
+                        Paths.directPath(drive, pos5, pos6, speed),
+                        Paths.directPath(drive, pos6, pos7, speed),
+                        Paths.directPath(drive, pos7, pos8, speed),
+                        Paths.directPath(drive, pos8, pos9, speed),
+                        Paths.directPath(drive, pos9, pos10, speed),
+                        Paths.directPath(drive, pos10, endPos, speed)
                 )
         );
     }
