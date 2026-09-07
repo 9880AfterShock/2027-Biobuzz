@@ -22,12 +22,44 @@ public class MeepMeepVisualizer {
                 .setDimensions(17.0,427.175/25.4)
                 .build();
 
-        Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
-        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));
+        double speed = 60;
+
+        double tileSize = 24;
+        Pose2d startPos = new Pose2d(tileSize*0, tileSize*0, Math.toRadians(0.0));
+        Pose2d pos1 = new Pose2d(tileSize*1, tileSize*0, Math.toRadians(0.0));
+        Pose2d pos2 = new Pose2d(tileSize*1, tileSize*1, Math.toRadians(0.0));
+        Pose2d pos3 = new Pose2d(tileSize*0, tileSize*1, Math.toRadians(0.0));
+        Pose2d pos4 = new Pose2d(tileSize*0, tileSize*2, Math.toRadians(0.0));
+        Pose2d pos5 = new Pose2d(tileSize*1, tileSize*2, Math.toRadians(0.0));
+        Pose2d pos6 = new Pose2d(tileSize*1, tileSize*3, Math.toRadians(0.0));
+        Pose2d pos7 = new Pose2d(tileSize*0, tileSize*3, Math.toRadians(0.0));
+        Pose2d pos8 = new Pose2d(tileSize*0, tileSize*4, Math.toRadians(0.0));
+        Pose2d pos9 = new Pose2d(tileSize*2, tileSize*4, Math.toRadians(90.0));
+        Pose2d pos10 = new Pose2d(tileSize*2, tileSize*0, Math.toRadians(180.0));
+        Pose2d endPos = new Pose2d(tileSize*0, tileSize*0, Math.toRadians(0.0));
 
         myBot.runAction(
-                Paths.directPath(myBot, startPos, endPos, 60)
+                new SequentialAction(
+                        Paths.directPath(myBot, startPos, pos1, speed),
+                        Paths.directPath(myBot, pos1, pos2, speed),
+                        Paths.directPath(myBot, pos2, pos3, speed),
+                        Paths.directPath(myBot, pos3, pos4, speed),
+                        Paths.directPath(myBot, pos4, pos5, speed),
+                        Paths.directPath(myBot, pos5, pos6, speed),
+                        Paths.directPath(myBot, pos6, pos7, speed),
+                        Paths.directPath(myBot, pos7, pos8, speed),
+                        Paths.directPath(myBot, pos8, pos9, speed),
+                        Paths.directPath(myBot, pos9, pos10, speed),
+                        Paths.directPath(myBot, pos10, endPos, speed)
+                )
         );
+
+//        Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
+//        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));
+//
+//        myBot.runAction(
+//                Paths.directPath(myBot, startPos, endPos, 60)
+//        );
 
 //        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
 //                .lineToX(30)
