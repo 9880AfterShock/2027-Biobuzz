@@ -14,4 +14,10 @@ public class Paths {
                 .splineToLinearHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
                 .build();
     }
+    public static Action wait(MecanumDrive drive, double seconds){
+        Pose2d throwawayPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
+        return drive.actionBuilder(throwawayPos)
+                .waitSeconds(seconds)
+                .build();
+    }
 }

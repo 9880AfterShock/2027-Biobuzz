@@ -15,9 +15,10 @@ public class Intake {
     private static OpMode opmode;
     public static double targetPos;
     public static double targetPower;
+    public static boolean enabled;
 
     public static final double retractedPos = 0.126;
-    public static final double extendedPos = 0.38;
+    public static final double extendedPos = 0.34;
     public static final double intakingPower = 1.0;
     public static final double ejectingPower = -1.0;
     public static final double idlePower = 0.0;
@@ -48,12 +49,24 @@ public class Intake {
         }
     }
 
-    public static void update(boolean intaking, boolean ejecting, boolean restArm) {
+    public static void setPowered(boolean powered) {
+        if (powered != enabled){
+            if (powered) {
+                servo.getController().pwmEnable();
+            } else {
+                servo.getController().pwmDisable();
+            }
+        }
+    }
+
+    public static void update(boolean intaking, boolean ejecting, boolean restArm, boolean powerServo) {
         if (intaking || restArm){
             extend();
         } else{
             retract();
         }
+
+        setPowered(powerServo);
 
         if (intaking){
             if (targetPower != intakingPower){

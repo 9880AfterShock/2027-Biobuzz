@@ -23,34 +23,25 @@ public class MeepMeepVisualizer {
                 .build();
 
 
-        double speed = 60;
-        double tileSize = 12;
-        Pose2d startPos = new Pose2d(tileSize*0, tileSize*0, Math.toRadians(0.0));
-        Pose2d pos1 = new Pose2d(tileSize*1, tileSize*0, Math.toRadians(0.0));
-        Pose2d pos2 = new Pose2d(tileSize*1, tileSize*1, Math.toRadians(0.0));
-        Pose2d pos3 = new Pose2d(tileSize*0, tileSize*1, Math.toRadians(0.0));
-        Pose2d pos4 = new Pose2d(tileSize*0, tileSize*2, Math.toRadians(0.0));
-        Pose2d pos5 = new Pose2d(tileSize*1, tileSize*2, Math.toRadians(0.0));
-        Pose2d pos6 = new Pose2d(tileSize*1, tileSize*3, Math.toRadians(0.0));
-        Pose2d pos7 = new Pose2d(tileSize*0, tileSize*3, Math.toRadians(0.0));
-        Pose2d pos8 = new Pose2d(tileSize*0, tileSize*4, Math.toRadians(0.0));
-        Pose2d pos9 = new Pose2d(tileSize*2, tileSize*4, Math.toRadians(90.0));
-        Pose2d pos10 = new Pose2d(tileSize*2, tileSize*0, Math.toRadians(180.0));
-        Pose2d endPos = new Pose2d(tileSize*0, tileSize*0, Math.toRadians(0.0));
+        double driveSpeed = 60.0; //zoom
+        double intakeSpeed = 15.0; //TBD, prob don't need
+        double shotTime = 3.0; //very on safe side
+        Pose2d startPos = new Pose2d(60.0, -15.0, Math.toRadians(0.0)); //prob 59, 14.smth
+        Pose2d gardenPos = new Pose2d(-15.0, -62.0, Math.toRadians(0.0));
+        Pose2d shootPos2 = new Pose2d(-57, -24, Math.toRadians(180.0));
+        Pose2d flowerPos1 = new Pose2d(-57, -24, Math.toRadians(180.0));
+
+        Pose2d endPos = new Pose2d(0, 0, Math.toRadians(0.0));
 
         myBot.runAction(
                 new SequentialAction(
-                        Paths.directPath(myBot, startPos, pos1, speed),
-                        Paths.directPath(myBot, pos1, pos2, speed),
-                        Paths.directPath(myBot, pos2, pos3, speed),
-                        Paths.directPath(myBot, pos3, pos4, speed),
-                        Paths.directPath(myBot, pos4, pos5, speed),
-                        Paths.directPath(myBot, pos5, pos6, speed),
-                        Paths.directPath(myBot, pos6, pos7, speed),
-                        Paths.directPath(myBot, pos7, pos8, speed),
-                        Paths.directPath(myBot, pos8, pos9, speed),
-                        Paths.directPath(myBot, pos9, pos10, speed),
-                        Paths.directPath(myBot, pos10, endPos, speed)
+                        Paths.wait(myBot, shotTime),
+                        Paths.directPath(myBot, startPos, gardenPos, driveSpeed),
+                        Paths.wait(myBot, shotTime),
+                        Paths.directPath(myBot, gardenPos, shootPos2, driveSpeed),
+                        Paths.wait(myBot, shotTime),
+                        Paths.directPath(myBot, shootPos2, flowerPos1, driveSpeed)
+
                 )
         );
 
@@ -74,7 +65,7 @@ public class MeepMeepVisualizer {
 
 
         Image img = null;
-        try { img = ImageIO.read(new File("Fields/Blank_Field_6_by_6.png")); }
+        try { img = ImageIO.read(new File("Fields/Biobuzz-Juice.png")); }
         catch(IOException e) {}
 
         meepMeep.setBackground(img)
