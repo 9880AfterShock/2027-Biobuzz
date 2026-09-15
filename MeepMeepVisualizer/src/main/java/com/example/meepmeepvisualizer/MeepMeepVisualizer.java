@@ -26,22 +26,33 @@ public class MeepMeepVisualizer {
         double driveSpeed = 60.0; //zoom
         double intakeSpeed = 15.0; //TBD, prob don't need
         double shotTime = 3.0; //very on safe side
+        double intakeTime = 1.0; //for garden and 2nd flower pickup
         Pose2d startPos = new Pose2d(60.0, -15.0, Math.toRadians(0.0)); //prob 59, 14.smth
-        Pose2d gardenPos = new Pose2d(-15.0, -62.0, Math.toRadians(0.0));
-        Pose2d shootPos2 = new Pose2d(-57, -24, Math.toRadians(180.0));
-        Pose2d flowerPos1 = new Pose2d(-57, -24, Math.toRadians(180.0));
+        Pose2d gardenPos = new Pose2d(60.0, -62.0, Math.toRadians(0.0));
+        Pose2d shootPos2 = new Pose2d(-54.0, -24.0, Math.toRadians(180.0));
+        Pose2d flowerPos1 = new Pose2d(-57.0, -24.0, Math.toRadians(180.0));
+        Pose2d flowerPos2 = new Pose2d(24.0, -57.0, Math.toRadians(270.0));
+        Pose2d shootPos4 = new Pose2d(40.0, -40.0, Math.toRadians(180.0));
 
-        Pose2d endPos = new Pose2d(0, 0, Math.toRadians(0.0));
+        Pose2d parkPos1 = new Pose2d(-20, -55, Math.toRadians(180.0));
+        Pose2d parkPos2 = new Pose2d(-50, -55, Math.toRadians(180.0));
 
         myBot.runAction(
                 new SequentialAction(
-                        Paths.wait(myBot, shotTime),
-                        Paths.directPath(myBot, startPos, gardenPos, driveSpeed),
-                        Paths.wait(myBot, shotTime),
-                        Paths.directPath(myBot, gardenPos, shootPos2, driveSpeed),
-                        Paths.wait(myBot, shotTime),
-                        Paths.directPath(myBot, shootPos2, flowerPos1, driveSpeed)
+                        Paths.wait(myBot, shotTime), //preloads, 1st tip
+                        Paths.directPath(myBot, startPos, gardenPos, driveSpeed), //pickup garden
+                        Paths.wait(myBot, intakeTime), //wait for balls, should not be long
+                        Paths.directPath(myBot, gardenPos, shootPos2, driveSpeed), //go to shoot on other side
+                        Paths.wait(myBot, shotTime), //1st half of 2nd tip
+                        Paths.directPath(myBot, shootPos2, flowerPos1, driveSpeed), //may need to do smth special for match loader, shoot as intake
+                        Paths.wait(myBot, shotTime), //2nd half of 2nd tip
+                        Paths.directPath(myBot, flowerPos1, flowerPos2, driveSpeed), //to 2nd flower
 
+                        //For 3rd tip
+                        Paths.wait(myBot, intakeTime), //intake, may need to do smth special for match loader
+                        Paths.directPath(myBot, flowerPos2, shootPos4, driveSpeed), //go to shoot, will need partner to use preloads for final tip
+                        Paths.wait(myBot, shotTime), //partial 3rd tip, partner preloads should finish
+                        Paths.directPath(myBot, shootPos4, parkPos1, driveSpeed) //to park
                 )
         );
 
