@@ -62,14 +62,14 @@ public class Intake {
         }
     }
 
-    public static void update(boolean intaking, boolean ejecting, boolean restArm, boolean powerServo) {
+    public static void update(boolean intaking, boolean ejecting, boolean restArm, boolean disableServo) {
         if (intaking || restArm){
             extend();
         } else{
             retract();
         }
 
-        setPowered(powerServo);
+        setPowered(!disableServo);
 
         if (intaking){
             if (targetPower != intakingPower){
