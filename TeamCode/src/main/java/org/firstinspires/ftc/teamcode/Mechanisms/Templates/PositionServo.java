@@ -15,6 +15,7 @@ public class PositionServo {
     public static final double pos2 = 1.0;
 
     public static void init(OpMode opmode) {
+        enabled = true;
         servo = opmode.hardwareMap.get(Servo.class, "servo"); //Port _ on ___ hub
         PositionServo.opmode = opmode;
         //Put in starting setting of pos and powered, make function to call on start if needed
@@ -38,8 +39,10 @@ public class PositionServo {
         if (powered != enabled){
             if (powered) {
                 servo.getController().pwmEnable();
+                enabled = true;
             } else {
                 servo.getController().pwmDisable();
+                enabled = false;
             }
         }
     }
