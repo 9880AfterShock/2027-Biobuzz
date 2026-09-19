@@ -24,6 +24,7 @@ public class Intake {
     public static final double idlePower = 0.0;
 
     public static void init(OpMode opmode) {
+        enabled = true;
         roller = opmode.hardwareMap.get(DcMotorEx.class, "intakeRoller"); //Port _ on ___ hub
         servo = opmode.hardwareMap.get(Servo.class, "intakeServo"); //Port _ on ___ hub
 
@@ -53,20 +54,22 @@ public class Intake {
         if (powered != enabled){
             if (powered) {
                 servo.getController().pwmEnable();
+                enabled = true;
             } else {
                 servo.getController().pwmDisable();
+                enabled = false;
             }
         }
     }
 
-    public static void update(boolean intaking, boolean ejecting, boolean restArm, boolean powerServo) {
+    public static void update(boolean intaking, boolean ejecting, boolean restArm, boolean disableServo) {
         if (intaking || restArm){
             extend();
         } else{
             retract();
         }
 
-        setPowered(powerServo);
+        setPowered(!disableServo);
 
         if (intaking){
             if (targetPower != intakingPower){
