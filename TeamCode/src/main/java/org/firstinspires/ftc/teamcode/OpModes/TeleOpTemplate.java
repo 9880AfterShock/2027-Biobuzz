@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+
 import java.util.List;
 
 @Disabled
@@ -35,8 +38,16 @@ public class TeleOpTemplate extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            for (LynxModule hub : allHubs) { //Bulk read first thing
+//                double voltage = hub.getInputVoltage(VoltageUnit.VOLTS); //Log at some point
+//                double current = hub.getCurrent(CurrentUnit.AMPS); //Log at some point
+                hub.clearBulkCache();
+            }
+
             //Tick Functions
             //GO HERE
+
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);

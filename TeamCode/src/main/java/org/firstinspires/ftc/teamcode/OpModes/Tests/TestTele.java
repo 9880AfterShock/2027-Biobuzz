@@ -43,6 +43,9 @@ public class TestTele extends LinearOpMode {
 //        telemetry.setMsTransmissionInterval(100);
 
         while (opModeIsActive()) {
+            for (LynxModule hub : allHubs) {
+                hub.clearBulkCache();
+            }
             //Tick Functions
             Drivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_trigger > 0.5, gamepad1.back);
             Intake.update(gamepad1.left_trigger > 0.5, gamepad1.left_bumper, gamepad1.right_bumper, gamepad1.right_trigger > 0.5);
