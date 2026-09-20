@@ -39,6 +39,7 @@ public class TeleOpTemplate extends LinearOpMode {
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
         }
 
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
