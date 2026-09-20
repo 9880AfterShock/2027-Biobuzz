@@ -43,7 +43,7 @@ public class ShooterTest extends LinearOpMode {
             }
 
             //Tick Functions
-            TestShooter.update(gamepad1.backWasPressed(), gamepad1.a);
+            TestShooter.update(gamepad1.bWasPressed(), gamepad1.a);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
