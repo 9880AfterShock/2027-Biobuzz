@@ -18,9 +18,9 @@ public class TestShooter {
     public static double shooterPower;
 
     public static double flywheelPollenPos = 0.0;
-    public static double hoodPollenPos = 0.0;
-    public static double flywheelNectarPos = 1.0;
-    public static double hoodNectarPos = 1.0;
+    public static double hoodPollenPos = 0.23;
+    public static double flywheelNectarPos = 0.16;
+    public static double hoodNectarPos = 0.0;
 
     public static void init(OpMode opmode) {
         nectar = false;
