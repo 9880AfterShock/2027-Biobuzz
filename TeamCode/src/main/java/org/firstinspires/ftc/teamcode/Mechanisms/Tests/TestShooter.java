@@ -17,10 +17,10 @@ public class TestShooter {
     public static boolean nectar;
     public static double shooterPower;
 
-    public static final double flywheelPollenPos = 0.0;
-    public static final double hoodPollenPos = 0.0;
-    public static final double flywheelNectarPos = 1.0;
-    public static final double hoodNectarPos = 1.0;
+    public static double flywheelPollenPos = 0.0;
+    public static double hoodPollenPos = 0.0;
+    public static double flywheelNectarPos = 1.0;
+    public static double hoodNectarPos = 1.0;
 
     public static void init(OpMode opmode) {
         nectar = false;
