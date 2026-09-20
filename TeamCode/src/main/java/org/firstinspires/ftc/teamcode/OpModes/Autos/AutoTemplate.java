@@ -4,17 +4,25 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.*;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+import java.util.List;
+
 @Disabled
 @Autonomous(name = "Template Auto")
 public class AutoTemplate extends LinearOpMode {
+    public static List<LynxModule> allHubs;
     @Override
     public void runOpMode() {
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO); //At some point need to make a manual one that works for auto, but this is good enough for now
+        }
+
         //Init
         //INIT FUNCTIONS HERE
         //PRIME FUNCTIONS HERE
