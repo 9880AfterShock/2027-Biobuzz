@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -22,6 +24,9 @@ public class TestTele extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        //Below is for if you want FTC dashboar telemetry
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         allHubs = hardwareMap.getAll(LynxModule.class);
         //Init Functions
         Gyro.init(this);
