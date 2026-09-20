@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Sensors.Gyro;
 
-public class Drivetrain {
+public class TestDrivetrain {
     private static DcMotorEx leftFront;
     private static DcMotorEx rightFront;
     private static DcMotorEx leftBack;
@@ -50,7 +50,7 @@ public class Drivetrain {
         rightBackPower = 0.0;
 
 
-        Drivetrain.opmode = opmode;
+        TestDrivetrain.opmode = opmode;
 
     }
 

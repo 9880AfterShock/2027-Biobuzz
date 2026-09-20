@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Tests.Drivetrain;
-import org.firstinspires.ftc.teamcode.Mechanisms.Tests.Intake;
+import org.firstinspires.ftc.teamcode.Mechanisms.Tests.TestDrivetrain;
+import org.firstinspires.ftc.teamcode.Mechanisms.Tests.TestIntake;
 import org.firstinspires.ftc.teamcode.Sensors.Gyro;
 
 import java.util.List;
@@ -26,8 +25,8 @@ public class TestTele extends LinearOpMode {
         allHubs = hardwareMap.getAll(LynxModule.class);
         //Init Functions
         Gyro.init(this);
-        Drivetrain.init(this);
-        Intake.init(this);
+        TestDrivetrain.init(this);
+        TestIntake.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -47,8 +46,8 @@ public class TestTele extends LinearOpMode {
                 hub.clearBulkCache();
             }
             //Tick Functions
-            Drivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_trigger > 0.5, gamepad1.back);
-            Intake.update(gamepad1.left_trigger > 0.5, gamepad1.left_bumper, gamepad1.right_bumper, gamepad1.right_trigger > 0.5);
+            TestDrivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_trigger > 0.5, gamepad1.back);
+            TestIntake.update(gamepad1.left_trigger > 0.5, gamepad1.left_bumper, gamepad1.right_bumper, gamepad1.right_trigger > 0.5);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;

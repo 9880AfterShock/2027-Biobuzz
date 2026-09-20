@@ -36,6 +36,9 @@ public class TeleOpTemplate extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
+        //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
+        //GO HERE
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             for (LynxModule hub : allHubs) { //Bulk read first thing

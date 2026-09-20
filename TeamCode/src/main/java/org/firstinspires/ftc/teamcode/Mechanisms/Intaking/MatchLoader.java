@@ -19,7 +19,9 @@ public class MatchLoader {
     public static void init(OpMode opmode) {
         matchLoaderServo = opmode.hardwareMap.get(Servo.class, "matchLoader"); //Port _ on ___ hub
         MatchLoader.opmode = opmode;
+    }
 
+    public static void prime() {
         matchLoaderServo.setPosition(retractedPos);
         deployed = false;
     }

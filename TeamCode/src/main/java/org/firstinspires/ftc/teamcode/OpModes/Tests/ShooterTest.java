@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
-import org.firstinspires.ftc.teamcode.Mechanisms.Tests.Shooter;
+import org.firstinspires.ftc.teamcode.Mechanisms.Tests.TestShooter;
 
 import java.util.List;
 
@@ -24,7 +21,7 @@ public class ShooterTest extends LinearOpMode {
     public void runOpMode() {
         allHubs = hardwareMap.getAll(LynxModule.class);
         //Init Functions
-        Shooter.init(this);
+        TestShooter.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -46,7 +43,7 @@ public class ShooterTest extends LinearOpMode {
             }
 
             //Tick Functions
-            Shooter.update(gamepad1.backWasPressed(), gamepad1.a);
+            TestShooter.update(gamepad1.backWasPressed(), gamepad1.a);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

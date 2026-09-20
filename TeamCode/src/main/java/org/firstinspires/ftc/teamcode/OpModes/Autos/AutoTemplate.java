@@ -15,6 +15,10 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class AutoTemplate extends LinearOpMode {
     @Override
     public void runOpMode() {
+        //Init
+        //INIT FUNCTIONS HERE
+        //PRIME FUNCTIONS HERE
+
         while (!isStopRequested() && !opModeIsActive()) {
             //put preselection stuff here, and pos multiplier if needed
             telemetry.update();
@@ -29,7 +33,7 @@ public class AutoTemplate extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPos);
 
 
-        waitForStart();
+        waitForStart(); //after here put any stuff (such as after auto states) for teleop
 
         if (isStopRequested()) return;
 

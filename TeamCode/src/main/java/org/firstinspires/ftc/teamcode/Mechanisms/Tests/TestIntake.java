@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
-public class Intake {
+public class TestIntake {
     private static DcMotorEx roller;
     private static Servo servo;
     private static OpMode opmode;
@@ -33,7 +33,7 @@ public class Intake {
       //  roller.setDirection(DcMotorSimple.Direction.FORWARD);
         roller.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        Intake.opmode = opmode;
+        TestIntake.opmode = opmode;
     }
 
     public static void retract() {

@@ -1,0 +1,104 @@
+package org.firstinspires.ftc.teamcode.Mechanisms.Intaking;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
+@Config
+public class Intake {
+    private static DcMotorEx roller;
+    private static Servo pivot;
+    private static OpMode opmode;
+    public static boolean extended;
+    public static double rollerPower;
+    public static boolean enabled;
+
+    public static final double retractedPos = 0.0;
+    public static final double extendedPos = 1.0;
+    public static final double intakingPower = 1.0;
+    public static final double ejectingPower = -1.0;
+    public static final double idlePower = 0.0;
+
+    public static void init(OpMode opmode) {
+        enabled = true;
+        roller = opmode.hardwareMap.get(DcMotorEx.class, "intakeRoller"); //Port _ on ___ hub
+        pivot = opmode.hardwareMap.get(Servo.class, "intakePivot"); //Port _ on ___ hub
+
+        roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        roller.setDirection(DcMotorSimple.Direction.REVERSE);
+        roller.setPower(0.0);
+
+        Intake.opmode = opmode;
+    }
+
+    public static void prime(){
+        pivot.setPosition(retractedPos);
+        extended = false;
+    }
+
+    public static void retract() {
+        if (extended) {
+            pivot.setPosition(retractedPos);
+            extended = false;
+        }
+    }
+
+    public static void extend() {
+        if (!extended) {
+            pivot.setPosition(extendedPos);
+            extended = true;
+        }
+    }
+
+    public static void setPowered(boolean powered) {
+        if (powered != enabled){
+            if (powered) {
+                pivot.getController().pwmEnable();
+                enabled = true;
+            } else {
+                pivot.getController().pwmDisable();
+                enabled = false;
+            }
+        }
+    }
+
+    public static void setRollerPower(double power) {
+        power = Range.clip(power, -1, 1);
+        if (rollerPower != power) {
+            rollerPower = power;
+            roller.setPower(power);
+        }
+    }
+
+    public static void update(boolean intaking, boolean ejecting, boolean retract) {
+        if (!retract){
+            extend();
+        } else{
+            retract();
+        }
+
+        //To add: deadzone for nectar
+
+        if (intaking){
+            setRollerPower(intakingPower);
+        } else {
+            if (ejecting){
+                setRollerPower(ejectingPower);
+            } else {
+                setRollerPower(idlePower);
+            }
+        }
+
+        opmode.telemetry.addData("Extended", extended);
+        opmode.telemetry.addData("Intaking", intaking);
+        opmode.telemetry.addData("Ejecting", ejecting);
+
+        opmode.telemetry.addData("Intake Roller Amps", roller.getCurrent(CurrentUnit.AMPS));
+    }
+}

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class Shooter {
+public class TestShooter {
     private static Servo flywheelServo;
     private static Servo hoodServo;
     private static DcMotorEx shooterMotor;
@@ -34,7 +34,7 @@ public class Shooter {
         shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor.setPower(0.0);
 
-        Shooter.opmode = opmode;
+        TestShooter.opmode = opmode;
     }
 
     public static void nectarMode() {
