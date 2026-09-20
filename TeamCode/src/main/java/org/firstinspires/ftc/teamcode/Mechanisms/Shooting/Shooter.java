@@ -1,0 +1,108 @@
+package org.firstinspires.ftc.teamcode.Mechanisms.Shooting;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
+@Config
+public class Shooter {
+    private static DcMotorEx flywheel;
+    private static Servo hoodAngleServo; //may need to split off a nectar one
+    private static Servo flywheelSlideServo;
+    private static Servo hoodSlideServo;
+    private static OpMode opmode;
+    private static double shooterPower;
+    private static double targetRPM;
+    private static double hoodAngle;
+    public static double flywheelPollenPos = 0.0; //TODO: add final to all servo poses after tuned (and errorMargin)
+    public static double hoodPollenPos = 0.0;
+    public static double flywheelNectarPos = 1.0;
+    public static double hoodNectarPos = 1.0;
+    public static double errorMargin = 50; //error margin in RPM to be allowed to shooter, maybe make into a scalar at some point? (more lenience at higher speeds)
+    private final static double hoodRatio = 1; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
+    private final static double hoodMin = 11; //tbd, hood min and max in degrees
+    private final static double hoodMax = 22;
+    private static boolean nectar; //maybe make final (false) and comment out other code about switching modes for now if needed
+
+    public static void init(OpMode opmode) {
+        flywheel = opmode.hardwareMap.get(DcMotorEx.class, "flywheel"); //Port _ on ___ hub
+        hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port _ on ___ hub
+        flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
+        hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
+
+        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
+//        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel.setPower(0.0);
+
+        nectar = false;
+
+        Shooter.opmode = opmode;
+    }
+
+    public static void prime() {
+        hoodAngle = hoodMin;
+    }
+
+    public static void setHoodAngle(double angle) {
+        angle = (Range.clip(angle, hoodMin, hoodMax) - hoodMin) * hoodRatio;
+        if (hoodAngle != angle){
+            hoodAngleServo.setPosition(angle); //may to need to reverse to be counting down from 1 based on orientation of servo
+            hoodAngle = angle;
+        }
+    }
+
+    public static void setFlywheelPower(double power) {
+        power = Range.clip(power, -1, 1);
+        if (shooterPower != power) {
+            shooterPower = power;
+            flywheel.setPower(power);
+        }
+    }
+
+    public static void setTargetRPM(double rpm) {
+        targetRPM = rpm;
+    }
+
+    public static double getCurrentRPM() {
+        return 0.0; //TODO: make this work, test raw RPM vs smoothed over time with different coefficients like last year
+    }
+
+    public static boolean canShoot() {
+        return Math.abs(getCurrentRPM() - targetRPM) < errorMargin;
+    }
+
+    public static void update() {
+        //TODO: Add logic for taking targetRPM and running PID with setFlywheelPower(), make sure to have separate PID's for nectar vs pollen (and make sure switching does not cause any errors, needs to be fast and smooth)
+
+        opmode.telemetry.addData("Flywheel Power", shooterPower);
+        opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
+        opmode.telemetry.addData("Hood Angle Position", hoodAngle);
+        opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
+        opmode.telemetry.addData("Nectar Mode", nectar);
+    }
+
+    //Following are for split shooter, do not use for now (Also: decide on encoder with hood switching, seems like it may not be needed ATM)
+
+    public static void nectarMode() {
+        if (!nectar) {
+            flywheelSlideServo.setPosition(flywheelNectarPos);
+            hoodSlideServo.setPosition(hoodNectarPos);
+            nectar = true;
+        }
+    }
+
+    public static void pollenMode() {
+        if (nectar) {
+            flywheelSlideServo.setPosition(flywheelPollenPos);
+            hoodSlideServo.setPosition(hoodPollenPos);
+            nectar = false;
+        }
+    }
+}
