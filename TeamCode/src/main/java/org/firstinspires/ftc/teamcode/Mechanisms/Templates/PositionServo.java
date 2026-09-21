@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class PositionServo {
     private static Servo servo;
     private static OpMode opmode;
-    public static double targetPos;
-    public static boolean enabled;
+    private static double targetPos;
+    private static boolean enabled;
 
-    public static final double pos1 = 0.0;
-    public static final double pos2 = 1.0;
+    public static double pos1 = 0.0; //TODO: change to private final after tuned
+    public static double pos2 = 1.0;
 
     public static void init(OpMode opmode) {
         enabled = true;

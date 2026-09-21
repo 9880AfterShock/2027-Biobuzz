@@ -16,7 +16,7 @@ public class Intake {
     private static Servo pivot;
     private static OpMode opmode;
     public static boolean extended;
-    public static double rollerPower;
+    private static double rollerPower;
     public static boolean enabled;
 
     public static final double retractedPos = 0.0;

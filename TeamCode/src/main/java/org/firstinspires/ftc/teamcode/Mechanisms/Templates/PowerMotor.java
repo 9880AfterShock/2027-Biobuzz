@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 public class PowerMotor {
     private static DcMotorEx motor;
     private static OpMode opmode;
-    public static double targetPower;
+    private static double targetPower;
 
     public static void init(OpMode opmode) {
         motor = opmode.hardwareMap.get(DcMotorEx.class, "motor"); //Port _ on ___ hub
