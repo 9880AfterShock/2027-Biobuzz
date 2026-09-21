@@ -47,7 +47,12 @@ public class Shooter {
     }
 
     public static void prime() {
-        hoodAngle = hoodMin;
+        hoodAngle = hoodMax; //reset incase already on min
+        setHoodAngle(hoodMin);
+
+//        flywheelSlideServo.setPosition(flywheelPollenPos);
+//        hoodSlideServo.setPosition(hoodPollenPos);
+//        nectar = false;
     }
 
     public static void setHoodAngle(double angle) {
