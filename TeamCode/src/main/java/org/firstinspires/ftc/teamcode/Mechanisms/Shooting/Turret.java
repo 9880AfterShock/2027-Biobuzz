@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Shooting;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,6 +16,9 @@ public class Turret {
     private static OpMode opmode;
     private static double turretPower;
     private static double targetPos;
+    private static final double minRotation = -200; //TBD
+    private static final double maxRotation = 200; //TBD
+    private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     public static void init(OpMode opmode) {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port _ on ___ hub
@@ -26,6 +30,10 @@ public class Turret {
         Turret.opmode = opmode;
     }
 
+    public static void prime() {
+        //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos
+    }
+
     public static void setTurretPower(double power) {
         power = Range.clip(power, -1, 1);
         if (turretPower != power) {
@@ -34,7 +42,20 @@ public class Turret {
         }
     }
 
+    public static void setTurretTarget(double target) { //Degrees
+        targetPos = Range.clip(target, minRotation, maxRotation);
+    }
+
+    public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) {
+        //TODO: make this work, calc offset of turret on robot
+        return 0.0;
+    }
+
     public static void update() {
+        //TODO: encoder tracking, abs and quad, read and reset and update
+
+        //TODO: implement PID on setTurretPower using targetPos
+        opmode.telemetry.addData("Turret Target", targetPos);
         opmode.telemetry.addData("Turret Power", turretPower);
         opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));
     }
