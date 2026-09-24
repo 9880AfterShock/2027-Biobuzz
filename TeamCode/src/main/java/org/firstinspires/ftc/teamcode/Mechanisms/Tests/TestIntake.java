@@ -17,8 +17,8 @@ public class TestIntake {
     public static double targetPower;
     public static boolean enabled;
 
-    public static final double retractedPos = 0.3;//0.126;
-    public static final double extendedPos = 0.0;//0.34;
+    public static double retractedPos = 0.3;//0.126;
+    private static final double extendedPos = 0.0;//0.34;
     public static final double intakingPower = 1.0;
     public static final double ejectingPower = -1.0;
     public static final double idlePower = 0.0;
