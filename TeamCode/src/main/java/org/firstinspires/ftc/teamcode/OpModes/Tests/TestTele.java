@@ -43,7 +43,6 @@ public class TestTele extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-
 //        telemetry.setMsTransmissionInterval(100);
 
         while (opModeIsActive()) {
