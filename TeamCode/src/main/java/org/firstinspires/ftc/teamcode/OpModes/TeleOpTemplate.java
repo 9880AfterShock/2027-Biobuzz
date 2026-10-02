@@ -26,7 +26,10 @@ public class TeleOpTemplate extends LinearOpMode {
         //Below is for if you want FTC dashboard telemetry
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        allHubs = hardwareMap.getAll(LynxModule.class);
+        allHubs = hardwareMap.getAll(LynxModule.class); //Set for bulk read
+        LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub"); //Individual for voltage readings
+        LynxModule expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
+
         //Init Functions
         //GO HERE
 
@@ -48,10 +51,12 @@ public class TeleOpTemplate extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             for (LynxModule hub : allHubs) { //Bulk read first thing
-//                double voltage = hub.getInputVoltage(VoltageUnit.VOLTS); //Log at some point
-//                double current = hub.getCurrent(CurrentUnit.AMPS); //Log at some point
                 hub.clearBulkCache();
             }
+            telemetry.addData("Control Hub Voltage", controlHub.getInputVoltage(VoltageUnit.VOLTS));
+            telemetry.addData("Expansion Hub Voltage", expansionHub.getInputVoltage(VoltageUnit.VOLTS));
+            telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
+            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 
             //Tick Functions
             //GO HERE
