@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -32,6 +33,7 @@ public class TestTele extends LinearOpMode {
         allHubs = hardwareMap.getAll(LynxModule.class);
         LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
         LynxModule expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
+        Servo testServo = hardwareMap.get(Servo.class, "test");
 
         //Init Functions
 //        Gyro.init(this);
@@ -55,6 +57,7 @@ public class TestTele extends LinearOpMode {
             for (LynxModule hub : allHubs) {
                 hub.clearBulkCache();
             }
+            testServo.setPosition(0.0);
             telemetry.addData("Control Hub Voltage", controlHub.getInputVoltage(VoltageUnit.VOLTS));
             telemetry.addData("Expansion Hub Voltage", expansionHub.getInputVoltage(VoltageUnit.VOLTS));
             telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
