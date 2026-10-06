@@ -24,11 +24,13 @@ public class MeepMeepVisualizer {
 
 
         double driveSpeed = 60.0; //zoom
-        double intakeSpeed = 15.0; //TBD, prob don't need
+        double intakeSpeed = 15.0; //for pickup on garden
         double shotTime = 3.0; //very on safe side
         double intakeTime = 1.0; //for garden and 2nd flower pickup
-        Pose2d startPos = new Pose2d(60.0, -15.0, Math.toRadians(0.0)); //prob 59, 14.smth
-        Pose2d gardenPos = new Pose2d(60.0, -62.0, Math.toRadians(0.0));
+        double flowerIntakeTime = 1.0; //for garden and 2nd flower pickup
+        Pose2d startPos = new Pose2d(63.303150, -48.342, Math.toRadians(-90.0));
+        Pose2d gardenPos = new Pose2d(63.303150, -60.542169, Math.toRadians(-90.0));
+        Pose2d gardenClearPos = new Pose2d(gardenPos.position.x - 5, gardenPos.position.y + 5, gardenPos.heading.toDouble());
         Pose2d shootPos2 = new Pose2d(-54.0, -24.0, Math.toRadians(180.0));
         Pose2d flowerPos1 = new Pose2d(-57.0, -24.0, Math.toRadians(180.0));
         Pose2d flowerPos2 = new Pose2d(24.0, -57.0, Math.toRadians(270.0));
@@ -40,7 +42,10 @@ public class MeepMeepVisualizer {
         myBot.runAction(
                 new SequentialAction(
                         Paths.wait(myBot, shotTime), //preloads, 1st tip
-                        Paths.directPath(myBot, startPos, gardenPos, driveSpeed), //pickup garden
+                        Paths.directPath(myBot, startPos, gardenPos, intakeSpeed), //pickup garden
+                        Paths.tangentPath(myBot, gardenPos, Math.toRadians(135.0), shootPos2, Math.toRadians(135.0), driveSpeed),
+//                        Paths.directPath(myBot, gardenPos, gardenClearPos, driveSpeed), //Clear walls
+//                        Paths.directPath(myBot,gardenClearPos, shootPos2, driveSpeed),
                         Paths.wait(myBot, intakeTime), //wait for balls, should not be long
                         Paths.directPath(myBot, gardenPos, shootPos2, driveSpeed), //go to shoot on other side
                         Paths.wait(myBot, shotTime), //1st half of 2nd tip
