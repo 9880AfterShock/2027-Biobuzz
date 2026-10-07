@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Intaking;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -14,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 public class Intake {
     private static DcMotorEx roller;
     private static Servo pivot;
+    private static DigitalChannel limitSwitch;
     private static OpMode opmode;
     public static boolean extended;
     private static double rollerPower;
@@ -29,6 +35,8 @@ public class Intake {
         enabled = true;
         roller = opmode.hardwareMap.get(DcMotorEx.class, "intakeRoller"); //Port _ on ___ hub
         pivot = opmode.hardwareMap.get(Servo.class, "intakePivot"); //Port _ on ___ hub
+        limitSwitch = opmode.hardwareMap.get(DigitalChannel.class, "limitSwitch"); //Port n+1 on ___ hub
+        limitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         roller.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,6 +84,10 @@ public class Intake {
         }
     }
 
+    public static boolean lowered(){
+        return limitSwitch.getState();
+    }
+
     public static void update(boolean intaking, boolean ejecting, boolean retract) {
         if (!retract){
             extend();
@@ -99,6 +111,44 @@ public class Intake {
         opmode.telemetry.addData("Intaking", intaking);
         opmode.telemetry.addData("Ejecting", ejecting);
 
+        opmode.telemetry.addData("Lowered (Limit Switch)", lowered());
+
         opmode.telemetry.addData("Intake Roller Amps", roller.getCurrent(CurrentUnit.AMPS));
+    }
+
+    public static Action AutoIntakeDown() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extend();
+                return !lowered();
+            }
+        };
+    }
+
+    public static Action AutoIntakeOn() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setRollerPower(intakingPower);
+                return false;
+            }
+        };
+    }
+
+    public static Action AutoIntakeEject() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setRollerPower(ejectingPower);
+                return false;
+            }
+        };
+    }
+
+    public static Action AutoIntakeOff() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setRollerPower(idlePower);
+                return false;
+            }
+        };
     }
 }
