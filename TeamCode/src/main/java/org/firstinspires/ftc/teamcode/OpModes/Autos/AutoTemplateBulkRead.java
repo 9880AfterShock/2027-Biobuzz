@@ -21,7 +21,7 @@ public class AutoTemplateBulkRead extends LinearOpMode {
     @Override
     public void runOpMode() {
         for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL); //At some point need to make a manual one that works for auto, but this is good enough for now
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             hub.clearBulkCache();
         }
 

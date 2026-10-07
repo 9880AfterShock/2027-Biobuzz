@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -116,16 +117,22 @@ public class Intake {
         opmode.telemetry.addData("Intake Roller Amps", roller.getCurrent(CurrentUnit.AMPS));
     }
 
-    public static Action AutoIntakeDown() {
+    public static Action autoIntakeDown() {
         return new Action() {
+            private boolean first = true;
+            ElapsedTime timer;
             public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+
+                    first = false;
+                }
                 extend();
                 return !lowered();
             }
         };
     }
 
-    public static Action AutoIntakeOn() {
+    public static Action autoIntakeOn() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setRollerPower(intakingPower);
@@ -134,7 +141,7 @@ public class Intake {
         };
     }
 
-    public static Action AutoIntakeEject() {
+    public static Action autoIntakeEject() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setRollerPower(ejectingPower);
@@ -143,7 +150,7 @@ public class Intake {
         };
     }
 
-    public static Action AutoIntakeOff() {
+    public static Action autoIntakeOff() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setRollerPower(idlePower);
