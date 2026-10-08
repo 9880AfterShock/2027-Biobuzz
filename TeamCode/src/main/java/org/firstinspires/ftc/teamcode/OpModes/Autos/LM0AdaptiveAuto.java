@@ -58,6 +58,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             hub.clearBulkCache();
@@ -65,10 +66,10 @@ public class LM0AdaptiveAuto extends LinearOpMode {
 
         //Init
         Intake.init(this);
-        MatchLoader.init(this);
+//        MatchLoader.init(this);
 
         Intake.prime();
-        MatchLoader.prime();
+//        MatchLoader.prime();
 
         while (!isStopRequested() && !opModeIsActive()) {
             if (gamepad1.x){
@@ -146,6 +147,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                             Intake.autoIntakeOn(),
                             Paths.directPath(drive, startPos, gardenPos, intakeSpeed),
+                            Paths.wait(drive,30.0),
                             tickFunctions
                     ), allHubs
             );
