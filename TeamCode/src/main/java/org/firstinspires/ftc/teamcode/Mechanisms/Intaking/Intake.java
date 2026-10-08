@@ -96,7 +96,9 @@ public class Intake {
             retract();
         }
 
-        //To add: deadzone for nectar
+        //TODO: use limit switch to turn on or off servo
+
+        //TODO: deadzone for nectar
 
         if (intaking){
             setRollerPower(intakingPower);
@@ -120,14 +122,14 @@ public class Intake {
     public static Action autoIntakeDown() {
         return new Action() {
             private boolean first = true;
-            ElapsedTime timer;
+            ElapsedTime timer = new ElapsedTime();;
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (first){
-
+                    timer.reset();
                     first = false;
                 }
                 extend();
-                return !lowered();
+                return !lowered() && timer.seconds() <= 3.0; //Timeout, can change
             }
         };
     }

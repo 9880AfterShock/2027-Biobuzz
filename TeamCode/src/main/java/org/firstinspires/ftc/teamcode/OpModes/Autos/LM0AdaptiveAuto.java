@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autos;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -25,6 +28,22 @@ public class LM0AdaptiveAuto extends LinearOpMode {
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
     private int posMultiplier = -1; //Default to blue because of red favored in bracket
     private static Boolean useVision = true; //Use vision to determine hive tips
+
+
+
+
+    private static final Action tickFunctions = new ParallelAction(
+            //Infinite loop tick actions; turret pid and shooter pid
+    );
+
+    private static final Action shootSequence = new SequentialAction(
+            //Open gate after time
+            //Run ball tunnel
+            //Close gate
+    );
+
+
+
 
     @Override
     public void runOpMode() {
@@ -88,8 +107,14 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         if (isStopRequested()) return;
 
         CustomActions.runBlockingBulkRead(
-                new SequentialAction(
-                        //auto code here
+                new RaceAction(
+                        new SequentialAction(
+                                //Lock on turret and set target rpm
+                                //Wait for initial spin-up time (measure)
+                                shootSequence,
+                                Intake.autoIntakeDown()
+                        ),
+                        tickFunctions
                 ), allHubs
         );
     }
