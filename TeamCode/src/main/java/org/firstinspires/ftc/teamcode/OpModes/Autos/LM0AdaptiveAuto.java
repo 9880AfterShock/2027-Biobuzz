@@ -45,6 +45,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
 
     private static final Action tickFunctions = new ParallelAction(
             //Infinite loop tick actions; turret pid and shooter pid
+            //return false;
     );
 
     private static final Action shootSequence = new SequentialAction(
