@@ -29,6 +29,17 @@ public class LM0AdaptiveAuto extends LinearOpMode {
     private int posMultiplier = -1; //Default to blue because of red favored in bracket
     private static Boolean useVision = true; //Use vision to determine hive tips
 
+    Pose2d startPos;
+    Pose2d gardenPos;
+    Pose2d gardenClearPos;
+    Pose2d preflowerPos1;
+    Pose2d flowerPos1;
+    Pose2d preflowerPos2;
+    Pose2d flowerPos2;
+    Pose2d shootPos4;
+
+    Pose2d parkPos1;
+    Pose2d parkPos2;
 
 
 
@@ -94,10 +105,24 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         }
 
         //Consts here
-        double speed = 60;
+        double driveSpeed = 60.0; //Probably max we can do
+        double intakeSpeed = 15.0; //For pickup on garden
+        double shotTime = 3.0; //Very on safe side for now
+        double intakeTime = 1.0; //For garden
+        double flowerIntakeTime = 1.0; //For flower pickup
 
         //Poses here
-        Pose2d startPos = new Pose2d(0, 0, Math.toRadians(0.0));
+        startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-51.391043, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 1 inch from first garden pollen to front bumper)
+        gardenPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-60.542169, posMultiplier*Math.toRadians(-90.0));
+        gardenClearPos = new Pose2d(gardenPos.position.x - posMultiplier*5, gardenPos.position.y + posMultiplier*5, gardenPos.heading.toDouble());
+        preflowerPos1 = new Pose2d(posMultiplier*-52.0, posMultiplier*-24.0, posMultiplier*Math.toRadians(180.0));
+        flowerPos1 = new Pose2d(posMultiplier*-57.0, posMultiplier*-24.0, posMultiplier*Math.toRadians(180.0));
+        preflowerPos2 = new Pose2d(posMultiplier*24.0, posMultiplier*-52.0, posMultiplier*Math.toRadians(270.0));
+        flowerPos2 = new Pose2d(posMultiplier*24.0, posMultiplier*-57.0, posMultiplier*Math.toRadians(270.0));
+        shootPos4 = new Pose2d(posMultiplier*40.0, posMultiplier*-40.0, posMultiplier*Math.toRadians(180.0));
+
+        Pose2d parkPos1 = new Pose2d(posMultiplier*-20, posMultiplier*-55, posMultiplier*Math.toRadians(180.0));
+        Pose2d parkPos2 = new Pose2d(posMultiplier*-50, posMultiplier*-55, posMultiplier*Math.toRadians(180.0));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPos);
 
@@ -109,13 +134,22 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-                                //Lock on turret and set target rpm
-                                //Wait for initial spin-up time (measure)
                                 shootSequence,
                                 Intake.autoIntakeDown()
                         ),
                         tickFunctions
                 ), allHubs
         );
+
+        if (gardenSource){
+            CustomActions.runBlockingBulkRead(
+                    new RaceAction(
+                            Intake.autoIntakeOn(),
+                            Paths.directPath(drive, startPos, gardenPos, intakeSpeed),
+                            tickFunctions
+                    ), allHubs
+            );
+        }
+
     }
 }

@@ -14,10 +14,16 @@ public class Paths {
                 .splineToLinearHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
                 .build();
     }
-    public static Action tangentPath(RoadRunnerBotEntity drive, Pose2d startPos, double leaveTangent, Pose2d endPose, double arriveTangent, double minSpeed){ //Really just a shortcut for spline to linear
+    public static Action tangentLinearPath(RoadRunnerBotEntity drive, Pose2d startPos, double leaveTangent, Pose2d endPose, double arriveTangent, double minSpeed){ //Really just a shortcut for spline to linear
         return drive.getDrive().actionBuilder(startPos)
                 .setTangent(leaveTangent)
                 .splineToLinearHeading(endPose, arriveTangent, new TranslationalVelConstraint(minSpeed))
+                .build();
+    }
+    public static Action tangentSplinePath(RoadRunnerBotEntity drive, Pose2d startPos, double leaveTangent, Pose2d endPose, double arriveTangent, double minSpeed){ //Really just a shortcut for spline to linear
+        return drive.getDrive().actionBuilder(startPos)
+                .setTangent(leaveTangent)
+                .splineToSplineHeading(endPose, arriveTangent, new TranslationalVelConstraint(minSpeed))
                 .build();
     }
     public static Action wait(RoadRunnerBotEntity drive, double seconds){
