@@ -47,6 +47,8 @@ public class TestTele extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        Intake.prime();
+
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }

@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Shooting;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -92,6 +96,23 @@ public class Shooter {
         opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
         opmode.telemetry.addData("Nectar Mode", nectar);
     }
+
+    public static Action autoUpdateLoop() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //TODO: fill this in with PID control
+                return true;
+            }
+        };
+    }
+
+
+
+
+
+
+
+
 
     //Following are for split shooter, do not use for now (Also: decide on encoder with hood switching, seems like it may not be needed ATM)
 

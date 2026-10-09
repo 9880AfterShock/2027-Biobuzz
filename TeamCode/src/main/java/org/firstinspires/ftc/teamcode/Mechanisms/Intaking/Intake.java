@@ -22,12 +22,12 @@ public class Intake {
     private static Servo pivot;
     private static DigitalChannel limitSwitch;
     private static OpMode opmode;
-    public static boolean extended;
+    private static boolean extended;
     private static double rollerPower;
-    public static boolean enabled;
+    private static boolean enabled;
 
-    public static final double retractedPos = 0.0;
-    public static final double extendedPos = 1.0;
+    public static final double retractedPos = 0.8; //0.85 if we want to almost touch the side plates
+    public static final double extendedPos = 0.0;
     public static final double intakingPower = 1.0;
     public static final double ejectingPower = -1.0;
     public static final double idlePower = 0.0;
@@ -65,7 +65,7 @@ public class Intake {
         }
     }
 
-    public static void setPowered(boolean powered) {
+    public static void setPivotPowered(boolean powered) {
         if (powered != enabled){
             if (powered) {
                 pivot.getController().pwmEnable();
