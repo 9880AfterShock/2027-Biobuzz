@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 
 import java.util.List;
 
@@ -44,8 +45,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
 
 
     private static final Action tickFunctions = new ParallelAction(
-            //Infinite loop tick actions; turret pid and shooter pid
-            //return false;
+            Shooter.autoUpdateLoop()
     );
 
     private static final Action shootSequence = new SequentialAction(
