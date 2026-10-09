@@ -32,7 +32,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
 
     Pose2d startPos;
     Pose2d gardenPos;
-    Pose2d gardenClearPos;
+//    Pose2d gardenClearPos;
     Pose2d preflowerPos1;
     Pose2d flowerPos1;
     Pose2d preflowerPos2;
@@ -108,7 +108,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
 
         //Consts here
         double driveSpeed = 60.0; //Probably max we can do
-        double intakeSpeed = 15.0; //For pickup on garden
+        double intakeSpeed = 5.0; //For pickup on garden
         double shotTime = 3.0; //Very on safe side for now
         double intakeTime = 1.0; //For garden
         double flowerIntakeTime = 1.0; //For flower pickup
@@ -116,7 +116,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         //Poses here
         startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-51.391043, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 1 inch from first garden pollen to front bumper)
         gardenPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-60.542169, posMultiplier*Math.toRadians(-90.0));
-        gardenClearPos = new Pose2d(gardenPos.position.x - posMultiplier*5, gardenPos.position.y + posMultiplier*5, gardenPos.heading.toDouble());
+//        gardenClearPos = new Pose2d(gardenPos.position.x - posMultiplier*5, gardenPos.position.y + posMultiplier*5, gardenPos.heading.toDouble());
         preflowerPos1 = new Pose2d(posMultiplier*-52.0, posMultiplier*-24.0, posMultiplier*Math.toRadians(180.0));
         flowerPos1 = new Pose2d(posMultiplier*-57.0, posMultiplier*-24.0, posMultiplier*Math.toRadians(180.0));
         preflowerPos2 = new Pose2d(posMultiplier*24.0, posMultiplier*-52.0, posMultiplier*Math.toRadians(270.0));
@@ -146,10 +146,12 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         if (gardenSource){
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
-                            Intake.autoIntakeOn(),
-                            Paths.directPath(drive, startPos, gardenPos, intakeSpeed),
-                            Paths.wait(drive,30.0),
-                            tickFunctions
+                        new SequentialAction(
+                                Intake.autoIntakeOn(),
+                                Paths.directPath(drive, startPos, gardenPos, intakeSpeed)//,
+//                                Paths.wait(drive,0.0)
+                        ),
+                        tickFunctions
                     ), allHubs
             );
         }

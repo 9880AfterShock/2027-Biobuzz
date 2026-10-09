@@ -25,7 +25,7 @@ public class MeepMeepVisualizer {
 
         int posMultiplier = 1;
         double driveSpeed = 60.0; //Probably max we can do
-        double intakeSpeed = 15.0; //For pickup on garden
+        double intakeSpeed = 5.0; //For pickup on garden
         double shotTime = 3.0; //Very on safe side for now
         double intakeTime = 1.0; //For garden
         double flowerIntakeTime = 1.0; //For flower pickup

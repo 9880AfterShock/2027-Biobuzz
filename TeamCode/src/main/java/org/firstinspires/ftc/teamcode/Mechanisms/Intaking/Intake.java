@@ -96,7 +96,7 @@ public class Intake {
             retract();
         }
 
-        //TODO: use limit switch to turn on or off servo
+        setPivotPowered(!lowered()); //Disable servo at lowest point
 
         //TODO: deadzone for nectar
 
@@ -129,6 +129,7 @@ public class Intake {
                     first = false;
                 }
                 extend();
+//                setPivotPowered(!lowered());
                 return !lowered() && timer.seconds() <= 3.0; //Timeout, can change
             }
         };
