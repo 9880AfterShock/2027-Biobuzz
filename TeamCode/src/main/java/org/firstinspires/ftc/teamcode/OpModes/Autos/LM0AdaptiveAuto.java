@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
+import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class LM0AdaptiveAuto extends LinearOpMode {
     );
 
     private static final Action shootSequence = new SequentialAction(
-            //Open gate after time
+            //Open gate after spun up
             //Run ball tunnel
             //Close gate
     );
@@ -129,7 +130,10 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPos);
 
 
-        waitForStart(); //after here put any stuff (such as after auto states) for teleop
+        waitForStart();
+        TeleOp.afterAutoPose = startPos; //incase something goes wrong
+        TeleOp.alliance = allianceColor;
+        TeleOp.afterAuto = true;
 
         if (isStopRequested()) return;
 
@@ -156,5 +160,6 @@ public class LM0AdaptiveAuto extends LinearOpMode {
             );
         }
 
+        TeleOp.afterAutoPose = drive.localizer.getPose(); //Feed ending pos to teleop
     }
 }

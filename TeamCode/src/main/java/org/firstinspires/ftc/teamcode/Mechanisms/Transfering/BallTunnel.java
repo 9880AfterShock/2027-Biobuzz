@@ -11,13 +11,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
 public class BallTunnel {
+    public static boolean full = false; //TODO: Use sensors to determine when the ball tunnel is full
     private static DcMotorEx feeder;
     private static OpMode opmode;
     public static double feederPower;
 
-    public static final double transferPower = 1.0;
-    public static final double holdPower = 0.3; //to tune (and maybe the others here)
-    public static final double ejectPower = -1.0;
+    public static double transferPower = 1.0;
+    public static double holdPower = 0.3; //to tune (and maybe the others here)
+    public static double ejectPower = -1.0;
 
     public static void init(OpMode opmode) {
         feeder = opmode.hardwareMap.get(DcMotorEx.class, "ballTunnelFeeder"); //Port _ on ___ hub
