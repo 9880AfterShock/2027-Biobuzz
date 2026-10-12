@@ -1,0 +1,104 @@
+package org.firstinspires.ftc.teamcode.OpModes;
+
+import android.service.autofill.FieldClassification;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.teamcode.Enums.SideColor;
+import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
+import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
+import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
+import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
+import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
+import org.opencv.core.Mat;
+
+import java.util.List;
+
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="2027 TeleOp BIOBUZZ")
+public class TeleOp extends LinearOpMode {
+    public static boolean afterAuto;
+    public static Pose2d afterAutoPose;
+    public static SideColor alliance;
+    public static List<LynxModule> allHubs;
+    ElapsedTime runtime = new ElapsedTime();
+    int loops = 0;
+
+    @Override
+    public void runOpMode() {
+        //Below is for if you want FTC dashboard telemetry
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        allHubs = hardwareMap.getAll(LynxModule.class); //Set for bulk read
+        LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub"); //Individual for voltage readings
+        LynxModule expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
+
+        if (afterAutoPose == null) { //If no auto was run, assume we are in the center so we can safely reset in either corner opposite of the side we started on
+            afterAutoPose = new Pose2d(0.0, 0.0, 0.0);
+        }
+        if (alliance == null) { //Default to blue, as it is the lower bracket side
+            alliance = SideColor.BLUE;
+        }
+
+        //Init Functions
+        Intake.init(this);
+        MatchLoader.init(this);
+        Drivetrain.init(this);
+        Pinpoint.init(this, this.hardwareMap, afterAutoPose);
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        // Wait for the game to start (driver presses START)
+        waitForStart();
+        runtime.reset();
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
+        }
+
+        //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
+        Intake.extend();
+        MatchLoader.prime();
+
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+            for (LynxModule hub : allHubs) { //Bulk read first thing
+                hub.clearBulkCache();
+            }
+            telemetry.addData("Control Hub Voltage", controlHub.getInputVoltage(VoltageUnit.VOLTS));
+            telemetry.addData("Expansion Hub Voltage", expansionHub.getInputVoltage(VoltageUnit.VOLTS));
+//            telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
+//            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
+
+            //Controls
+            boolean intakeButton = gamepad1.left_trigger > 0.5;
+            boolean ejectButton = gamepad1.left_trigger > 0.5;
+
+            boolean shootButton = gamepad1.right_trigger > 0.5;
+
+            boolean matchLoaderButton = false;
+
+            //Overrides/Safeties
+            boolean relocalize = gamepad1.back;
+            boolean intakePivotOverride = false;
+
+            //Tick Functions
+            Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
+            MatchLoader.update(matchLoaderButton);
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            loops += 1;
+            telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
+            telemetry.update();
+        }
+    }
+}

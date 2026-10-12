@@ -40,7 +40,12 @@ public class MatchLoader {
         }
     }
 
-    public static void update() {
+    public static void update(boolean deploy) {
+        if (deploy){
+            deploy();
+        } else {
+            retract();
+        }
         opmode.telemetry.addData("MatchLoader Deployed", deployed);
     }
 
@@ -48,7 +53,7 @@ public class MatchLoader {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 deploy();
-                return false;
+                return false; //TODO: add 4th wire checking if we us an axon
             }
         };
     }
