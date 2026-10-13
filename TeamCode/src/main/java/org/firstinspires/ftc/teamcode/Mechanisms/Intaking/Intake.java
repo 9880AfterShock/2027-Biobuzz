@@ -40,7 +40,7 @@ public class Intake {
         limitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        roller.setDirection(DcMotorSimple.Direction.REVERSE);
+//        roller.setDirection(DcMotorSimple.Direction.REVERSE);
         roller.setPower(0.0);
 
         Intake.opmode = opmode;
