@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.Enums;
 
 public enum LEDColor {
-    GREEN(true, false),
-    RED(false, true),
-    AMBER(true, true),
-    OFF(false, false);
+    GREEN(true, false, "Green"),
+    RED(false, true, "Red"),
+    AMBER(true, true, "Amber"),
+    OFF(false, false, "Off");
 
     private final boolean n;
     private final boolean nPlusOne;
+    private final String colorName;
 
-    LEDColor(boolean n, boolean nPlusOne) {
+    LEDColor(boolean n, boolean nPlusOne, String colorName) {
         this.n = n;
         this.nPlusOne = nPlusOne;
+        this.colorName = colorName;
     }
 
     public boolean greenPower() {
@@ -20,5 +22,9 @@ public enum LEDColor {
 
     public boolean redPower() {
         return nPlusOne;
+    }
+
+    public String state() {
+        return colorName;
     }
 }

@@ -34,6 +34,8 @@ public class LEDs {
     private static LEDColor backLeftLED = LEDColor.OFF;
     private static LEDColor backRightLED = LEDColor.OFF;
 
+    private static double lastBlink = 0; //TODO: remove this temp solution for blinking all
+
     private static OpMode opmode;
 
     public static void init(OpMode opmode) { //TODO: this absurd config
@@ -55,18 +57,53 @@ public class LEDs {
         backRightLEDGreen.setMode(DigitalChannel.Mode.OUTPUT);
         backRightLEDRed.setMode(DigitalChannel.Mode.OUTPUT);
 
+        lastBlink = 0.0;
+
         LEDs.opmode = opmode;
     }
 
-    public static void setColor(DigitalChannel LED, LEDColor newColor) {
-        //TODO: make work
-        LED.setState(true); //just turns on
+    public static void setColor(DigitalChannel LEDGreen, DigitalChannel LEDRed, LEDColor newColor, LEDColor oldColor) {
+        if (newColor.greenPower() != oldColor.greenPower()) {
+            LEDGreen.setState(newColor.greenPower());
+        }
+        if (newColor.redPower() != oldColor.redPower()) {
+            LEDGreen.setState(newColor.redPower());
+        }
     }
 
-    public static void update() { //TODO: add reading states, ex. blinking, cycling, solid X color, ect.
-
-        opmode.telemetry.addData("LEDs Programmed thus far", 0); //TODO: add telem for LEDS
+    private static void setFrontLeftColor(LEDColor color){ //TODO: add proper rate limiting of 5 hertz to make it always legal (vars for last timestamp swtiched to avoid looptime impacting)
+        setColor(frontLeftLEDGreen, frontLeftLEDRed, color, frontLeftLED);
+        frontLeftLED = color;
     }
+
+    private static void setFrontRightColor(LEDColor color){
+        setColor(frontRightLEDGreen, frontRightLEDRed, color, frontRightLED);
+        frontRightLED = color;
+    }
+
+    private static void setBackLeftColor(LEDColor color){
+        setColor(backLeftLEDGreen, backLeftLEDRed, color, backLeftLED);
+        backLeftLED = color;
+    }
+
+    private static void setBackRightColor(LEDColor color){
+        setColor(backRightLEDGreen, backRightLEDRed, color, backRightLED);
+        backRightLED = color;
+    }
+
+    public static void update(LEDColor allColor, boolean blinking, ElapsedTime runtime) { //TODO: add more reading states, ex. blinking, cycling, spinning, ect.
+        setFrontLeftColor(allColor);
+        setFrontRightColor(allColor);
+        setBackLeftColor(allColor);
+        setBackRightColor(allColor);
+
+        opmode.telemetry.addData("Front Left", frontLeftLED.state());
+        opmode.telemetry.addData("Front Right", frontRightLED.state());
+        opmode.telemetry.addData("Back Left", backLeftLED.state());
+        opmode.telemetry.addData("Back Right", backRightLED.state());
+    }
+
+
 
     public static Action autoLEDs() { //TODO: add parameters
         return new Action() {
