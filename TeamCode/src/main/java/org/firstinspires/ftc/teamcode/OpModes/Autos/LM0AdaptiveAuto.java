@@ -111,9 +111,9 @@ public class LM0AdaptiveAuto extends LinearOpMode {
         //Consts here
         double driveSpeed = 60.0; //Probably max we can do
         double intakeSpeed = 5.0; //For pickup on garden
-        double shotTime = 3.0; //Very on safe side for now
-        double intakeTime = 3.0; //For garden
-        double flowerIntakeTime = 1.0; //For flower pickup
+        double shotTime = 5.0; //Very on safe side for now
+        double intakeTime = 0.5; //For garden
+        double flowerIntakeTime = 3.0; //For flower pickup
 
         //Poses here
         startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-51.391043, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 1 inch from first garden pollen to front bumper)
@@ -154,14 +154,16 @@ public class LM0AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                         new SequentialAction(
                                 Intake.autoIntakeOn(),
-                                Paths.directPath(drive, startPos, gardenPos, intakeSpeed)//,
-//                                Paths.wait(drive,0.0)
+                                Paths.directPath(drive, startPos, gardenPos, intakeSpeed),
+                                Paths.wait(drive, intakeTime),
+                                Intake.autoIntakeOff()
                         ),
                         tickFunctions
                     ), allHubs
             );
-
         }
+
+        //check vison
 
         TeleOp.afterAutoPose = drive.localizer.getPose(); //Feed ending pos to teleop
     }

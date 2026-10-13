@@ -90,15 +90,15 @@ public class TeleOp extends LinearOpMode {
 
             boolean shootButton = gamepad1.right_trigger > 0.5;
 
-            boolean matchLoaderButton = false;
+            boolean matchLoaderButton = gamepad1.a;
 
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
             boolean intakePivotOverride = false;
 
             //Tick Functions
-            Drivetrain.updateDrive(drive, strafe, turn, slowMode, false); //TODO: reset IMU code
-            Pinpoint.update(relocalize);
+            Drivetrain.updateDrive(drive, strafe, turn, slowMode, relocalize);
+            Pinpoint.update(false);  //TODO: fix and make work
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
             MatchLoader.update(matchLoaderButton);
 
