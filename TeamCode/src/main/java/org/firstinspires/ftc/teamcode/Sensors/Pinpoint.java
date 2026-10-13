@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Sensors;
 
 import static org.firstinspires.ftc.teamcode.MecanumDrive.PARAMS;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 
@@ -112,6 +113,9 @@ public class Pinpoint {
         if (snap){
             localizer.setPose(snapPose(localizer.getPose()));
         }
+        TelemetryPacket drawing = new TelemetryPacket();
+        draw(drawing);
+        FtcDashboard.getInstance().sendTelemetryPacket(drawing);
     }
 
     public static void draw(TelemetryPacket packet) {
