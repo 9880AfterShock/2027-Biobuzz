@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.CustomActions;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
-import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
@@ -21,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import java.util.List;
 
 @Autonomous(name = "Adaptive Auto (WIP) [ROBOT MOVES UPON INITIALIZATION]")
-public class LM0AdaptiveAuto extends LinearOpMode {
+public class LM1AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;
     //Currently no plan to ever disable preloads, this saves me work
     private static Boolean gardenSource = true;
