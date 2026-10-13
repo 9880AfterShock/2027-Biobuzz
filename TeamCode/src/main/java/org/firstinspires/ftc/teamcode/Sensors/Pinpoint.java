@@ -20,10 +20,10 @@ public class Pinpoint {
     private static double yawOffsetOverride = 0.0; //Radians
 
     //For calculating corner pose alignments, inches from center of robot to wall when braced against on that side
-    private static final double frontDistance = 12; //TODO: replace sample values with actual thing
-    private static final double leftDistance = 9;
-    private static final double rightDistance = 9;
-    private static final double backDistance = 9;
+    private static final double frontDistance = 20;//0.0393701 * (291.10703 + 4);
+    private static final double leftDistance = 30;//0.0393701 * (215.90000 + 15); //TODO: make sure the side values reflect matchloader (plate is the ~215)
+    private static final double rightDistance = 5;//0.0393701 * (215.90000 + 15); //TODO: make sure the side values reflect matchloader (plate is the ~215)
+    private static final double backDistance = 10;//0.0393701 * (213.50939 + 4);
     //Field Constants
     private static final double fieldSize = 72; //Distance in both directions from center of the field to the walls
     private static final double north = Math.toRadians(90.0);

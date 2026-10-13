@@ -80,6 +80,11 @@ public class TeleOp extends LinearOpMode {
 //            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 
             //Controls
+            double drive = gamepad1.left_stick_y;
+            double strafe = gamepad1.left_stick_x;
+            double turn = gamepad1.right_stick_x;
+            boolean slowMode = false;
+
             boolean intakeButton = gamepad1.left_trigger > 0.5;
             boolean ejectButton = gamepad1.left_trigger > 0.5;
 
@@ -92,6 +97,8 @@ public class TeleOp extends LinearOpMode {
             boolean intakePivotOverride = false;
 
             //Tick Functions
+            Drivetrain.updateDrive(drive, strafe, turn, slowMode, false); //TODO: reset IMU code
+            Pinpoint.update(relocalize);
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
             MatchLoader.update(matchLoaderButton);
 
