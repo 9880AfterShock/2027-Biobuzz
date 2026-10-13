@@ -53,7 +53,7 @@ public class MatchLoader {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 deploy();
-                return false; //TODO: add 4th wire checking if we us an axon
+                return false; //TODO: add 4th wire checking
             }
         };
     }
@@ -61,7 +61,7 @@ public class MatchLoader {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 retract();
-                return false;
+                return false; //TODO: add 4th wire checking
             }
         };
     }
