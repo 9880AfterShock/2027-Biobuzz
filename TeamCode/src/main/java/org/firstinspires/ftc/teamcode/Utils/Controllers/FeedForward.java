@@ -10,7 +10,7 @@ public class FeedForward implements Controller {
         this.kP = kP;
     }
     @Override
-    public double step(double target, double current) {
+    public double step(double target, double current, double deltaTime) {
         return (kS + kV * target) + kP * (target - current);
     }
 }

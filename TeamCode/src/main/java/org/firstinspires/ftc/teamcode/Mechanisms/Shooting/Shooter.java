@@ -15,8 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.Controllers.Controller;
-import org.firstinspires.ftc.teamcode.Controllers.FeedForward;
+import org.firstinspires.ftc.teamcode.Utils.Controllers.Controller;
+import org.firstinspires.ftc.teamcode.Utils.Controllers.FeedForward;
 
 @Config
 public class Shooter {
@@ -89,9 +89,9 @@ public class Shooter {
     private static void updateFlywheel() {
         double voltage = hubVoltageSensor.getVoltage();
         if (nectar) {
-            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation) * (voltage * 0.5));
+            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
         } else {
-            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation) * (voltage * 0.5));
+            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
         }
     }
 
