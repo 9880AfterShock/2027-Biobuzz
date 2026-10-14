@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -103,6 +104,20 @@ public class Shooter {
             public boolean run(@NonNull TelemetryPacket packet) {
                 //TODO: fill this in with PID control
                 return true;
+            }
+        };
+    }
+
+    public static Action autoWaitForSpeed(double margin, double timeOut) {
+        return new Action() {
+            private boolean first = true;
+            ElapsedTime timer = new ElapsedTime();;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    timer.reset();
+                    first = false;
+                }
+                return Math.abs(targetRPM - getCurrentRPM()) > margin && timer.seconds() <= timeOut; //Timeout, can change
             }
         };
     }

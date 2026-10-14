@@ -23,6 +23,52 @@ public class MeepMeepVisualizer {
                 .build();
 
         Pose2d startPos;
+        Pose2d preGardenPos;
+        Pose2d gardenPos;
+        Pose2d traversePos;
+        Pose2d shootPos2;
+        Pose2d preParkPos;
+        Pose2d parkPos;
+
+        int posMultiplier = 1;
+
+        double driveSpeed = 60.0; //Probably max we can do
+        double intakeSpeed = 5.0; //For pickup on garden
+        double shotTime = 4.0; //Very on safe side for now
+        double intakeTime = 3.0; //For garden
+
+        startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
+        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
+        traversePos = new Pose2d(posMultiplier*-24, posMultiplier*-36, posMultiplier*Math.toRadians(180.0)); //Avoid the hive
+        shootPos2 = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
+
+        preParkPos = new Pose2d(posMultiplier*12, posMultiplier*-56, posMultiplier*Math.toRadians(180.0));
+        parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(180.0));
+
+
+        myBot.runAction(
+                new SequentialAction(
+                        Paths.wait(myBot, shotTime), //preloads, 1st tip
+                        Paths.directPath(myBot, startPos, preGardenPos, driveSpeed),
+                        //Intake On
+                        Paths.directPath(myBot, preGardenPos, gardenPos, intakeSpeed), //pickup garden
+                        Paths.wait(myBot, intakeTime), //wait for vectoring
+
+                        Paths.directPath(myBot, gardenPos, traversePos, driveSpeed),
+                        Paths.tangentLinearPath(myBot, traversePos, posMultiplier*Math.toRadians(180.0), shootPos2, posMultiplier*Math.toRadians(180.0), driveSpeed),
+                        Paths.wait(myBot, shotTime), //half of 2nd tip
+
+
+
+                        //Buddy Park
+                        Paths.directPath(myBot, shootPos2, preParkPos, driveSpeed), //to park
+                        Paths.directPath(myBot, preParkPos, parkPos, driveSpeed) //to park
+                )
+        );
+
+/*
+        Pose2d startPos;
         Pose2d gardenPos;
         Pose2d cornerPos;
 //    Pose2d gardenClearPos;
@@ -38,11 +84,11 @@ public class MeepMeepVisualizer {
 
         double driveSpeed = 60.0; //Probably max we can do
         double intakeSpeed = 5.0; //For pickup on garden
-        double shotTime = 5.0; //Very on safe side for now
+        double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 0.5; //For garden
         double flowerIntakeTime = 3.0; //For flower pickup
 
-        startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-51.391043, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 1 inch from first garden pollen to front bumper)
+        startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-49.242169, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 0.1 inch from first garden pollen to front bumper)
         gardenPos = new Pose2d(posMultiplier*65, posMultiplier*-64, posMultiplier*Math.toRadians(-90.0));
         cornerPos = new Pose2d(posMultiplier*(72.0-Pinpoint.leftDistance), posMultiplier*(-72.0+Pinpoint.frontDistance), posMultiplier*Math.toRadians(-90.0));
 //        gardenClearPos = new Pose2d(gardenPos.position.x - posMultiplier*5, gardenPos.position.y + posMultiplier*5, gardenPos.heading.toDouble());
@@ -76,7 +122,7 @@ public class MeepMeepVisualizer {
                         Paths.wait(myBot, shotTime), //partial 3rd tip, partner preloads should finish
                         Paths.directPath(myBot, shootPos4, parkPos1, driveSpeed) //to park
                 )
-        );
+        ); */
 
 //        Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
 //        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));

@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Transfering;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -17,7 +21,7 @@ public class BallTunnel {
     public static double feederPower;
 
     public static double transferPower = 1.0;
-    public static double holdPower = 0.3; //to tune (and maybe the others here)
+    public static double holdPower = 0.5; //to tune (and maybe the others here)
     public static double ejectPower = -1.0;
 
     public static void init(OpMode opmode) {
@@ -51,5 +55,23 @@ public class BallTunnel {
 
         opmode.telemetry.addData("Feeder Power", feederPower);
         opmode.telemetry.addData("Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
+    }
+
+    public static Action autoBalltunnelShoot() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setFeederPower(transferPower);
+                return false;
+            }
+        };
+    }
+
+    public static Action autoBalltunnelIdle() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setFeederPower(holdPower);
+                return false;
+            }
+        };
     }
 }

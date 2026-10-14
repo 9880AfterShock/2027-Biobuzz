@@ -50,6 +50,8 @@ public class LM1AdaptiveAuto extends LinearOpMode {
     );
 
     private static final Action shootSequence = new SequentialAction(
+            //copy some from lm0 auto + sensor, see about moving this part of the code to a diff scope
+
             //Open gate after spun up
             //Run ball tunnel
             //Close gate
@@ -110,12 +112,12 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         //Consts here
         double driveSpeed = 60.0; //Probably max we can do
         double intakeSpeed = 5.0; //For pickup on garden
-        double shotTime = 5.0; //Very on safe side for now
+        double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 0.5; //For garden
         double flowerIntakeTime = 3.0; //For flower pickup
 
         //Poses here
-        startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-51.391043, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 1 inch from first garden pollen to front bumper)
+        startPos = new Pose2d(posMultiplier*63.303150, posMultiplier*-49.242169, posMultiplier*Math.toRadians(-90.0)); //Temp until we fine a way of aligning that we like (right now its 0.1 inch from first garden pollen to front bumper)
         gardenPos = new Pose2d(posMultiplier*65, posMultiplier*-64, posMultiplier*Math.toRadians(-90.0));
         cornerPos = new Pose2d(posMultiplier*(72.0-Pinpoint.leftDistance), posMultiplier*(-72.0+Pinpoint.frontDistance), posMultiplier*Math.toRadians(-90.0));
 //        gardenClearPos = new Pose2d(gardenPos.position.x - posMultiplier*5, gardenPos.position.y + posMultiplier*5, gardenPos.heading.toDouble());
@@ -163,6 +165,15 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         }
 
         //check vison
+
+        if (leftFlower) {
+            if (gardenSource) {
+
+            } else {
+
+            }
+
+        }
 
         TeleOp.afterAutoPose = drive.localizer.getPose(); //Feed ending pos to teleop
     }
