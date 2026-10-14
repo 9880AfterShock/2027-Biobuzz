@@ -18,7 +18,7 @@ public class PID implements Controller {
     public double step(double target, double current) {
         double diff = target - current;
         double last = lastDiff.orElse(diff);
-        double out = diff * p + diff-last + i * iAccum;
+        double out = diff * p + (diff-last) * d + i * iAccum;
         lastDiff = Optional.of(diff);
         iAccum += diff;
         return out;
