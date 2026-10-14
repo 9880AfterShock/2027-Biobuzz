@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Controllers;
+package org.firstinspires.ftc.teamcode.Utils.Controllers;
 
 public class FeedForward implements Controller {
     public double kS;

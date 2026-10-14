@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Logging;
+package org.firstinspires.ftc.teamcode.Utils.Logging;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
