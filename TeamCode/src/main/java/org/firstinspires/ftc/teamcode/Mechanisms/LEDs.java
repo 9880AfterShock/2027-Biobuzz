@@ -91,6 +91,13 @@ public class LEDs {
         backRightLED = color;
     }
 
+    public static void turnOff(){
+        setFrontLeftColor(LEDColor.OFF);
+        setFrontRightColor(LEDColor.OFF);
+        setBackLeftColor(LEDColor.OFF);
+        setBackRightColor(LEDColor.OFF);
+    }
+
     public static void update(LEDColor allColor, boolean blinking, ElapsedTime runtime) { //TODO: add more reading states, ex. blinking, cycling, spinning, ect.
         setFrontLeftColor(allColor);
         setFrontRightColor(allColor);

@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
+import org.firstinspires.ftc.teamcode.Mechanisms.LEDs;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import org.opencv.core.Mat;
@@ -52,6 +53,7 @@ public class TeleOp extends LinearOpMode {
         MatchLoader.init(this);
         Drivetrain.init(this);
         Pinpoint.init(this, this.hardwareMap, afterAutoPose);
+//        LEDs.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -79,6 +81,10 @@ public class TeleOp extends LinearOpMode {
 //            telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 
+
+
+
+
             //Controls
             double drive = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
@@ -96,16 +102,22 @@ public class TeleOp extends LinearOpMode {
             boolean relocalize = gamepad1.back;
             boolean intakePivotOverride = false;
 
+
+
+
+
             //Tick Functions
             Drivetrain.updateDrive(drive, strafe, turn, slowMode, relocalize);
             Pinpoint.update(false);  //TODO: fix and make work
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
             MatchLoader.update(matchLoaderButton);
+//            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
             telemetry.update();
         }
+        LEDs.turnOff();
     }
 }
