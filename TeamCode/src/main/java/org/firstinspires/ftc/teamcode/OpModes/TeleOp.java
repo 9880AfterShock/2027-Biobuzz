@@ -31,8 +31,8 @@ public class TeleOp extends LinearOpMode {
     public static Pose2d afterAutoPose;
     public static SideColor alliance;
     public static List<LynxModule> allHubs;
-//    public static DualLogger dLogger;
-//    public static Logger logger;
+    public static DualLogger dLogger;
+    public static Logger logger;
     ElapsedTime runtime = new ElapsedTime();
     int loops = 0;
 
@@ -41,8 +41,8 @@ public class TeleOp extends LinearOpMode {
         //Below is for if you want FTC dashboard telemetry
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-//        logger = new Logger(this,"TeleOP");
-//        dLogger = new DualLogger(logger, this.telemetry);
+        logger = new Logger(this,"TeleOP");
+        dLogger = new DualLogger(logger, this.telemetry);
 
         allHubs = hardwareMap.getAll(LynxModule.class); //Set for bulk read
         LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub"); //Individual for voltage readings
@@ -123,8 +123,8 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
-            telemetry.update();
-//            dLogger.update();
+//            telemetry.update();
+            dLogger.update();
         }
         LEDs.turnOff();
     }
