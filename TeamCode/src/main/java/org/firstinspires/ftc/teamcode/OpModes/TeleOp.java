@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
+import org.firstinspires.ftc.teamcode.Logging.DualLogger;
+import org.firstinspires.ftc.teamcode.Logging.Logger;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
@@ -29,6 +31,8 @@ public class TeleOp extends LinearOpMode {
     public static Pose2d afterAutoPose;
     public static SideColor alliance;
     public static List<LynxModule> allHubs;
+    public static DualLogger dLogger;
+    public static Logger logger;
     ElapsedTime runtime = new ElapsedTime();
     int loops = 0;
 
@@ -36,7 +40,8 @@ public class TeleOp extends LinearOpMode {
     public void runOpMode() {
         //Below is for if you want FTC dashboard telemetry
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
+        logger = new Logger(this,"TeleOP");
+        dLogger = new DualLogger(logger, this.telemetry);
         allHubs = hardwareMap.getAll(LynxModule.class); //Set for bulk read
         LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub"); //Individual for voltage readings
         LynxModule expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
@@ -116,7 +121,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
-            telemetry.update();
+            dLogger.update();
         }
         LEDs.turnOff();
     }
