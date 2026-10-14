@@ -10,18 +10,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Controllers.Controller;
+import org.firstinspires.ftc.teamcode.Controllers.FeedForward;
 
 @Config
 public class Shooter {
     private static DcMotorEx flywheel;
+    private static VoltageSensor hubVoltageSensor;
     private static Servo hoodAngleServo; //may need to split off a nectar one
     private static Servo flywheelSlideServo;
     private static Servo hoodSlideServo;
     private static OpMode opmode;
+    private static Controller nectarController;
+    private static Controller pollenController;
     private static double shooterPower;
     private static double targetRPM;
     private static double hoodAngle;
@@ -33,6 +39,7 @@ public class Shooter {
     private final static double hoodRatio = 1; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
     private final static double hoodMin = 11; //tbd, hood min and max in degrees
     private final static double hoodMax = 22;
+    private final static double ticksPerRotation = 1; //TODO: get correct values
     private static boolean nectar; //maybe make final (false) and comment out other code about switching modes for now if needed
 
     public static void init(OpMode opmode) {
@@ -40,6 +47,9 @@ public class Shooter {
         hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port _ on ___ hub
         flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
         hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
+        hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");
+        nectarController = new FeedForward(0.1, 0.1, 0.0);
+        pollenController = new FeedForward(0.1, 0.01, 0.0);
 
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -76,12 +86,21 @@ public class Shooter {
         }
     }
 
+    private static void updateFlywheel() {
+        double voltage = hubVoltageSensor.getVoltage();
+        if (nectar) {
+            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation) * (voltage * 0.5));
+        } else {
+            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation) * (voltage * 0.5));
+        }
+    }
+
     public static void setTargetRPM(double rpm) {
         targetRPM = rpm;
     }
 
-    public static double getCurrentRPM() {
-        return 0.0; //TODO: make this work, test raw RPM vs smoothed over time with different coefficients like last year
+    public static double getCurrentRPM() { // this is not used for controlling the flywheel as smoothing the rpm is not ideal for control systems
+        return flywheel.getVelocity() / ticksPerRotation;
     }
 
     public static boolean canShoot() {
@@ -91,7 +110,7 @@ public class Shooter {
     public static void update() {
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
-
+        updateFlywheel();
         opmode.telemetry.addData("Flywheel Power", shooterPower);
         opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
         opmode.telemetry.addData("Hood Angle Position", hoodAngle);
@@ -102,7 +121,7 @@ public class Shooter {
     public static Action autoUpdateLoop() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
-                //TODO: fill this in with PID control
+                updateFlywheel();
                 return true;
             }
         };
