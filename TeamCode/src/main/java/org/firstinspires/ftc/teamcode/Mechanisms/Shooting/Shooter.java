@@ -36,9 +36,9 @@ public class Shooter {
     public static double flywheelNectarPos = 1.0;
     public static double hoodNectarPos = 1.0;
     public static double errorMargin = 50; //error margin in RPM to be allowed to shooter, maybe make into a scalar at some point? (more lenience at higher speeds)
-    private final static double hoodRatio = 1; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
-    private final static double hoodMin = 11; //tbd, hood min and max in degrees
-    private final static double hoodMax = 22;
+    private final static double hoodRatio = 7; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
+    private final static double hoodMin = 12; //tbd, hood min and max in degrees
+    private final static double hoodMax = 24;
     private final static double ticksPerRotation = 28; //1:1 sprocket
     private static boolean nectar; //maybe make final (false) and comment out other code about switching modes for now if needed
 
@@ -47,7 +47,7 @@ public class Shooter {
         hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port 5 on expansion hub
         flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
         hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
-        hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");
+//        hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");
         nectarController = new FeedForward(0.1, 0.1, 0.0);
         pollenController = new FeedForward(0.1, 0.01, 0.0);
 
@@ -87,7 +87,7 @@ public class Shooter {
     }
 
     private static void updateFlywheel() {
-        double voltage = hubVoltageSensor.getVoltage();
+//        double voltage = hubVoltageSensor.getVoltage();
         if (nectar) {
             setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
         } else {
@@ -107,7 +107,13 @@ public class Shooter {
         return Math.abs(getCurrentRPM() - targetRPM) < errorMargin;
     }
 
-    public static void update() {
+    public static void update(boolean temp) {
+        if (temp) {
+            setHoodAngle(hoodMax);
+        } else {
+            setHoodAngle(hoodMin);
+        }
+
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
         updateFlywheel();
@@ -122,7 +128,7 @@ public class Shooter {
     public static Action autoUpdateLoop() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
-                updateFlywheel();
+//                updateFlywheel();
                 return true;
             }
         };

@@ -125,7 +125,7 @@ public class TeleOp extends LinearOpMode {
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, false);
             BallGate.update(shootButton);
-            Shooter.update();
+            Shooter.update(gamepad1.x);
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

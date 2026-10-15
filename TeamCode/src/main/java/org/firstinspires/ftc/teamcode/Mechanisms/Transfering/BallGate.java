@@ -13,8 +13,8 @@ public class BallGate {
     private static Servo gateServo;
     private static OpMode opmode;
     public static boolean open = false;
-    public static final double openPos = 0.0;
-    public static final double closedPos = 1.0;
+    public static double openPos = 0.0;
+    public static double closedPos = 1.0;
 
     public static void init(OpMode opmode) {
         gateServo = opmode.hardwareMap.get(Servo.class, "ballTunnelGate"); //Port 2 on control hub
