@@ -55,14 +55,14 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, preGardenPos, gardenPos, intakeSpeed), //pickup garden
                         Paths.wait(myBot, intakeTime), //wait for vectoring
 
-                        Paths.directPath(myBot, gardenPos, traversePos, driveSpeed),
+                        Paths.tangentLinearPath(myBot, gardenPos, posMultiplier*Math.toRadians(150.0), traversePos, posMultiplier*Math.toRadians(180.0), driveSpeed),
                         Paths.tangentLinearPath(myBot, traversePos, posMultiplier*Math.toRadians(180.0), shootPos2, posMultiplier*Math.toRadians(180.0), driveSpeed),
                         Paths.wait(myBot, shotTime), //half of 2nd tip
 
 
 
                         //Buddy Park
-                        Paths.directPath(myBot, shootPos2, preParkPos, driveSpeed), //to park
+                        Paths.tangentLinearPath(myBot, shootPos2, posMultiplier*Math.toRadians(-30.0), preParkPos, posMultiplier*Math.toRadians(0.0), driveSpeed), //to park
                         Paths.directPath(myBot, preParkPos, parkPos, driveSpeed) //to park
                 )
         );
