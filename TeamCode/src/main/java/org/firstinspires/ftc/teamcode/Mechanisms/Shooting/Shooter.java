@@ -89,9 +89,9 @@ public class Shooter {
     private static void updateFlywheel() {
         double voltage = hubVoltageSensor.getVoltage();
         if (nectar) {
-            setFlywheelPower(nectarController.step(targetRPM, getCurrentRPM()) * (voltage * 0.5));
+            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
         } else {
-            setFlywheelPower(pollenController.step(targetRPM, getCurrentRPM()) * (voltage * 0.5));
+            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
         }
     }
 
