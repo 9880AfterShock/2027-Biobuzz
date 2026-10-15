@@ -48,7 +48,7 @@ public class Pinpoint {
     }
 
     public static void setOverrideYaw(){
-        yawOffsetOverride = localizer.getPose().heading.toDouble();
+        yawOffsetOverride = -localizer.getPose().heading.toDouble();
     }
 
     public static double getStalenessSeconds(){
