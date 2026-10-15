@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
+import org.firstinspires.ftc.teamcode.Sensors.Gyro;
 import org.firstinspires.ftc.teamcode.Utils.Logging.DualLogger;
 import org.firstinspires.ftc.teamcode.Utils.Logging.Logger;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
@@ -28,7 +29,7 @@ import org.opencv.core.Mat;
 import java.io.IOException;
 import java.util.List;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="2027 TeleOp BIOBUZZ")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="2027 TeleOp BIOBUZZ upload worked")
 public class TeleOp extends LinearOpMode {
     public static boolean afterAuto;
     public static Pose2d afterAutoPose;
@@ -67,6 +68,7 @@ public class TeleOp extends LinearOpMode {
         BallGate.init(this);
         Shooter.init(this);
 //        LEDs.init(this);
+//        Gyro.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -122,7 +124,7 @@ public class TeleOp extends LinearOpMode {
 
 
             //Tick Functions
-            Drivetrain.updateDrive(drive, strafe, turn, slowMode, relocalize);
+            Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(false);  //TODO: fix and make work
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
 //            MatchLoader.update(matchLoaderButton);
