@@ -107,7 +107,7 @@ public class TeleOp extends LinearOpMode {
             boolean slowMode = false;
 
             boolean intakeButton = gamepad1.left_trigger > 0.5;
-            boolean ejectButton = gamepad1.left_trigger > 0.5;
+            boolean ejectButton = gamepad1.left_bumper;
 
             boolean shootButton = gamepad1.right_trigger > 0.5;
 
@@ -115,7 +115,7 @@ public class TeleOp extends LinearOpMode {
 
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
-            boolean intakePivotOverride = false;
+            boolean intakePivotOverride = gamepad2.a;
 
 
 
@@ -128,7 +128,7 @@ public class TeleOp extends LinearOpMode {
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, false);
             BallGate.update(false);
-            Shooter.update(gamepad1.x);
+            Shooter.update();
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

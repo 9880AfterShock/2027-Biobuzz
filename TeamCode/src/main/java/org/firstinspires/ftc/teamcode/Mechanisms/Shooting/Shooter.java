@@ -108,12 +108,8 @@ public class Shooter {
         return Math.abs(getCurrentRPM() - targetRPM) < errorMargin;
     }
 
-    public static void update(boolean temp) {
-        if (temp) {
-            setHoodAngle(hoodMax);
-        } else {
-            setHoodAngle(hoodMin);
-        }
+    public static void update() {
+        setHoodAngle(hoodMax);
 
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
