@@ -114,7 +114,14 @@ public class Shooter {
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
    //     updateFlywheel();
-        setFlywheelPower(1.0);
+        if (opmode.gamepad1.right_bumper
+        ) {
+
+            setFlywheelPower(1.0);
+        } else {
+
+            setFlywheelPower(0.0);
+        }
 
         opmode.telemetry.addData("Flywheel Power", shooterPower);
         opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));

@@ -128,7 +128,7 @@ public class TeleOp extends LinearOpMode {
             Pinpoint.update(false);  //TODO: fix and make work
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
 //            MatchLoader.update(matchLoaderButton);
-            BallTunnel.update(shootButton, false);
+            BallTunnel.update(shootButton, gamepad1.x);
             BallGate.update(false);
             Shooter.update();
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
