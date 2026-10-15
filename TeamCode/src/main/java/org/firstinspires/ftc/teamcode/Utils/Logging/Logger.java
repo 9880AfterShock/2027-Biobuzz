@@ -72,7 +72,6 @@ public class Logger {
     public void log(@NonNull String name, float data) {
         log(name, "Number", data);
     }
-
     public void logTypedTelemetryPacket(TypedTelemetryPacket telemetryPacket) {
         for (Map.Entry<String, Double> entry : telemetryPacket.dataTime.entrySet().stream().sorted().collect(Collectors.toList())) {
             String event =  "["+entry.getValue()+"] "+entry.getKey()+" | "+telemetryPacket.dataTypes.get(entry.getKey())+" : "+telemetryPacket.data.get(entry.getKey());
