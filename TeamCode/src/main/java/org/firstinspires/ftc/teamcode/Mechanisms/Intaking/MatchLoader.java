@@ -17,7 +17,7 @@ public class MatchLoader {
     public static double deployedPos = 0.0;
 
     public static void init(OpMode opmode) {
-        matchLoaderServo = opmode.hardwareMap.get(Servo.class, "matchLoader"); //Port _ on ___ hub
+        matchLoaderServo = opmode.hardwareMap.get(Servo.class, "matchLoader"); //Port _ on control hub
         MatchLoader.opmode = opmode;
     }
 

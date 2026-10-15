@@ -21,7 +21,8 @@ public class Turret {
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     public static void init(OpMode opmode) {
-        turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port _ on ___ hub
+        turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub
+        //Rev encoder is in encoder port for the turret motor
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turret.setDirection(DcMotorSimple.Direction.FORWARD);

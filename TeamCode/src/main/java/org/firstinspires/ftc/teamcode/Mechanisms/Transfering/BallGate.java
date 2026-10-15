@@ -17,7 +17,7 @@ public class BallGate {
     public static final double closedPos = 1.0;
 
     public static void init(OpMode opmode) {
-        gateServo = opmode.hardwareMap.get(Servo.class, "gate"); //Port _ on ___ hub
+        gateServo = opmode.hardwareMap.get(Servo.class, "ballTunnelGate"); //Port 2 on control hub
         BallGate.opmode = opmode;
     }
 

@@ -43,8 +43,8 @@ public class Shooter {
     private static boolean nectar; //maybe make final (false) and comment out other code about switching modes for now if needed
 
     public static void init(OpMode opmode) {
-        flywheel = opmode.hardwareMap.get(DcMotorEx.class, "flywheel"); //Port _ on ___ hub
-        hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port _ on ___ hub
+        flywheel = opmode.hardwareMap.get(DcMotorEx.class, "flywheel"); //Port 1 on expansion hub
+        hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port 5 on expansion hub
         flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
         hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
         hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");

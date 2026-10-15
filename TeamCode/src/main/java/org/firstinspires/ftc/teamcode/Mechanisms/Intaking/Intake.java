@@ -34,9 +34,9 @@ public class Intake {
 
     public static void init(OpMode opmode) {
         enabled = true;
-        roller = opmode.hardwareMap.get(DcMotorEx.class, "intakeRoller"); //Port _ on ___ hub
-        pivot = opmode.hardwareMap.get(Servo.class, "intakePivot"); //Port _ on ___ hub
-        limitSwitch = opmode.hardwareMap.get(DigitalChannel.class, "limitSwitch"); //Port n+1 on ___ hub
+        roller = opmode.hardwareMap.get(DcMotorEx.class, "intakeRoller"); //Port 3 on expansion hub
+        pivot = opmode.hardwareMap.get(Servo.class, "intakePivot"); //Port 0 on control hub
+        limitSwitch = opmode.hardwareMap.get(DigitalChannel.class, "limitSwitch"); //Port 1 (0/1 pair) on control hub
         limitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -33,7 +33,7 @@ public class Pinpoint {
     private static final double west = Math.toRadians(180.0);
 
     public static void init(OpMode opmode, HardwareMap hardwareMap, Pose2d pose) {
-        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose); //Bus 0 on Control Hub
         sinceReset.reset();
         yawOffsetOverride = 0.0;
         Pinpoint.opmode = opmode;

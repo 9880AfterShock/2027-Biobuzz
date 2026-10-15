@@ -25,7 +25,7 @@ public class BallTunnel {
     public static double ejectPower = -1.0;
 
     public static void init(OpMode opmode) {
-        feeder = opmode.hardwareMap.get(DcMotorEx.class, "ballTunnelFeeder"); //Port _ on ___ hub
+        feeder = opmode.hardwareMap.get(DcMotorEx.class, "ballTunnelFeeder"); //Port 2 on expansion hub
 
         feeder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         feeder.setDirection(DcMotorSimple.Direction.FORWARD);

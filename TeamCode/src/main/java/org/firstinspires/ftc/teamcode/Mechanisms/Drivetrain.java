@@ -29,10 +29,10 @@ public class Drivetrain {
 
 
     public static void init(OpMode opmode) {
-        leftFront = opmode.hardwareMap.get(DcMotorEx.class, "leftFront"); //Port _ on ___ hub
-        rightFront = opmode.hardwareMap.get(DcMotorEx.class, "rightFront"); //Port _ on ___ hub
-        leftBack = opmode.hardwareMap.get(DcMotorEx.class, "leftBack"); //Port _ on ___ hub
-        rightBack = opmode.hardwareMap.get(DcMotorEx.class, "rightBack"); //Port _ on ___ hub
+        leftFront = opmode.hardwareMap.get(DcMotorEx.class, "leftFront"); //Port 1 on control hub
+        rightFront = opmode.hardwareMap.get(DcMotorEx.class, "rightFront"); //Port 3 on control hub
+        leftBack = opmode.hardwareMap.get(DcMotorEx.class, "leftBack"); //Port 0 on control hub
+        rightBack = opmode.hardwareMap.get(DcMotorEx.class, "rightBack"); //Port 2 on control hub
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
