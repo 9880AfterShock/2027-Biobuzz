@@ -15,8 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.Controllers.Controller;
-import org.firstinspires.ftc.teamcode.Controllers.FeedForward;
+import org.firstinspires.ftc.teamcode.Utils.Controllers.Controller;
+import org.firstinspires.ftc.teamcode.Utils.Controllers.FeedForward;
 
 @Config
 public class Shooter {
@@ -111,6 +111,7 @@ public class Shooter {
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
         updateFlywheel();
+
         opmode.telemetry.addData("Flywheel Power", shooterPower);
         opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
         opmode.telemetry.addData("Hood Angle Position", hoodAngle);

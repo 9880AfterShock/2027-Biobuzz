@@ -34,8 +34,8 @@ public class LM0BuddyPark12 extends LinearOpMode {
     Pose2d gardenPos;
     Pose2d traversePos;
     Pose2d shootPos2;
-    Pose2d parkPos1;
-    Pose2d parkPos2;
+    Pose2d preParkPos;
+    Pose2d parkPos;
 
 
     @Override
@@ -119,13 +119,17 @@ public class LM0BuddyPark12 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
+                                //flywheel on
                                 shootSequence,
                                 //to pre pickup
                                 Intake.autoIntakeOn(),
                                 Intake.autoIntakeDown(),
                                 //pickup
-                                Paths.wait(drive, intakeTime)
+                                Paths.wait(drive, intakeTime),
                                 //continue to shoot
+                                shootSequence,
+                                //flywheel off
+                                //to buddy park
                         ),
                         tickFunctions
                 ), allHubs
