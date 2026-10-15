@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
+import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Utils.Logging.DualLogger;
 import org.firstinspires.ftc.teamcode.Utils.Logging.Logger;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
@@ -57,10 +59,12 @@ public class TeleOp extends LinearOpMode {
         }
 
         //Init Functions
-        Intake.init(this);
-        MatchLoader.init(this);
         Drivetrain.init(this);
         Pinpoint.init(this, this.hardwareMap, afterAutoPose);
+        Intake.init(this);
+//        MatchLoader.init(this);
+        BallTunnel.init(this);
+        Shooter.init(this);
 //        LEDs.init(this);
 
         telemetry.addData("Status", "Initialized");
@@ -118,7 +122,10 @@ public class TeleOp extends LinearOpMode {
             Drivetrain.updateDrive(drive, strafe, turn, slowMode, relocalize);
             Pinpoint.update(false);  //TODO: fix and make work
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
-            MatchLoader.update(matchLoaderButton);
+//            MatchLoader.update(matchLoaderButton);
+            BallTunnel.update(shootButton, false);
+            BallGate.update(shootButton);
+            Shooter.update();
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

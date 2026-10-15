@@ -39,7 +39,7 @@ public class Shooter {
     private final static double hoodRatio = 1; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
     private final static double hoodMin = 11; //tbd, hood min and max in degrees
     private final static double hoodMax = 22;
-    private final static double ticksPerRotation = 1; //TODO: get correct values
+    private final static double ticksPerRotation = 28; //1:1 sprocket
     private static boolean nectar; //maybe make final (false) and comment out other code about switching modes for now if needed
 
     public static void init(OpMode opmode) {

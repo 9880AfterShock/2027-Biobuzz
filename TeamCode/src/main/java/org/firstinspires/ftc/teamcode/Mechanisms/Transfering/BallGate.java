@@ -43,6 +43,12 @@ public class BallGate {
     public static void update(boolean shoot) {
         //TODO: make it go when shooter can fire and driver presses trigger, and then close when driver stops shooting or empty + cannot shoot
 
+        if (shoot) { //TEMP LM0 fix
+            open();
+        } else {
+            close();
+        }
+
         opmode.telemetry.addData("Shooter Gate Open", open);
     }
 
