@@ -50,7 +50,7 @@ public class Drivetrain {
         leftFront.setPower(0.0);
         rightFront.setPower(0.0);
         leftBack.setPower(0.0);
-        rightFront.setPower(0.0);
+        rightBack.setPower(0.0);
 
 
         leftFrontPower = 0.0;

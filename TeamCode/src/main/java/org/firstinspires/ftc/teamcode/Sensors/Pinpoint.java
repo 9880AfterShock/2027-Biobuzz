@@ -48,7 +48,7 @@ public class Pinpoint {
     }
 
     public static void setOverrideYaw(){
-        yawOffsetOverride = -localizer.getPose().heading.toDouble();
+        yawOffsetOverride = localizer.getPose().heading.toDouble();
     }
 
     public static double getStalenessSeconds(){
@@ -113,6 +113,11 @@ public class Pinpoint {
         if (snap){
             localizer.setPose(snapPose(localizer.getPose()));
         }
+
+        opmode.telemetry.addData("PINPOINT Yaw", Math.toDegrees(getYawRadians()));
+        opmode.telemetry.addData("PINPOINT Yaw Offset Override", Math.toDegrees(yawOffsetOverride));
+        opmode.telemetry.addData("PINPOINT Raw Yaw", Math.toDegrees(localizer.getPose().heading.toDouble()));
+
         TelemetryPacket drawing = new TelemetryPacket();
         draw(drawing);
         FtcDashboard.getInstance().sendTelemetryPacket(drawing);
