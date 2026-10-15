@@ -45,15 +45,14 @@ public class Shooter {
     public static void init(OpMode opmode) {
         flywheel = opmode.hardwareMap.get(DcMotorEx.class, "flywheel"); //Port 1 on expansion hub
         hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port 5 on expansion hub
-        flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
-        hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
+       // flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
+     //   hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
 //        hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");
         nectarController = new FeedForward(0.1, 0.1, 0.0);
         pollenController = new FeedForward(0.1, 0.01, 0.0);
 
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
-//        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel.setPower(0.0);
 
         nectar = false;
@@ -65,6 +64,8 @@ public class Shooter {
         hoodAngle = hoodMax; //reset incase already on min
         setHoodAngle(hoodMin);
 
+        shooterPower = 0.0;
+
 //        flywheelSlideServo.setPosition(flywheelPollenPos);
 //        hoodSlideServo.setPosition(hoodPollenPos);
 //        nectar = false;
@@ -73,7 +74,7 @@ public class Shooter {
     public static void setHoodAngle(double angle) {
         angle = (Range.clip(angle, hoodMin, hoodMax) - hoodMin) * hoodRatio;
         if (hoodAngle != angle){
-            hoodAngleServo.setPosition(angle); //may to need to reverse to be counting down from 1 based on orientation of servo
+            hoodAngleServo.setPosition(angle/360); //may to need to reverse to be counting down from 1 based on orientation of servo
             hoodAngle = angle;
         }
     }
@@ -116,7 +117,8 @@ public class Shooter {
 
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
-        updateFlywheel();
+   //     updateFlywheel();
+        setFlywheelPower(.3);
 
         opmode.telemetry.addData("Flywheel Power", shooterPower);
         opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));

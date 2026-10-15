@@ -64,6 +64,7 @@ public class TeleOp extends LinearOpMode {
         Intake.init(this);
 //        MatchLoader.init(this);
         BallTunnel.init(this);
+        BallGate.init(this);
         Shooter.init(this);
 //        LEDs.init(this);
 
@@ -81,7 +82,9 @@ public class TeleOp extends LinearOpMode {
 
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
         Intake.extend();
-        MatchLoader.prime();
+    //    MatchLoader.prime();
+        BallGate.prime();
+        Shooter.prime();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -124,7 +127,7 @@ public class TeleOp extends LinearOpMode {
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, false);
-            BallGate.update(shootButton);
+            BallGate.update(false);
             Shooter.update(gamepad1.x);
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 

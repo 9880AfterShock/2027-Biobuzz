@@ -127,7 +127,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
                                 //pickup
                                 Paths.wait(drive, intakeTime),
                                 //continue to shoot
-                                shootSequence,
+                                shootSequence
                                 //flywheel off
                                 //to buddy park
                         ),
