@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import org.opencv.core.Mat;
 
+import java.io.IOException;
 import java.util.List;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="2027 TeleOp BIOBUZZ")
@@ -127,5 +128,10 @@ public class TeleOp extends LinearOpMode {
 //            dLogger.update();
         }
         LEDs.turnOff();
+//        try {
+//            logger.write();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }
