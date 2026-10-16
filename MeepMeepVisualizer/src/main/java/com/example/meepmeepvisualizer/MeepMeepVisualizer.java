@@ -22,6 +22,30 @@ public class MeepMeepVisualizer {
                 .setDimensions(17.0,427.175/25.4)
                 .build();
 
+
+        Pose2d startPos;
+        Pose2d parkPos;
+
+        int posMultiplier = 1;
+
+        double driveSpeed = 60.0; //Probably max we can do
+        double shotTime = 4.0; //Very on safe side for now
+
+        startPos = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
+        parkPos = new Pose2d(posMultiplier*-48, posMultiplier*-60, posMultiplier*Math.toRadians(180.0));
+
+
+        myBot.runAction(
+                new SequentialAction(
+                        Paths.wait(myBot, shotTime), //half of 2nd tip
+
+                        //Buddy Park
+                        Paths.tangentLinearPath(myBot, startPos, posMultiplier*Math.toRadians(0.0), parkPos, posMultiplier*Math.toRadians(270.0), driveSpeed) //Park
+                )
+        );
+
+        //LM0 12 Buddy Park
+        /*
         Pose2d startPos;
         Pose2d preGardenPos;
         Pose2d gardenPos;
@@ -69,8 +93,10 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, postShootPos2, preParkPos, driveSpeed), //get ready to ram
                         Paths.directPath(myBot, preParkPos, parkPos, ramSpeed) //to park
                 )
-        );
+        );*/
 
+
+        //LM1 Adaptive Auto
 /*
         Pose2d startPos;
         Pose2d gardenPos;
