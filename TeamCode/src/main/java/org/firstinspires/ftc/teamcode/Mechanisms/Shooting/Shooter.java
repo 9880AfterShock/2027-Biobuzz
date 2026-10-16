@@ -71,6 +71,10 @@ public class Shooter {
 //        nectar = false;
 
         Shooter.opmode = opmode;
+
+        opmode.telemetry.addData("Shooter Target RPM", targetRPM);
+        opmode.telemetry.addData("Shooter Current RPM", getCurrentRPM());
+        opmode.telemetry.update();
     }
 
     public static void prime() {
@@ -145,11 +149,11 @@ public class Shooter {
         opmode.telemetry.addData("Shooter Target RPM", targetRPM);
         opmode.telemetry.addData("Shooter Current RPM", getCurrentRPM());
 
-        opmode.telemetry.addData("Flywheel Power", shooterPower);
-        opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
-        opmode.telemetry.addData("Hood Angle Position", hoodAngle);
-        opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
-        opmode.telemetry.addData("Nectar Mode", nectar);
+//        opmode.telemetry.addData("Flywheel Power", shooterPower);
+//        opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
+//        opmode.telemetry.addData("Hood Angle Position", hoodAngle);
+//        opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
+//        opmode.telemetry.addData("Nectar Mode", nectar);
     }
 
     public static Action autoSetTargetRPM(double RPM) {
