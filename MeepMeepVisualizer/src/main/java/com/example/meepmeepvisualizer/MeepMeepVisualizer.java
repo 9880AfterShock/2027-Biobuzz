@@ -34,6 +34,7 @@ public class MeepMeepVisualizer {
         int posMultiplier = 1;
 
         double driveSpeed = 60.0; //Probably max we can do
+        double ramSpeed = 20.0; //Probably max we can do
         double intakeSpeed = 5.0; //For pickup on garden
         double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
@@ -64,9 +65,9 @@ public class MeepMeepVisualizer {
 
 
                         //Buddy Park
-                        Paths.tangentLinearPath(myBot, shootPos2, posMultiplier*Math.toRadians(-30.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
-                        Paths.directPath(myBot, postShootPos2, preParkPos,driveSpeed), //get ready to ram
-                        Paths.directPath(myBot, preParkPos, parkPos, driveSpeed) //to park
+                        Paths.tangentLinearPath(myBot, shootPos2, posMultiplier*Math.toRadians(0.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
+                        Paths.directPath(myBot, postShootPos2, preParkPos, driveSpeed), //get ready to ram
+                        Paths.directPath(myBot, preParkPos, parkPos, ramSpeed) //to park
                 )
         );
 

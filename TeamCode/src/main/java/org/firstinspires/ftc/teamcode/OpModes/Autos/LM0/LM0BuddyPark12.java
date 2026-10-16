@@ -80,6 +80,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
 
         //Consts here
         double driveSpeed = 60.0; //Probably max we can do
+        double ramSpeed = 20.0; //Playing it safer
         double intakeSpeed = 5.0; //For pickup on garden
         double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
@@ -146,9 +147,9 @@ public class LM0BuddyPark12 extends LinearOpMode {
                                 Shooter.autoSetTargetRPM(0),
 
                                 //to buddy park
-                                Paths.tangentLinearPath(drive, shootPos2, posMultiplier*Math.toRadians(-30.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
-                                Paths.directPath(drive, postShootPos2, preParkPos,driveSpeed), //get ready to ram
-                                Paths.directPath(drive, preParkPos, parkPos, driveSpeed) //to park
+                                Paths.tangentLinearPath(drive, shootPos2, posMultiplier*Math.toRadians(0.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
+                                Paths.directPath(drive, postShootPos2, preParkPos, driveSpeed), //get ready to ram
+                                Paths.directPath(drive, preParkPos, parkPos, ramSpeed) //to park
                         ),
                         tickFunctions
                 ), allHubs

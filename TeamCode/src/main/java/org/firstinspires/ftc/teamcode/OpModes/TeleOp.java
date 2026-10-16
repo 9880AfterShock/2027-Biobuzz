@@ -149,7 +149,7 @@ public class TeleOp extends LinearOpMode {
             deltaTime = runtime.milliseconds() - lastLoopTimestamp;
             lastLoopTimestamp = runtime.milliseconds();
         }
-        LEDs.turnOff();
+//        LEDs.turnOff();
 //        try {
 //            logger.write();
 //        } catch (IOException e) {
