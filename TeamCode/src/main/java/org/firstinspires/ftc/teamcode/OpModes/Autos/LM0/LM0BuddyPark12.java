@@ -85,6 +85,8 @@ public class LM0BuddyPark12 extends LinearOpMode {
         double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
 
+        posMultiplier = 0;
+
         //Poses here
         startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
         preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
@@ -121,7 +123,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
 
         waitForStart();
 
-        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
+//        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
 
         TeleOp.afterAutoPose = startPos; //incase something goes wrong
         TeleOp.alliance = allianceColor;

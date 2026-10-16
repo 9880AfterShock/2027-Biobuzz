@@ -76,6 +76,8 @@ public class LM0LeftSide4 extends LinearOpMode {
         double driveSpeed = 60.0; //Probably max we can do
         double shotTime = 4.0; //Very on safe side for now
 
+        posMultiplier = 1;
+
         //Poses here
         startPos = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
         parkPos = new Pose2d(posMultiplier*-48, posMultiplier*-60, posMultiplier*Math.toRadians(180.0));
@@ -105,7 +107,7 @@ public class LM0LeftSide4 extends LinearOpMode {
 
         waitForStart();
 
-        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
+//        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
 
         TeleOp.afterAutoPose = startPos; //incase something goes wrong
         TeleOp.alliance = allianceColor;
@@ -116,10 +118,10 @@ public class LM0LeftSide4 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-                                Shooter.autoSetTargetRPM(2000),
+//                                Shooter.autoSetTargetRPM(2000),
 
                                 Paths.wait(drive, delay),
-                                shootSequence,
+//                                shootSequence,
 
                                 Paths.tangentLinearPath(drive, startPos, posMultiplier*Math.toRadians(0.0), parkPos, posMultiplier*Math.toRadians(270.0), driveSpeed), //Park
 

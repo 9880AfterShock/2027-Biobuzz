@@ -45,8 +45,8 @@ public class Shooter {
     private final static double ticksPerRotation = 28; //1:1 sprocket
     private static final boolean nectar = false; //Change + un-comment out other code later
 
-    public static double kS = 0;
-    public static double kV = 0;
+    public static double kS = 0.12;
+    public static double kV = 0.00021;
     public static double P = 0;
     public static double I = 0;
     public static double D = 0;
@@ -111,9 +111,9 @@ public class Shooter {
             return;
         }
         if (nectar) {
-            setFlywheelPower(nectarFFController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
+            setFlywheelPower(nectarFFController.step(targetRPM, getCurrentRPM(), deltaTime));
         } else {
-            setFlywheelPower(pollenFFController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
+            setFlywheelPower(pollenFFController.step(targetRPM, getCurrentRPM(), deltaTime));
         }
     }
 
@@ -122,7 +122,7 @@ public class Shooter {
     }
 
     public static double getCurrentRPM() { // this is not used for controlling the flywheel as smoothing the rpm is not ideal for control systems
-        return flywheel.getVelocity() / ticksPerRotation;
+        return flywheel.getVelocity() / ticksPerRotation * 60;
     }
 
     public static boolean canShoot() {
@@ -142,9 +142,6 @@ public class Shooter {
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
         updateFlywheel(deltaTime);
-
-        //Temp for tuning only, remove later
-        if (opmode.gamepad1.right_bumper) {setTargetRPM(300);} else {setTargetRPM(0);}
 
         opmode.telemetry.addData("Shooter Target RPM", targetRPM);
         opmode.telemetry.addData("Shooter Current RPM", getCurrentRPM());

@@ -77,7 +77,11 @@ public class ShooterTuningTest extends LinearOpMode {
 
             targetRPM = Range.clip(targetRPM, 0, 6000);
 
-            Shooter.setTargetRPM(targetRPM);
+            if (gamepad1.right_trigger < 0.5) {
+                Shooter.setTargetRPM(targetRPM);
+            } else {
+                Shooter.setTargetRPM(0);
+            }
             Shooter.update(deltaTime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
