@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
 
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
 import java.util.List;
 
+@Disabled
 @Autonomous(name = "12 ball solo and buddy park")
 public class LM0BuddyPark12 extends LinearOpMode {
     private static List<LynxModule> allHubs;
@@ -135,7 +137,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
                 new RaceAction(
                         new SequentialAction(
                                 Shooter.autoSetTargetRPM(2000),
-                                Shooter.autoWaitForSpeed(50, 5),
+                                Shooter.autoWaitForSpeed(50, 6),
                                 shootSequence,
 
                                 Paths.directPath(drive, startPos, preGardenPos, driveSpeed), //to pre pickup
