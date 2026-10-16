@@ -87,12 +87,16 @@ public class Shooter {
         }
     }
 
-    private static void updateFlywheel() {
+    private static void updateFlywheel(double deltaTime) {
 //        double voltage = hubVoltageSensor.getVoltage();
+        if (targetRPM == 0) { //Allow setting to 0 to just drop power, rather than waste power trying to force the flywheel back to a stop
+            setFlywheelPower(0.0);
+            return;
+        }
         if (nectar) {
-            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
+            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
         } else {
-            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, 1.0)); //TODO: add delta time
+            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
         }
     }
 
@@ -108,20 +112,18 @@ public class Shooter {
         return Math.abs(getCurrentRPM() - targetRPM) < errorMargin;
     }
 
-    public static void update() {
+    public static void update(double deltaTime) {
         setHoodAngle(hoodMax);
 
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet
-   //     updateFlywheel();
-        if (opmode.gamepad1.right_bumper
-        ) {
+        updateFlywheel(deltaTime);
 
-            setFlywheelPower(1.0);
-        } else {
+        //Temp for tuning only, remove later
+        if (opmode.gamepad1.right_bumper) {setTargetRPM(300);} else {setTargetRPM(0);}
 
-            setFlywheelPower(0.0);
-        }
+        opmode.telemetry.addData("Shooter Target RPM", targetRPM);
+        opmode.telemetry.addData("Shooter Current RPM", getCurrentRPM());
 
         opmode.telemetry.addData("Flywheel Power", shooterPower);
         opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
@@ -130,10 +132,29 @@ public class Shooter {
         opmode.telemetry.addData("Nectar Mode", nectar);
     }
 
-    public static Action autoUpdateLoop() {
+    public static Action autoSetTargetRPM(double RPM) {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
-//                updateFlywheel();
+                setTargetRPM(RPM);
+                return false;
+            }
+        };
+    }
+
+    public static Action autoUpdateLoop() {
+        return new Action() {
+            private double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
+            private double lastLoopTimestamp = 0.0;
+            private ElapsedTime shooterLooptimer = new ElapsedTime();
+            private boolean first = true;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    shooterLooptimer.reset();
+                    first = false;
+                }
+                updateFlywheel(deltaTime);
+                deltaTime = shooterLooptimer.milliseconds() - lastLoopTimestamp;
+                lastLoopTimestamp = shooterLooptimer.milliseconds();
                 return true;
             }
         };

@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.OpModes.Autos.Paths;
@@ -34,6 +35,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
     Pose2d gardenPos;
     Pose2d traversePos;
     Pose2d shootPos2;
+    Pose2d postShootPos2;
     Pose2d preParkPos;
     Pose2d parkPos;
 
@@ -49,8 +51,14 @@ public class LM0BuddyPark12 extends LinearOpMode {
         //Init
         Intake.init(this);
 //        MatchLoader.init(this);
+        BallTunnel.init(this);
+        BallGate.init(this);
+        Turret.init(this);
+        Shooter.init(this);
 
         Intake.prime();
+        BallGate.prime();
+        Shooter.prime();
 //        MatchLoader.prime();
 
         double delay = 0;
@@ -80,10 +88,11 @@ public class LM0BuddyPark12 extends LinearOpMode {
         startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
         preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
         gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
-        traversePos = new Pose2d(posMultiplier*-24, posMultiplier*-36, posMultiplier*Math.toRadians(180.0)); //Avoid the hive
+        traversePos = new Pose2d(posMultiplier*36, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Avoid the hive
         shootPos2 = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
 
-        preParkPos = new Pose2d(posMultiplier*12, posMultiplier*-56, posMultiplier*Math.toRadians(180.0));
+        postShootPos2 = new Pose2d(posMultiplier*-24, posMultiplier*-36, posMultiplier*Math.toRadians(180.0));
+        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posMultiplier*Math.toRadians(180.0));
         parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(180.0));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPos);
@@ -110,6 +119,9 @@ public class LM0BuddyPark12 extends LinearOpMode {
 
 
         waitForStart();
+
+        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
+
         TeleOp.afterAutoPose = startPos; //incase something goes wrong
         TeleOp.alliance = allianceColor;
         TeleOp.afterAuto = true;
@@ -119,17 +131,24 @@ public class LM0BuddyPark12 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-                                //flywheel on
+                                Shooter.autoSetTargetRPM(2000),
                                 shootSequence,
-                                //to pre pickup
+
+                                Paths.directPath(drive, startPos, preGardenPos, driveSpeed), //to pre pickup
                                 Intake.autoIntakeOn(),
                                 Intake.autoIntakeDown(),
-                                //pickup
-                                Paths.wait(drive, intakeTime),
-                                //continue to shoot
-                                shootSequence
-                                //flywheel off
+                                Paths.directPath(drive, preGardenPos, gardenPos, intakeSpeed), //pickup garden
+                                Paths.wait(drive, intakeTime), //wait for vectoring
+
+                                Paths.directPath(drive, gardenPos, traversePos, driveSpeed),
+                                Paths.directPath(drive, traversePos, shootPos2, driveSpeed),//continue to shoot
+                                shootSequence,
+                                Shooter.autoSetTargetRPM(0),
+
                                 //to buddy park
+                                Paths.tangentLinearPath(drive, shootPos2, posMultiplier*Math.toRadians(-30.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
+                                Paths.directPath(drive, postShootPos2, preParkPos,driveSpeed), //get ready to ram
+                                Paths.directPath(drive, preParkPos, parkPos, driveSpeed) //to park
                         ),
                         tickFunctions
                 ), allHubs

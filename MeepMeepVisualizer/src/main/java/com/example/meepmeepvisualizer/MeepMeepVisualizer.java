@@ -27,6 +27,7 @@ public class MeepMeepVisualizer {
         Pose2d gardenPos;
         Pose2d traversePos;
         Pose2d shootPos2;
+        Pose2d postShootPos2;
         Pose2d preParkPos;
         Pose2d parkPos;
 
@@ -40,11 +41,11 @@ public class MeepMeepVisualizer {
         startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
         preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
         gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
-        traversePos = new Pose2d(posMultiplier*-24, posMultiplier*-36, posMultiplier*Math.toRadians(180.0)); //Avoid the hive
+        traversePos = new Pose2d(posMultiplier*36, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Avoid the hive
         shootPos2 = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
 
-        preParkPos = new Pose2d(posMultiplier*12, posMultiplier*-56, posMultiplier*Math.toRadians(180.0));
-        //may need another mid pos
+        postShootPos2 = new Pose2d(posMultiplier*-24, posMultiplier*-36, posMultiplier*Math.toRadians(180.0));
+        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posMultiplier*Math.toRadians(180.0));
         parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(180.0));
 
 
@@ -56,14 +57,15 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, preGardenPos, gardenPos, intakeSpeed), //pickup garden
                         Paths.wait(myBot, intakeTime), //wait for vectoring
 
-                        Paths.tangentLinearPath(myBot, gardenPos, posMultiplier*Math.toRadians(150.0), traversePos, posMultiplier*Math.toRadians(180.0), driveSpeed),
-                        Paths.tangentLinearPath(myBot, traversePos, posMultiplier*Math.toRadians(180.0), shootPos2, posMultiplier*Math.toRadians(180.0), driveSpeed),
+                        Paths.directPath(myBot, gardenPos, traversePos, driveSpeed),
+                        Paths.directPath(myBot, traversePos, shootPos2, driveSpeed),
                         Paths.wait(myBot, shotTime), //half of 2nd tip
 
 
 
                         //Buddy Park
-                        Paths.tangentLinearPath(myBot, shootPos2, posMultiplier*Math.toRadians(-30.0), preParkPos, posMultiplier*Math.toRadians(0.0), driveSpeed), //to park
+                        Paths.tangentLinearPath(myBot, shootPos2, posMultiplier*Math.toRadians(-30.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
+                        Paths.directPath(myBot, postShootPos2, preParkPos,driveSpeed), //get ready to ram
                         Paths.directPath(myBot, preParkPos, parkPos, driveSpeed) //to park
                 )
         );

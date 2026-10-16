@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Sensors.Gyro;
 import org.firstinspires.ftc.teamcode.Utils.Logging.DualLogger;
@@ -66,6 +67,7 @@ public class TeleOp extends LinearOpMode {
 //        MatchLoader.init(this);
         BallTunnel.init(this);
         BallGate.init(this);
+        Turret.init(this);
         Shooter.init(this);
 //        LEDs.init(this);
 //        Gyro.init(this);
@@ -86,7 +88,11 @@ public class TeleOp extends LinearOpMode {
         Intake.extend();
     //    MatchLoader.prime();
         BallGate.prime();
+        Turret.prime();
         Shooter.prime();
+
+        double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
+        double lastLoopTimestamp = 0.0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -130,7 +136,7 @@ public class TeleOp extends LinearOpMode {
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, gamepad1.x);
             BallGate.update(false);
-            Shooter.update();
+            Shooter.update(deltaTime);
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -138,6 +144,10 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
             telemetry.update();
 //            dLogger.update();
+
+            //Deltatime
+            deltaTime = runtime.milliseconds() - lastLoopTimestamp;
+            lastLoopTimestamp = runtime.milliseconds();
         }
         LEDs.turnOff();
 //        try {

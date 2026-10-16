@@ -24,14 +24,22 @@ public class Turret {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub
         //Rev encoder is in encoder port for the turret motor
 
+        //TEMP FOR LOCK
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setTargetPosition(0);
+
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        turret.setDirection(DcMotorSimple.Direction.FORWARD);
+//        turret.setDirection(DcMotorSimple.Direction.FORWARD);
         turret.setPower(0.0);
 
         Turret.opmode = opmode;
     }
 
     public static void prime() {
+        //TEMP locking code
+        turret.setTargetPosition(0);
+        turret.setPower(1.0);
+
         //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos
     }
 
