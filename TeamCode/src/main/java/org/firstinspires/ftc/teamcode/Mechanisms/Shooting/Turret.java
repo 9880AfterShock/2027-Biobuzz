@@ -25,8 +25,8 @@ public class Turret {
         //Rev encoder is in encoder port for the turret motor
 
         //TEMP FOR LOCK
-        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setTargetPosition(0);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        turret.setDirection(DcMotorSimple.Direction.FORWARD);

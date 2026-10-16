@@ -41,7 +41,7 @@ public class ShooterTuningTest extends LinearOpMode {
             hub.clearBulkCache();
         }
 
-        Turret.prime();
+      //  Turret.prime();
         Shooter.prime();
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
