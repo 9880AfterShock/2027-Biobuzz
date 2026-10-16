@@ -34,10 +34,10 @@ public class Shooter {
     private static double shooterPower;
     private static double targetRPM;
     private static double hoodAngle;
-    public static double flywheelPollenPos = 0.0; //TODO: add final to all servo poses after tuned (and errorMargin)
-    public static double hoodPollenPos = 0.0;
-    public static double flywheelNectarPos = 1.0;
-    public static double hoodNectarPos = 1.0;
+//    public static double flywheelPollenPos = 0.0; //TODO: add final to all servo poses after tuned (and errorMargin)
+//    public static double hoodPollenPos = 0.0;
+//    public static double flywheelNectarPos = 1.0;
+//    public static double hoodNectarPos = 1.0;
     public static double errorMargin = 50; //error margin in RPM to be allowed to shooter, maybe make into a scalar at some point? (more lenience at higher speeds)
     private final static double hoodRatio = 7; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
     private final static double hoodMin = 12; //tbd, hood min and max in degrees
@@ -47,7 +47,7 @@ public class Shooter {
 
     public static double kS = 0.12;
     public static double kV = 0.00021;
-    public static double P = 0;
+    public static double P = 0.0001;
     public static double I = 0;
     public static double D = 0;
 
@@ -106,14 +106,15 @@ public class Shooter {
 
     private static void updateFlywheel(double deltaTime) {
 //        double voltage = hubVoltageSensor.getVoltage();
-        if (targetRPM == 0) { //Allow setting to 0 to just drop power, rather than waste power trying to force the flywheel back to a stop
+        //TODO: fix the temp lock on backdriving with a proper slew rate limiter for later comps than lm0
+        if (targetRPM == 0 || targetRPM-getCurrentRPM() < 0) { //Allow setting to 0 to just drop power, rather than waste power trying to force the flywheel back to a stop
             setFlywheelPower(0.0);
             return;
         }
         if (nectar) {
-            setFlywheelPower(nectarFFController.step(targetRPM, getCurrentRPM(), deltaTime));
+            setFlywheelPower(nectarFFController.step(targetRPM, getCurrentRPM(), deltaTime) + nectarPIDController.step(targetRPM, getCurrentRPM(), deltaTime));
         } else {
-            setFlywheelPower(pollenFFController.step(targetRPM, getCurrentRPM(), deltaTime));
+            setFlywheelPower(pollenFFController.step(targetRPM, getCurrentRPM(), deltaTime) + pollenPIDController.step(targetRPM, getCurrentRPM(), deltaTime));
         }
     }
 
@@ -146,7 +147,7 @@ public class Shooter {
         opmode.telemetry.addData("Shooter Target RPM", targetRPM);
         opmode.telemetry.addData("Shooter Current RPM", getCurrentRPM());
 
-//        opmode.telemetry.addData("Flywheel Power", shooterPower);
+        opmode.telemetry.addData("Flywheel Power", shooterPower);
 //        opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
 //        opmode.telemetry.addData("Hood Angle Position", hoodAngle);
 //        opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
