@@ -21,13 +21,12 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.OpModes.Autos.Paths;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
-import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
 import java.util.List;
 
 @Disabled
 @Autonomous(name = "12 ball solo and buddy park")
-public class LM0BuddyPark12 extends LinearOpMode {
+public class LM0BuddyPark8 extends LinearOpMode {
     private static List<LynxModule> allHubs;
     //Currently no plan to ever disable preloads, this saves me work
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
@@ -87,7 +86,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
         double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
 
-        posMultiplier = 0;
+        posMultiplier = 1;
 
         //Poses here
         startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));

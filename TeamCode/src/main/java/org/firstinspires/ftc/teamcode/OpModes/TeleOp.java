@@ -88,7 +88,7 @@ public class TeleOp extends LinearOpMode {
         Intake.extend();
     //    MatchLoader.prime();
         BallGate.prime();
-//        Turret.prime();
+        Turret.prime();
         Shooter.prime();
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be

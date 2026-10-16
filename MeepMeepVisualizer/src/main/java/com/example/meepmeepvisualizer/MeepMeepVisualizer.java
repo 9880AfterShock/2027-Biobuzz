@@ -24,6 +24,37 @@ public class MeepMeepVisualizer {
 
 
         Pose2d startPos;
+        Pose2d preGardenPos;
+        Pose2d gardenPos;
+        Pose2d traversePos;
+        Pose2d shootPos2;
+        Pose2d postShootPos2;
+        Pose2d preParkPos;
+        Pose2d parkPos;
+
+        int posMultiplier = 1;
+
+        double driveSpeed = 60.0; //Probably max we can do
+        double ramSpeed = 20.0; //Being safer
+        double shotTime = 6.0; //Very on safe side for now
+
+        startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
+
+        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posMultiplier*Math.toRadians(0.0));
+        parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(0.0));
+
+        myBot.runAction(
+                new SequentialAction(
+                        Paths.wait(myBot, shotTime), //preloads
+
+                        Paths.directPath(myBot, startPos, preParkPos, driveSpeed), //get ready to ram
+                        Paths.directPath(myBot, preParkPos, parkPos, ramSpeed) //to park
+                )
+        );
+
+        //Left Side preloads + park w/ delay
+        /*
+        Pose2d startPos;
         Pose2d parkPos;
 
         int posMultiplier = 1;
@@ -42,9 +73,9 @@ public class MeepMeepVisualizer {
                         //Buddy Park
                         Paths.tangentLinearPath(myBot, startPos, posMultiplier*Math.toRadians(0.0), parkPos, posMultiplier*Math.toRadians(270.0), driveSpeed) //Park
                 )
-        );
+        );*/
 
-        //LM0 12 Buddy Park
+        //LM0 8 Buddy Park
         /*
         Pose2d startPos;
         Pose2d preGardenPos;
@@ -58,7 +89,7 @@ public class MeepMeepVisualizer {
         int posMultiplier = 1;
 
         double driveSpeed = 60.0; //Probably max we can do
-        double ramSpeed = 20.0; //Probably max we can do
+        double ramSpeed = 20.0; //Being safer
         double intakeSpeed = 5.0; //For pickup on garden
         double shotTime = 4.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
