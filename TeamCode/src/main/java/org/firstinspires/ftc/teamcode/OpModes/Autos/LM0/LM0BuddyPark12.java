@@ -133,6 +133,7 @@ public class LM0BuddyPark12 extends LinearOpMode {
                 new RaceAction(
                         new SequentialAction(
                                 Shooter.autoSetTargetRPM(2000),
+                                Shooter.autoWaitForSpeed(50, 5),
                                 shootSequence,
 
                                 Paths.directPath(drive, startPos, preGardenPos, driveSpeed), //to pre pickup
