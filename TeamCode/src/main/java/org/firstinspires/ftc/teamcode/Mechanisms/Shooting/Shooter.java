@@ -46,15 +46,9 @@ public class Shooter {
     private static final boolean nectar = false; //Change + un-comment out other code later
 
     public static double kS = 0;
-
     public static double kV = 0;
-
-    public static double kA = 0;
-
     public static double P = 0;
-
     public static double I = 0;
-
     public static double D = 0;
 
     public static void init(OpMode opmode) {
@@ -64,10 +58,10 @@ public class Shooter {
      //   hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
 //        hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");
 
-        pollenFFController = new FeedForward(kS, kV, kA);
+        pollenFFController = new FeedForward(kS, kV);
         pollenPIDController = new PID(P, I, D);
 
-        nectarFFController = new FeedForward(0.0, 0.0, 0.0); //Not using yet
+        nectarFFController = new FeedForward(0.0, 0.0); //Not using yet
         nectarPIDController = new PID(0.0, 0.0, 0.0);
 
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -135,7 +129,6 @@ public class Shooter {
         //TEMP for tuning
         pollenFFController.kS = kS;
         pollenFFController.kV = kV;
-        pollenFFController.kA = kA;
         pollenPIDController.p = P;
         pollenPIDController.i = I;
         pollenPIDController.d = D;
