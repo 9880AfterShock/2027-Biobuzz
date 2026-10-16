@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Utils.Controllers.Controller;
 import org.firstinspires.ftc.teamcode.Utils.Controllers.FeedForward;
+import org.firstinspires.ftc.teamcode.Utils.Controllers.PID;
 
 @Config
 public class Shooter {
@@ -26,8 +27,10 @@ public class Shooter {
     private static Servo flywheelSlideServo;
     private static Servo hoodSlideServo;
     private static OpMode opmode;
-    private static Controller nectarController;
-    private static Controller pollenController;
+    private static FeedForward pollenFFController;
+    private static PID pollenPIDController;
+    private static FeedForward nectarFFController;
+    private static PID nectarPIDController;
     private static double shooterPower;
     private static double targetRPM;
     private static double hoodAngle;
@@ -40,7 +43,19 @@ public class Shooter {
     private final static double hoodMin = 12; //tbd, hood min and max in degrees
     private final static double hoodMax = 24;
     private final static double ticksPerRotation = 28; //1:1 sprocket
-    private static boolean nectar; //maybe make final (false) and comment out other code about switching modes for now if needed
+    private static final boolean nectar = false; //Change + un-comment out other code later
+
+    public static double kS = 0;
+
+    public static double kV = 0;
+
+    public static double kA = 0;
+
+    public static double P = 0;
+
+    public static double I = 0;
+
+    public static double D = 0;
 
     public static void init(OpMode opmode) {
         flywheel = opmode.hardwareMap.get(DcMotorEx.class, "flywheel"); //Port 1 on expansion hub
@@ -48,14 +63,18 @@ public class Shooter {
        // flywheelSlideServo = opmode.hardwareMap.get(Servo.class, "flywheelSlider"); //Port _ on ___ hub
      //   hoodSlideServo = opmode.hardwareMap.get(Servo.class, "hoodSlider"); //Port _ on ___ hub
 //        hubVoltageSensor = opmode.hardwareMap.get(VoltageSensor.class, "Control Hub");
-        nectarController = new FeedForward(0.1, 0.1, 0.0);
-        pollenController = new FeedForward(0.1, 0.01, 0.0);
+
+        pollenFFController = new FeedForward(kS, kV, kA);
+        pollenPIDController = new PID(P, I, D);
+
+        nectarFFController = new FeedForward(0.0, 0.0, 0.0); //Not using yet
+        nectarPIDController = new PID(0.0, 0.0, 0.0);
 
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel.setPower(0.0);
 
-        nectar = false;
+//        nectar = false;
 
         Shooter.opmode = opmode;
     }
@@ -94,9 +113,9 @@ public class Shooter {
             return;
         }
         if (nectar) {
-            setFlywheelPower(nectarController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
+            setFlywheelPower(nectarFFController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
         } else {
-            setFlywheelPower(pollenController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
+            setFlywheelPower(pollenFFController.step(targetRPM, flywheel.getVelocity() / ticksPerRotation, deltaTime));
         }
     }
 
@@ -113,6 +132,14 @@ public class Shooter {
     }
 
     public static void update(double deltaTime) {
+        //TEMP for tuning
+        pollenFFController.kS = kS;
+        pollenFFController.kV = kV;
+        pollenFFController.kA = kA;
+        pollenPIDController.p = P;
+        pollenPIDController.i = I;
+        pollenPIDController.d = D;
+
         setHoodAngle(hoodMax);
 
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
@@ -183,20 +210,20 @@ public class Shooter {
 
 
     //Following are for split shooter, do not use for now (Also: decide on encoder with hood switching, seems like it may not be needed ATM)
-
-    public static void nectarMode() {
-        if (!nectar) {
-            flywheelSlideServo.setPosition(flywheelNectarPos);
-            hoodSlideServo.setPosition(hoodNectarPos);
-            nectar = true;
-        }
-    }
-
-    public static void pollenMode() {
-        if (nectar) {
-            flywheelSlideServo.setPosition(flywheelPollenPos);
-            hoodSlideServo.setPosition(hoodPollenPos);
-            nectar = false;
-        }
-    }
+//
+//    public static void nectarMode() {
+//        if (!nectar) {
+//            flywheelSlideServo.setPosition(flywheelNectarPos);
+//            hoodSlideServo.setPosition(hoodNectarPos);
+//            nectar = true;
+//        }
+//    }
+//
+//    public static void pollenMode() {
+//        if (nectar) {
+//            flywheelSlideServo.setPosition(flywheelPollenPos);
+//            hoodSlideServo.setPosition(hoodPollenPos);
+//            nectar = false;
+//        }
+//    }
 }
