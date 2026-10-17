@@ -66,6 +66,11 @@ public class Intake {
         }
     }
 
+    public static void forceExtend() {
+            pivot.setPosition(extendedPos);
+            extended = true;
+    }
+
     public static void setPivotPowered(boolean powered) {
         if (powered != enabled){
             if (powered) {

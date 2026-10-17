@@ -107,6 +107,7 @@ public class LM0LeftSide4 extends LinearOpMode {
 
         waitForStart();
 
+        Shooter.setHoodAngle(24);
 //        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
 
         TeleOp.afterAutoPose = startPos; //incase something goes wrong
@@ -118,7 +119,7 @@ public class LM0LeftSide4 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-                                Shooter.autoSetTargetRPM(2900),
+                                Shooter.autoSetTargetRPM(2650),
 
                                 Paths.wait(drive, delay),
                                 shootSequence,

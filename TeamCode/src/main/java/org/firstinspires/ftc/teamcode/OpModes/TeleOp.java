@@ -85,12 +85,12 @@ public class TeleOp extends LinearOpMode {
         }
 
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
-        Intake.extend();
+        Intake.forceExtend();
     //    MatchLoader.prime();
         BallGate.prime();
-        Turret.prime();
+//        Turret.prime();
         Shooter.prime();
-        Shooter.targetRPM = 2750.0;
+        Shooter.targetRPM = 2600.0;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
         double lastLoopTimestamp = 0.0;
@@ -138,9 +138,11 @@ public class TeleOp extends LinearOpMode {
             boolean zeroRPM = gamepad2.b;
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
-            if (resetRPM) { Shooter.targetRPM = 2750; }
+            if (resetRPM) { Shooter.targetRPM = 2600; }
             if (zeroRPM) { Shooter.targetRPM = 0; }
 
+
+            boolean toggleBallGate = gamepad1.aWasPressed();
 
 
 
@@ -150,8 +152,8 @@ public class TeleOp extends LinearOpMode {
             Pinpoint.update(false);  //TODO: fix and make work later
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) /*&& !intakeButton*/);
 //            MatchLoader.update(matchLoaderButton);
-            BallTunnel.update(shootButton, ballTunnelReverse);
-            BallGate.update(ballGate);
+            BallTunnel.tempUpdate(shootButton, ballTunnelReverse, intakeButton);
+            BallGate.tempUpdate(toggleBallGate);
             Shooter.update(deltaTime);
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
 

@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import java.util.List;
 
-@Disabled
+//@Disabled
 @Autonomous(name = "3 Preloads and buddy park")
 public class LM0BuddyPark3 extends LinearOpMode {
     private static List<LynxModule> allHubs;
@@ -128,7 +128,8 @@ public class LM0BuddyPark3 extends LinearOpMode {
 
         waitForStart();
 
-        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
+        Shooter.setHoodAngle(24);
+//        Turret.prime(); //Here to be safe on vibrations offsetting the turret and causing the internal PID to go
 
         TeleOp.afterAutoPose = startPos; //incase something goes wrong
         TeleOp.alliance = allianceColor;
@@ -139,8 +140,8 @@ public class LM0BuddyPark3 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-                                Shooter.autoSetTargetRPM(2900),
-                                Shooter.autoWaitForSpeed(50, 6),
+                                                                                                                                                                                Shooter.autoSetTargetRPM(2650),
+                                Shooter.autoWaitForSpeed(50, 7),
                                 Paths.wait(drive, delay),
                                 shootSequence,
 

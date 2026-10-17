@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.CustomActions;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
 import java.util.List;
 
+@Disabled
 @Autonomous(name = "Adaptive Auto (WIP) [ROBOT MOVES UPON INITIALIZATION]")
 public class LM1AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;

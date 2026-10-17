@@ -57,6 +57,25 @@ public class BallTunnel {
         opmode.telemetry.addData("Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
     }
 
+    public static void tempUpdate(boolean shooting, boolean ejecting, boolean on) {
+        if (shooting){
+            setFeederPower(transferPower);
+        } else {
+            if (ejecting) {
+                setFeederPower(ejectPower);
+            } else {
+                if (on) {
+                    setFeederPower(holdPower);
+                } else {
+                    setFeederPower(0.0);
+                }
+            }
+        }
+
+        opmode.telemetry.addData("Feeder Power", feederPower);
+        opmode.telemetry.addData("Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
+    }
+
     public static Action autoBalltunnelShoot() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
