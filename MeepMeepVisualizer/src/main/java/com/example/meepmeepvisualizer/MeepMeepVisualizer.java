@@ -23,7 +23,9 @@ public class MeepMeepVisualizer {
                 .build();
 
 
-        Pose2d startPos;
+
+        //Right Side pre+buddy park
+        /*Pose2d startPos;
         Pose2d preGardenPos;
         Pose2d gardenPos;
         Pose2d traversePos;
@@ -50,7 +52,7 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, startPos, preParkPos, driveSpeed), //get ready to ram
                         Paths.directPath(myBot, preParkPos, parkPos, ramSpeed) //to park
                 )
-        );
+        );*/
 
         //Left Side preloads + park w/ delay
         /*
@@ -76,7 +78,7 @@ public class MeepMeepVisualizer {
         );*/
 
         //LM0 8 Buddy Park
-        /*
+        ///*
         Pose2d startPos;
         Pose2d preGardenPos;
         Pose2d gardenPos;
@@ -86,7 +88,7 @@ public class MeepMeepVisualizer {
         Pose2d preParkPos;
         Pose2d parkPos;
 
-        int posMultiplier = 1;
+        int posMultiplier = -1;
 
         double driveSpeed = 60.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
@@ -124,7 +126,7 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, postShootPos2, preParkPos, driveSpeed), //get ready to ram
                         Paths.directPath(myBot, preParkPos, parkPos, ramSpeed) //to park
                 )
-        );*/
+        );//*/
 
 
         //LM1 Adaptive Auto
