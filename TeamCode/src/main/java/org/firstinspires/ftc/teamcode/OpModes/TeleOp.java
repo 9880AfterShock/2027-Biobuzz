@@ -30,7 +30,7 @@ import org.opencv.core.Mat;
 import java.io.IOException;
 import java.util.List;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="2027 TeleOp BIOBUZZ upload worked")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="2027 TeleOp BIOBUZZ")
 public class TeleOp extends LinearOpMode {
     public static boolean afterAuto;
     public static Pose2d afterAutoPose;
@@ -90,9 +90,12 @@ public class TeleOp extends LinearOpMode {
         BallGate.prime();
         Turret.prime();
         Shooter.prime();
+        Shooter.targetRPM = 2750.0;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
         double lastLoopTimestamp = 0.0;
+
+        double targetRPM = 2750;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -124,6 +127,15 @@ public class TeleOp extends LinearOpMode {
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
             boolean intakePivotOverride = gamepad2.a;
+
+            boolean fudgeUp = gamepad2.dpadUpWasPressed();
+            boolean fudgeDown = gamepad2.dpadDownWasPressed();
+            boolean resetRPM = gamepad2.dpadRightWasPressed();
+            boolean zeroRPM = gamepad2.dpadLeftWasPressed();
+            if (fudgeUp) { Shooter.targetRPM += 50; }
+            if (fudgeDown) { Shooter.targetRPM -= 50; }
+            if (resetRPM) { Shooter.targetRPM = 2750; }
+            if (zeroRPM) { Shooter.targetRPM = 0; }
 
 
 

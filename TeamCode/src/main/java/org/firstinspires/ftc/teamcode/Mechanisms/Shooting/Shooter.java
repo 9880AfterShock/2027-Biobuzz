@@ -24,15 +24,15 @@ public class Shooter {
     private static DcMotorEx flywheel;
     private static VoltageSensor hubVoltageSensor;
     private static Servo hoodAngleServo; //may need to split off a nectar one
-    private static Servo flywheelSlideServo;
-    private static Servo hoodSlideServo;
+//    private static Servo flywheelSlideServo;
+//    private static Servo hoodSlideServo;
     private static OpMode opmode;
     private static FeedForward pollenFFController;
     private static PID pollenPIDController;
     private static FeedForward nectarFFController;
     private static PID nectarPIDController;
     private static double shooterPower;
-    private static double targetRPM;
+    public static double targetRPM;
     private static double hoodAngle;
 //    public static double flywheelPollenPos = 0.0; //TODO: add final to all servo poses after tuned (and errorMargin)
 //    public static double hoodPollenPos = 0.0;
@@ -149,8 +149,8 @@ public class Shooter {
 
         opmode.telemetry.addData("Flywheel Power", shooterPower);
 //        opmode.telemetry.addData("Flywheel Amps", flywheel.getCurrent(CurrentUnit.AMPS));
-//        opmode.telemetry.addData("Hood Angle Position", hoodAngle);
-//        opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
+        opmode.telemetry.addData("Hood Angle Position", hoodAngle);
+        opmode.telemetry.addData("Hood Angle Degrees", hoodAngle / hoodRatio + hoodMin);
 //        opmode.telemetry.addData("Nectar Mode", nectar);
     }
 

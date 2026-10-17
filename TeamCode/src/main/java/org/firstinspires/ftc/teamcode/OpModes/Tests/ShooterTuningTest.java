@@ -9,8 +9,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
+import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
+import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 
 import java.util.List;
 
@@ -30,8 +33,11 @@ public class ShooterTuningTest extends LinearOpMode {
         LynxModule expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
 
         //Init Functions
-        Turret.init(this);
+//        Turret.init(this);
         Shooter.init(this);
+        BallTunnel.init(this);
+        Intake.init(this);
+        BallGate.init(this);
 
         waitForStart();
         runtime.reset();
@@ -41,7 +47,7 @@ public class ShooterTuningTest extends LinearOpMode {
             hub.clearBulkCache();
         }
 
-      //  Turret.prime();
+//        Turret.prime();
         Shooter.prime();
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
@@ -77,12 +83,16 @@ public class ShooterTuningTest extends LinearOpMode {
 
             targetRPM = Range.clip(targetRPM, 0, 6000);
 
-            if (gamepad1.right_trigger < 0.5) {
-                Shooter.setTargetRPM(targetRPM);
-            } else {
+            if (gamepad1.right_bumper) {
                 Shooter.setTargetRPM(0);
+            } else {
+                Shooter.setTargetRPM(targetRPM);
             }
             Shooter.update(deltaTime);
+
+            BallTunnel.update(gamepad1.right_trigger > 0, gamepad1.right_bumper);
+            Intake.update(gamepad1.left_trigger > 0.5, false, false);
+            BallGate.update(true);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
