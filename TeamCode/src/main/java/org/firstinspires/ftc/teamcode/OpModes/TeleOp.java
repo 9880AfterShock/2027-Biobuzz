@@ -129,13 +129,13 @@ public class TeleOp extends LinearOpMode {
 
             boolean intakePivotOverride = gamepad2.a;
 
-            boolean ballGate = gamepad2.b;
-            boolean ballTunnelReverse = gamepad2.x;
+            boolean ballGate = gamepad2.x;
+            boolean ballTunnelReverse = gamepad1.right_bumper;
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
-            boolean resetRPM = gamepad2.dpadRightWasPressed();
-            boolean zeroRPM = gamepad2.dpadLeftWasPressed();
+            boolean resetRPM = gamepad2.dpad_left;
+            boolean zeroRPM = gamepad2.b;
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = 2750; }

@@ -139,7 +139,7 @@ public class LM0BuddyPark3 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-                                Shooter.autoSetTargetRPM(2000),
+                                Shooter.autoSetTargetRPM(2900),
                                 Shooter.autoWaitForSpeed(50, 6),
                                 Paths.wait(drive, delay),
                                 shootSequence,

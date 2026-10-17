@@ -118,10 +118,10 @@ public class LM0LeftSide4 extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
-//                                Shooter.autoSetTargetRPM(2000),
+                                Shooter.autoSetTargetRPM(2900),
 
                                 Paths.wait(drive, delay),
-//                                shootSequence,
+                                shootSequence,
 
                                 Paths.tangentLinearPath(drive, startPos, posMultiplier*Math.toRadians(0.0), parkPos, posMultiplier*Math.toRadians(270.0), driveSpeed), //Park
 
