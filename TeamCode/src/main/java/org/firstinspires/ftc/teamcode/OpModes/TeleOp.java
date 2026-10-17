@@ -128,6 +128,8 @@ public class TeleOp extends LinearOpMode {
             boolean relocalize = gamepad1.back;
             boolean intakePivotOverride = gamepad2.a;
 
+            boolean ballTunnelReverse = gamepad2.x;
+
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpadRightWasPressed();
@@ -146,7 +148,7 @@ public class TeleOp extends LinearOpMode {
             Pinpoint.update(false);  //TODO: fix and make work
             Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) && !intakeButton);
 //            MatchLoader.update(matchLoaderButton);
-            BallTunnel.update(shootButton, gamepad1.x);
+            BallTunnel.update(shootButton, ballTunnelReverse);
             BallGate.update(false);
             Shooter.update(deltaTime);
 //            LEDs.update(tbd, runtime.seconds() > 110, runtime);
