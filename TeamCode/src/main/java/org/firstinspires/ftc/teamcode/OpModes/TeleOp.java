@@ -131,7 +131,7 @@ public class TeleOp extends LinearOpMode {
             boolean relocalize = gamepad1.back;
 
             boolean intakePivotOverride = gamepad2.a;
-            boolean intakePivotSwapDefault = gamepad1.bWasPressed();
+            boolean intakePivotSwapDefault = gamepad2.bWasPressed();
 
             boolean ballTunnelReverse = gamepad1.right_bumper;
 

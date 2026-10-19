@@ -117,6 +117,7 @@ public class Intake {
         opmode.telemetry.addData("Extended", extended);
         opmode.telemetry.addData("Intaking", intaking);
         opmode.telemetry.addData("Ejecting", ejecting);
+        opmode.telemetry.addData("Default Retract State", defaultRetractState);
 
         opmode.telemetry.addData("Lowered (Limit Switch)", lowered());
 
