@@ -35,6 +35,7 @@ public class TeleOp extends LinearOpMode {
     public static boolean afterAuto;
     public static Pose2d afterAutoPose;
     public static SideColor alliance;
+    public static boolean flywheelTimeoutCancel = false;
     public static List<LynxModule> allHubs;
 //    public static DualLogger dLogger;
 //    public static Logger logger;
@@ -142,10 +143,13 @@ public class TeleOp extends LinearOpMode {
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
-            if (zeroRPM || runtime.seconds() > 121) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
+            if (zeroRPM || ((runtime.seconds() > 121)&&!flywheelTimeoutCancel)) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
-
+            //flywheel timeout cancel for testing
+            if (gamepad1.dpad_down) {
+                flywheelTimeoutCancel = true;
+            }
 
 
             //Tick Functions
