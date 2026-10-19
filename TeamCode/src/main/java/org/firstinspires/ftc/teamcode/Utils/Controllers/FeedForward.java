@@ -11,7 +11,7 @@ public class FeedForward implements Controller {
     }
     @Override
     public double step(double target, double current, double deltaTime) {
-        if (target != 0) {
+        if (target == 0) {
             return (kS + kV * target) + kP * (target - current);
         } else {
             return 0;
