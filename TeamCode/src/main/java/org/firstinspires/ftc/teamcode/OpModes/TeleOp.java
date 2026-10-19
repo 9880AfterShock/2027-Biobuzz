@@ -127,11 +127,11 @@ public class TeleOp extends LinearOpMode {
 //            telemetry.update();
             dLogger.update();
         }
+        LEDs.turnOff();
         try {
             logger.write();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        LEDs.turnOff();
     }
 }
