@@ -132,7 +132,6 @@ public class TeleOp extends LinearOpMode {
 
             boolean intakePivotOverride = gamepad2.a;
 
-            boolean ballGate = gamepad2.x;
             boolean ballTunnelReverse = gamepad1.right_bumper;
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
@@ -144,8 +143,6 @@ public class TeleOp extends LinearOpMode {
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
             if (zeroRPM || runtime.seconds() > 121) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
-
-            boolean toggleBallGate = gamepad1.aWasPressed();
 
 
 
