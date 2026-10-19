@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import java.util.List;
 
-//@Disabled
+@Disabled
 @Autonomous(name = "3 Preloads and buddy park")
 public class LM0BuddyPark3 extends LinearOpMode {
     private static List<LynxModule> allHubs;

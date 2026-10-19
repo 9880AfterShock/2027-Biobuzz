@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Tests;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,7 +19,7 @@ import java.util.List;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="Test TeleOp")
-
+@Disabled
 public class TestTele extends LinearOpMode {
     public static List<LynxModule> allHubs;
 

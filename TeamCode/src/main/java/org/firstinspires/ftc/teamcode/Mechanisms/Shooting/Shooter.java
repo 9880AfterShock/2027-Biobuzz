@@ -78,7 +78,7 @@ public class Shooter {
     }
 
     public static void prime() {
-        hoodAngle = hoodMax; //reset incase already on min
+        hoodAngle = hoodMax; //reset in case variable is already on min
         setHoodAngle(hoodMin);
 
         shooterPower = 0.0;
@@ -138,7 +138,7 @@ public class Shooter {
         pollenPIDController.i = I;
         pollenPIDController.d = D;
 
-        setHoodAngle(hoodMax);
+        setHoodAngle(hoodMax); //Temp for static hood
 
         //TODO: Add logic for taking getTargetRPM() and running PID with setFlywheelPower()
         //TODO: Make it have 2 PIDS, one for pollen and one for nectar (switch based on the nectar boolean, and make sure switch is smooth and doesnt cause any issues if it swaps frequently). Nectar will always be false for now, so don't worry about tuning that yet

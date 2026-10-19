@@ -85,12 +85,15 @@ public class TeleOp extends LinearOpMode {
         }
 
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
-        Intake.forceExtend();
+        Intake.prime();
+        Intake.extend();
     //    MatchLoader.prime();
         BallGate.prime();
 //        Turret.prime();
         Shooter.prime();
-        Shooter.targetRPM = 2600.0;
+
+        double wallRPM = 2600; //TODO: remove just having a single RPM value and get an actual aiming system
+        Shooter.targetRPM = wallRPM;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
         double lastLoopTimestamp = 0.0;
@@ -138,8 +141,8 @@ public class TeleOp extends LinearOpMode {
             boolean zeroRPM = gamepad2.b;
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
-            if (resetRPM) { Shooter.targetRPM = 2600; }
-            if (zeroRPM) { Shooter.targetRPM = 0; }
+            if (resetRPM) { Shooter.targetRPM = wallRPM; }
+            if (zeroRPM || runtime.seconds() > 121) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
             boolean toggleBallGate = gamepad1.aWasPressed();
@@ -150,12 +153,12 @@ public class TeleOp extends LinearOpMode {
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(false);  //TODO: fix and make work later
-            Intake.update(intakeButton, ejectButton, (BallTunnel.full || intakePivotOverride) /*&& !intakeButton*/);
+            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
 //            MatchLoader.update(matchLoaderButton);
-            BallTunnel.tempUpdate(shootButton, ballTunnelReverse, intakeButton);
-            BallGate.tempUpdate(toggleBallGate);
+            BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
+            BallGate.update(shootButton);
             Shooter.update(deltaTime);
-//            LEDs.update(tbd, runtime.seconds() > 110, runtime);
+//            LEDs.update(tbd, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;

@@ -21,7 +21,8 @@ public class BallTunnel {
     public static double feederPower;
 
     public static double transferPower = 1.0;
-    public static double holdPower = 0.5; //to tune (and maybe the others here)
+    public static double intakingPower = 0.5; //to tune (and maybe the others here)
+    public static double holdPower = 0.0; //to tune (and maybe the others here)
     public static double ejectPower = -1.0;
 
     public static void init(OpMode opmode) {
@@ -42,38 +43,23 @@ public class BallTunnel {
         }
     }
 
-    public static void update(boolean shooting, boolean ejecting) {
+    public static void update(boolean shooting, boolean ejecting, boolean intaking) {
         if (shooting){
             setFeederPower(transferPower);
         } else {
             if (ejecting) {
                 setFeederPower(ejectPower);
             } else {
-                setFeederPower(holdPower);
-            }
-        }
-
-        opmode.telemetry.addData("Feeder Power", feederPower);
-        opmode.telemetry.addData("Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
-    }
-
-    public static void tempUpdate(boolean shooting, boolean ejecting, boolean on) {
-        if (shooting){
-            setFeederPower(transferPower);
-        } else {
-            if (ejecting) {
-                setFeederPower(ejectPower);
-            } else {
-                if (on) {
-                    setFeederPower(holdPower);
+                if (intaking){
+                    setFeederPower(intakingPower);
                 } else {
-                    setFeederPower(0.0);
+                    setFeederPower(holdPower);
                 }
             }
         }
 
-        opmode.telemetry.addData("Feeder Power", feederPower);
-        opmode.telemetry.addData("Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
+        opmode.telemetry.addData("Ball Tunnel Feeder Power", feederPower);
+        opmode.telemetry.addData("Ball Tunnel Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
     }
 
     public static Action autoBalltunnelShoot() {
@@ -85,6 +71,14 @@ public class BallTunnel {
         };
     }
 
+    public static Action autoBalltunnelIntake() {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setFeederPower(intakingPower);
+                return false;
+            }
+        };
+    }
     public static Action autoBalltunnelIdle() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {

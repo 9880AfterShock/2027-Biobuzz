@@ -22,7 +22,7 @@ public class BallGate {
     }
 
     public static void prime() {
-        gateServo.setPosition(openPos);
+        gateServo.setPosition(closedPos);
         open = false;
     }
 
@@ -47,20 +47,6 @@ public class BallGate {
             open();
         } else {
             close();
-        }
-
-        opmode.telemetry.addData("Shooter Gate Open", open);
-    }
-
-    public static void tempUpdate(boolean toggle) {
-        //TODO: make it go when shooter can fire and driver presses trigger, and then close when driver stops shooting or empty + cannot shoot
-
-        if (toggle) {
-            if (open){
-                close();
-            } else {
-                open();
-            }
         }
 
         opmode.telemetry.addData("Shooter Gate Open", open);

@@ -5,6 +5,7 @@ import android.service.autofill.FieldClassification;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 
 import java.util.List;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="SHOOTER RPM TESTING")
 public class ShooterTuningTest extends LinearOpMode {
     public static double targetRPM = 0.0;
@@ -90,7 +92,7 @@ public class ShooterTuningTest extends LinearOpMode {
             }
             Shooter.update(deltaTime);
 
-            BallTunnel.update(gamepad1.right_trigger > 0, gamepad1.right_bumper);
+//            BallTunnel.update(gamepad1.right_trigger > 0, gamepad1.right_bumper);
             Intake.update(gamepad1.left_trigger > 0.5, false, false);
             BallGate.update(true);
 

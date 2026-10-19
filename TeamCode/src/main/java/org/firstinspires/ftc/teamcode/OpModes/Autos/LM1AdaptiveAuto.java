@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
 import java.util.List;
 
-@Disabled
+//@Disabled
 @Autonomous(name = "Adaptive Auto (WIP) [ROBOT MOVES UPON INITIALIZATION]")
 public class LM1AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;
