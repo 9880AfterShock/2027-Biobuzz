@@ -35,7 +35,6 @@ public class TeleOp extends LinearOpMode {
     public static boolean afterAuto;
     public static Pose2d afterAutoPose;
     public static SideColor alliance;
-    public static boolean flywheelTimeoutCancel = false;
     public static List<LynxModule> allHubs;
 //    public static DualLogger dLogger;
 //    public static Logger logger;
@@ -99,8 +98,6 @@ public class TeleOp extends LinearOpMode {
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
         double lastLoopTimestamp = 0.0;
 
-        double targetRPM = 2750;
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             for (LynxModule hub : allHubs) { //Bulk read first thing
@@ -126,15 +123,14 @@ public class TeleOp extends LinearOpMode {
 
             boolean shootButton = gamepad1.right_trigger > 0.5;
 
-            boolean matchLoaderButton = gamepad1.a;
+            boolean matchLoaderButton = gamepad1.a; //TODO: switch to something on GP2
 
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
 
-            boolean intakePivotOverride = gamepad2.a;
-            boolean intakePivotSwapDefault = gamepad2.bWasPressed();
+            boolean intakePivotOverride = gamepad1.right_bumper;
 
-            boolean ballTunnelReverse = gamepad1.right_bumper;
+            boolean ballTunnelReverse = false; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
@@ -143,19 +139,13 @@ public class TeleOp extends LinearOpMode {
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
-            if (zeroRPM || ((runtime.seconds() > 121)&&!flywheelTimeoutCancel)) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
-
-
-            //flywheel timeout cancel for testing
-            if (gamepad1.dpad_down) {
-                flywheelTimeoutCancel = true;
-            }
+            if (zeroRPM || ((runtime.seconds() > 121))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(false);  //TODO: fix and make work later
-            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride), intakePivotSwapDefault);
+            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton);

@@ -67,7 +67,7 @@ public class TestTele extends LinearOpMode {
             //Tick Functions
             TestDrivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_trigger > 0.5, gamepad1.back);
 //            TestIntake.update(gamepad1.left_trigger > 0.5, gamepad1.left_bumper, gamepad1.right_bumper, true/*gamepad1.right_trigger > 0.5*/);
-            Intake.update(gamepad1.left_trigger > 0.5, gamepad1.left_bumper, gamepad1.right_bumper, false);
+            Intake.update(gamepad1.left_trigger > 0.5, gamepad1.left_bumper, gamepad1.right_bumper);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
