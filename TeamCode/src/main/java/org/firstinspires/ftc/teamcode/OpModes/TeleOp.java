@@ -131,13 +131,14 @@ public class TeleOp extends LinearOpMode {
             boolean relocalize = gamepad1.back;
 
             boolean intakePivotOverride = gamepad2.a;
+            boolean intakePivotSwapDefault = gamepad1.bWasPressed();
 
             boolean ballTunnelReverse = gamepad1.right_bumper;
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
-            boolean zeroRPM = gamepad2.b;
+            boolean zeroRPM = gamepad2.start;
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
@@ -150,7 +151,7 @@ public class TeleOp extends LinearOpMode {
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(false);  //TODO: fix and make work later
-            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
+            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride), intakePivotSwapDefault);
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton);

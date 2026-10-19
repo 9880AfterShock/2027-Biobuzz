@@ -25,6 +25,7 @@ public class Intake {
     private static boolean extended;
     private static double rollerPower;
     private static boolean enabled;
+    private static boolean defaultRetractState = false;
 
     public static final double startingPos = 0.8; //0.85 if we want to almost touch the side plates //maybe not anymore for the 0.85
     public static final double retractedPos = 0.4;
@@ -89,8 +90,11 @@ public class Intake {
         return limitSwitch.getState();
     }
 
-    public static void update(boolean intaking, boolean ejecting, boolean retract) {
-        if (!retract){
+    public static void update(boolean intaking, boolean ejecting, boolean modify, boolean toggleDefault) {
+        if (toggleDefault) {
+            defaultRetractState = !defaultRetractState;
+        }
+        if (modify ^ defaultRetractState){
             extend();
         } else{
             retract();
