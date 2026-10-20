@@ -125,14 +125,14 @@ public class TeleOp extends LinearOpMode {
 
             boolean shootButton = gamepad1.right_trigger > 0.5;
 
-            boolean matchLoaderButton = gamepad1.a; //TODO: switch to something on GP2
+            boolean matchLoaderButton = gamepad1.left_bumper;
 
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
 
-            boolean intakePivotOverride = gamepad1.right_bumper;
+            boolean intakePivotOverride = false; //TODO: figure out, GP2
 
-            boolean ballTunnelReverse = false; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
+            boolean ballTunnelReverse = gamepad1.a; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
