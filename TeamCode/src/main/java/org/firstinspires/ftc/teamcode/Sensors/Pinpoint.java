@@ -108,11 +108,16 @@ public class Pinpoint {
         return new Pose2d(x, y, heading);
     }
 
-    public static void update(boolean snap) {
+    public static void update(boolean snap, boolean originReset) {
         localizer.update();
         if (snap){
             setPose(snapPose(localizer.getPose()));
         }
+        if (originReset) {
+            setPose(new Pose2d(0.0, 0.0, 0.0));
+        }
+
+        opmode.telemetry.addData("PINPOINT Yaw SNAPPED heading",  (Math.round(localizer.getPose().heading.toDouble() / (Math.PI/2)) % 4) * (Math.PI/2));
 
         opmode.telemetry.addData("PINPOINT Yaw", Math.toDegrees(getYawRadians()));
         opmode.telemetry.addData("PINPOINT Yaw Offset Override", Math.toDegrees(yawOffsetOverride));
@@ -126,6 +131,8 @@ public class Pinpoint {
     public static void draw(TelemetryPacket packet) {
         packet.fieldOverlay().setStroke("#00ffee");
         Drawing.drawRobot(packet.fieldOverlay(), localizer.getPose());
+        packet.fieldOverlay().setStroke("#00FF00");
+        Drawing.drawRobot(packet.fieldOverlay(), snapPose(localizer.getPose()));
     }
 
     public static double normalize(double angle, double rotation){
