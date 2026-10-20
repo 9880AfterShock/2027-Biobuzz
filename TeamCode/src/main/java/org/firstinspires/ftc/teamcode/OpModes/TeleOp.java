@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.teamcode.Enums.LEDColor;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
@@ -69,7 +70,7 @@ public class TeleOp extends LinearOpMode {
         BallGate.init(this);
         Turret.init(this);
         Shooter.init(this);
-//        LEDs.init(this);
+        LEDs.init(this);
 //        Gyro.init(this);
 
         telemetry.addData("Status", "Initialized");
@@ -91,6 +92,7 @@ public class TeleOp extends LinearOpMode {
         BallGate.prime();
 //        Turret.prime();
         Shooter.prime();
+        LEDs.update(LEDColor.AMBER, false, runtime);
 
         double wallRPM = 2600; //TODO: remove just having a single RPM value and get an actual aiming system
         Shooter.targetRPM = wallRPM;
@@ -150,7 +152,7 @@ public class TeleOp extends LinearOpMode {
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton);
             Shooter.update(deltaTime);
-//            LEDs.update(tbd, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
@@ -162,7 +164,7 @@ public class TeleOp extends LinearOpMode {
             deltaTime = runtime.milliseconds() - lastLoopTimestamp;
             lastLoopTimestamp = runtime.milliseconds();
         }
-//        LEDs.turnOff();
+        LEDs.turnOff();
 //        try {
 //            logger.write();
 //        } catch (IOException e) {

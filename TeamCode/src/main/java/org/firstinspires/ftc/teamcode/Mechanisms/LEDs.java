@@ -39,14 +39,14 @@ public class LEDs {
     private static OpMode opmode;
 
     public static void init(OpMode opmode) { //TODO: this absurd config
-        frontLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDGreen"); //Port n on ___ hub
-        frontLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDRed"); //Port n+1 on ___ hub
-        frontRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDGreen"); //Port n on ___ hub
-        frontRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDRed"); //Port n+1 on ___ hub
-        backLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDGreen"); //Port n on ___ hub
-        backLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDRed"); //Port n+1 on ___ hub
-        backRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDGreen"); //Port n on ___ hub
-        backRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDRed"); //Port n+1 on ___ hub
+        frontLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDGreen"); //Port 2 on control hub
+        frontLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDRed"); //Port 3 on control hub
+        frontRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDGreen"); //Port 0 on expansion hub
+        frontRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDRed"); //Port 1 on expansion hub
+        backLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDGreen"); //Port 4 on control hub
+        backLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDRed"); //Port 5 on control hub
+        backRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDGreen"); //Port 2 on expansion hub
+        backRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDRed"); //Port 3 on expansion hub
 
         frontLeftLEDGreen.setMode(DigitalChannel.Mode.OUTPUT);
         frontLeftLEDRed.setMode(DigitalChannel.Mode.OUTPUT);
