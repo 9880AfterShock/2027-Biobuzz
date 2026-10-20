@@ -152,7 +152,15 @@ public class TeleOp extends LinearOpMode {
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton);
             Shooter.update(deltaTime);
-            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+//            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+
+            if (gamepad2.y) {
+                LEDs.update(LEDColor.GREEN, gamepad2.start, runtime);
+            } else if (gamepad2.x){
+                LEDs.update(LEDColor.RED, gamepad2.start, runtime);
+            } else {
+                LEDs.update(LEDColor.AMBER, gamepad2.start, runtime);
+            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;

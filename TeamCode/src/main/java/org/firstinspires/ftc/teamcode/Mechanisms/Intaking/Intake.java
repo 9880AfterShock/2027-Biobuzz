@@ -96,7 +96,7 @@ public class Intake {
             retract();
         }
 
-        setPivotPowered(!lowered()); //Disable servo at lowest point
+//        setPivotPowered(!lowered()); //Disable servo at lowest point
 
         //TODO: deadzone for nectar
 

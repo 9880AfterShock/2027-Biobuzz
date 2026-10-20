@@ -67,7 +67,7 @@ public class LEDs {
             LEDGreen.setState(newColor.greenPower());
         }
         if (newColor.redPower() != oldColor.redPower()) {
-            LEDGreen.setState(newColor.redPower());
+            LEDRed.setState(newColor.redPower());
         }
     }
 
