@@ -1,5 +1,6 @@
 package com.example.meepmeepvisualizer;
 
+import com.acmerobotics.roadrunner.InstantFunction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.noahbres.meepmeep.MeepMeep;
@@ -83,28 +84,26 @@ public class MeepMeepVisualizer {
         Pose2d preGardenPos;
         Pose2d gardenPos;
         Pose2d traversePos;
-        Pose2d shootPos2;
-        Pose2d postShootPos2;
+        Pose2d shootPosLeft;
+        Pose2d shootPosRight;
         Pose2d preParkPos;
         Pose2d parkPos;
 
-        int posMultiplier = -1;
+        int posMultiplier = 1;
 
         double driveSpeed = 60.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
-        double intakeSpeed = 5.0; //For pickup on garden
-        double shotTime = 4.0; //Very on safe side for now
+        double shotTime = 5.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
 
         startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
         preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
         gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
-        traversePos = new Pose2d(posMultiplier*36, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Avoid the hive
-        shootPos2 = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
+        shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
+        shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-12.7, posMultiplier*Math.toRadians(0.0)); //Same as start but intake is out now
 
-        postShootPos2 = new Pose2d(posMultiplier*-24, posMultiplier*-36, posMultiplier*Math.toRadians(180.0));
-        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posMultiplier*Math.toRadians(180.0));
-        parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(180.0));
+        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posMultiplier*Math.toRadians(0.0));
+        parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(0.0));
 
 
         myBot.runAction(
@@ -112,18 +111,20 @@ public class MeepMeepVisualizer {
                         Paths.wait(myBot, shotTime), //preloads, 1st tip
                         Paths.directPath(myBot, startPos, preGardenPos, driveSpeed),
                         //Intake On
-                        Paths.directPath(myBot, preGardenPos, gardenPos, intakeSpeed), //pickup garden
+                        Paths.directPath(myBot, preGardenPos, gardenPos, driveSpeed), //pickup garden
                         Paths.wait(myBot, intakeTime), //wait for vectoring
 
-                        Paths.directPath(myBot, gardenPos, traversePos, driveSpeed),
-                        Paths.directPath(myBot, traversePos, shootPos2, driveSpeed),
+                        Paths.directPath(myBot, gardenPos, shootPosRight, driveSpeed),
+
+                        //If hive is already tipped
+//                        Paths.directPath(myBot, shootPosRight, shootPosLeft, driveSpeed),
+
                         Paths.wait(myBot, shotTime), //half of 2nd tip
 
 
 
-                        //Buddy Park
-                        Paths.tangentLinearPath(myBot, shootPos2, posMultiplier*Math.toRadians(0.0), postShootPos2, posMultiplier*Math.toRadians(0.0), driveSpeed), //leave shooting
-                        Paths.directPath(myBot, postShootPos2, preParkPos, driveSpeed), //get ready to ram
+                        //Buddy Park from right side
+                        Paths.directPath(myBot, shootPosRight, preParkPos, driveSpeed), //get ready to ram
                         Paths.directPath(myBot, preParkPos, parkPos, ramSpeed) //to park
                 )
         );//*/
