@@ -65,6 +65,8 @@ public class Turret {
         //TODO: encoder tracking, abs and quad, read and reset and update
 
         //TODO: implement PID on setTurretPower using targetPos
+        opmode.telemetry.addData("Turret REV Current Ticks", turret.getCurrentPosition());
+
         opmode.telemetry.addData("Turret Target", targetPos);
         opmode.telemetry.addData("Turret Power", turretPower);
         opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));

@@ -111,7 +111,7 @@ public class Pinpoint {
     public static void update(boolean snap) {
         localizer.update();
         if (snap){
-            localizer.setPose(snapPose(localizer.getPose()));
+            setPose(snapPose(localizer.getPose()));
         }
 
         opmode.telemetry.addData("PINPOINT Yaw", Math.toDegrees(getYawRadians()));
