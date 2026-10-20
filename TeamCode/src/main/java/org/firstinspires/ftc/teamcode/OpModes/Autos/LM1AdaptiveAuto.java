@@ -227,16 +227,14 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                 ), allHubs
         );
 
-        //check vison
-
-        if (leftFlower) {
-            if (gardenSource) {
-
-            } else {
-
-            }
-
-        }
+//        if (leftFlower) {
+//            if (gardenSource) {
+//
+//            } else {
+//
+//            }
+//
+//        }
 
         TeleOp.afterAutoPose = drive.localizer.getPose(); //Feed ending pos to teleop
     }
