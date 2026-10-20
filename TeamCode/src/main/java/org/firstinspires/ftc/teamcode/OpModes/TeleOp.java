@@ -150,7 +150,8 @@ public class TeleOp extends LinearOpMode {
             Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
-            BallGate.update(shootButton);
+            BallGate.update(shootButton || ballTunnelReverse);
+            Turret.update();
             Shooter.update(deltaTime);
 //            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
 

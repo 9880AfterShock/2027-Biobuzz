@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.Enums;
 public enum LEDColor {
     GREEN(true, false, "Green"),
     RED(false, true, "Red"),
-    AMBER(true, true, "Amber"),
-    OFF(false, false, "Off");
+    AMBER(false, false, "Amber"),
+    OFF(true, true, "Off");
 
     private final boolean n;
     private final boolean nPlusOne;
