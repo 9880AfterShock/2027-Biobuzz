@@ -137,16 +137,16 @@ public class TeleOp extends LinearOpMode {
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
-            boolean zeroRPM = gamepad2.start;
+            boolean zeroRPM = false;//gamepad2.start; //TODO: find real bind, start is dangerous
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
-            if (zeroRPM || ((runtime.seconds() > 121))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
+            if (zeroRPM || ((runtime.seconds() > 121) && (runtime.seconds() < 122))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
-            Pinpoint.update(false);  //TODO: fix and make work later
+            Pinpoint.update(false, gamepad2.back);  //TODO: fix and make work later
             Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
