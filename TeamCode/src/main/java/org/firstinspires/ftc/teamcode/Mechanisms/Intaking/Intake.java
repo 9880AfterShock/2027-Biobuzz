@@ -119,7 +119,7 @@ public class Intake {
         opmode.telemetry.addData("Intake Roller Amps", roller.getCurrent(CurrentUnit.AMPS));
     }
 
-    public static Action autoIntakeDown() {
+    public static Action autoIntakeDown(boolean checkSwitch) {
         return new Action() {
             private boolean first = true;
             ElapsedTime timer = new ElapsedTime();;
@@ -130,7 +130,22 @@ public class Intake {
                 }
                 extend();
 //                setPivotPowered(!lowered());
-                return !lowered() && timer.seconds() <= 3.0; //Timeout, can change
+                return (!lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
+            }
+        };
+    }
+
+    public static Action autoIntakeUp(boolean checkSwitch) {
+        return new Action() {
+            private boolean first = true;
+            ElapsedTime timer = new ElapsedTime();;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    timer.reset();
+                    first = false;
+                }
+                retract();
+                return (lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
             }
         };
     }

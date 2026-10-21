@@ -14,6 +14,13 @@ public class Paths {
                 .splineToLinearHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
                 .build();
     }
+    public static Action directSplinePath(MecanumDrive drive, Pose2d startPos, Pose2d endPose, double minSpeed){
+        double tangent = Math.atan2(endPose.position.y - startPos.position.y, endPose.position.x - startPos.position.x);
+        return drive.actionBuilder(startPos)
+                .setTangent(tangent)
+                .splineToSplineHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
+                .build();
+    }
     public static Action tangentLinearPath(MecanumDrive drive, Pose2d startPos, double leaveTangent, Pose2d endPose, double arriveTangent, double minSpeed){ //Really just a shortcut for spline to linear
         return drive.actionBuilder(startPos)
                 .setTangent(leaveTangent)
