@@ -128,7 +128,7 @@ public class LM0LeftSide4 extends LinearOpMode {
 
                                 Paths.tangentLinearPath(drive, startPos, posMultiplier*Math.toRadians(0.0), parkPos, posMultiplier*Math.toRadians(270.0), driveSpeed), //Park
 
-                                Intake.autoIntakeDown() //To have ready for teleop
+                                Intake.autoIntakeDown(true) //To have ready for teleop
                         ),
                         tickFunctions
                 ), allHubs

@@ -19,6 +19,7 @@ public class Limelight {
     private static OpMode opmode;
     private static Limelight3A limelight;
     private static LLResult lastResult;
+    public static boolean hiveFacing = false;
     private static final double METER_TO_INCH = 39.3701;
 
     public static void initDetection(OpMode opmode) {
@@ -31,6 +32,8 @@ public class Limelight {
         limelight.start();
 
         Limelight.opmode = opmode;
+
+        hiveFacing = false;
     }
 
     public static void update(){
@@ -48,8 +51,7 @@ public class Limelight {
     }
 
     public static boolean hiveSideUp(SideColor alliance) {
-        LLResult result = limelight.getLatestResult();
-        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        List<LLResultTypes.FiducialResult> fiducials = lastResult.getFiducialResults();
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             if (alliance == SideColor.BLUE) {
                 if (fiducial.getFiducialId() <= 38 && fiducial.getFiducialId() >= 45) {
@@ -75,10 +77,11 @@ public class Limelight {
 
 
 
-    public static Action CheckTip(SideColor alliance, int checks) { //TODO: decide on action vs loop as it is in between blockings, if action decide on how to feed data
+    public static Action checkTip(SideColor alliance, int checks, int timeOut) { //checks vs time, whichever completes FIRST wins
         return new Action() {
             private boolean first = true;
             double scanTime;
+            int loops = 0;
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (first){
                     scanTime = opmode.getRuntime();
@@ -86,9 +89,31 @@ public class Limelight {
                 }
                 update();
                 if (hiveSideUp(alliance)) {
-                    boolean flipped = false;
+                    hiveFacing = true;
                 }
+                loops += 1;
+                return scanTime <= timeOut && loops <= checks;
+            }
+        };
+    }
+
+    public static Action setFacing(boolean facing) {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                hiveFacing = facing;
                 return false;
+            }
+        };
+    }
+
+    public static Action waitForTag(SideColor alliance) { //checks vs time, whichever completes FIRST wins
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                update();
+                if (hiveSideUp(alliance)) {
+                    hiveFacing = true;
+                }
+                return !hiveFacing;
             }
         };
     }

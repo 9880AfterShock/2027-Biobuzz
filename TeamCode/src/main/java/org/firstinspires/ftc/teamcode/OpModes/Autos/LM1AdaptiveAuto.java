@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
+import org.firstinspires.ftc.teamcode.Sensors.Vision.Limelight;
 
 import java.util.List;
 
@@ -75,6 +76,9 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         BallGate.init(this);
         Turret.init(this);
         Shooter.init(this);
+        if (useVision) {
+            Limelight.initDetection(this);
+        }
         LEDs.init(this);
 
         Intake.prime();
@@ -236,7 +240,23 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             );
         }
 
-        if (useVision) { //TODO: it check ALSO if the LL is reading no tags
+        boolean hiveClear;
+        if (useVision) { //Update LL to check for hive
+            CustomActions.runBlockingBulkRead(
+                    new RaceAction(
+                            new SequentialAction(
+                                    Limelight.setFacing(false),
+                                    Limelight.checkTip(allianceColor, 20, 3)
+                            ),
+                            tickFunctions
+                    ), allHubs
+            );
+            hiveClear = Limelight.hiveFacing;
+        } else {
+            hiveClear = false;
+        }
+
+        if (hiveClear) {
             currentSide = Side.LEFT;
             if (true) {  //TODO: check if we have time for this, if not just hold preloads and park (don't run this block)
                 CustomActions.runBlockingBulkRead(
@@ -252,6 +272,8 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                         ), allHubs
                 );
             }
+
+
         } else {
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
@@ -261,18 +283,37 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                             tickFunctions
                     ), allHubs
             );
-        }} //else { //LEFT SIDE
+        }} else { //LEFT SIDE
+
+
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new ParallelAction(
-                                Paths.wait(drive, delay),
+                                Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
                                 Shooter.autoWaitForSpeed(50, 4)
                         ),
                         tickFunctions
                 ), allHubs
         );
-        //TODO: Put actual LL logic here as well, make sure its useVision AND null reading after the time
-        if (useVision) {
+
+
+        boolean hiveClear;
+        if (useVision) { //Update LL to check for hive
+            CustomActions.runBlockingBulkRead(
+                    new RaceAction(
+                            new SequentialAction(
+                                    Limelight.setFacing(false),
+                                    Limelight.checkTip(allianceColor, 20, 3) //TODO: see above, get values
+                            ),
+                            tickFunctions
+                    ), allHubs
+            );
+            hiveClear = Limelight.hiveFacing;
+        } else {
+            hiveClear = false;
+        }
+
+        if (hiveClear) {
             currentSide = Side.RIGHT;
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
@@ -295,7 +336,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             );
         }
 
-        //}
+        }
 
 
         //Park
