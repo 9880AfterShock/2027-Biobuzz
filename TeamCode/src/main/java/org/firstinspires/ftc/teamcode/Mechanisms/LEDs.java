@@ -34,7 +34,7 @@ public class LEDs {
     private static LEDColor backLeftLED = LEDColor.OFF;
     private static LEDColor backRightLED = LEDColor.OFF;
 
-    private static double lastBlink = 0; //TODO: remove this temp solution for blinking all
+    private static double lastBlink = 0; //TODO: implement a real 5hz limit (game manual rule)
 
     private static OpMode opmode;
 
@@ -99,10 +99,14 @@ public class LEDs {
     }
 
     public static void update(LEDColor allColor, boolean blinking, ElapsedTime runtime) { //TODO: add more reading states, ex. blinking, cycling, spinning, ect.
-        setFrontLeftColor(allColor);
-        setFrontRightColor(allColor);
-        setBackLeftColor(allColor);
-        setBackRightColor(allColor);
+        if (blinking && runtime.seconds() - Math.floor(runtime.seconds()) < 0.5) { //blink at 2hz, 1st half of every second is off
+            turnOff();
+        } else {
+            setFrontLeftColor(allColor);
+            setFrontRightColor(allColor);
+            setBackLeftColor(allColor);
+            setBackRightColor(allColor);
+        }
 
         opmode.telemetry.addData("Front Left", frontLeftLED.state());
         opmode.telemetry.addData("Front Right", frontRightLED.state());
