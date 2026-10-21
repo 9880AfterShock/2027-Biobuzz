@@ -151,6 +151,9 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         }
 
         //Consts here
+        double startPosRPM = 2650;
+        double wallRPM = 2600;
+
         double driveSpeed = 60.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
         if (!buddyPark && startingSide == Side.RIGHT) { //Speed up right side park
@@ -217,9 +220,11 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new SequentialAction(
+                                Shooter.autoSetTargetRPM(startPosRPM),
                                 Shooter.autoWaitForSpeed(50, 4),
                                 shootSequence,
-                                Intake.autoIntakeDown(false)
+                                Intake.autoIntakeDown(false),
+                                Shooter.autoSetTargetRPM(wallRPM)
                         ),
                         tickFunctions
                 ), allHubs
@@ -289,6 +294,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         CustomActions.runBlockingBulkRead(
                 new RaceAction(
                         new ParallelAction(
+                                Shooter.autoSetTargetRPM(startPosRPM),
                                 Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
                                 Shooter.autoWaitForSpeed(50, 4)
                         ),
@@ -318,6 +324,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
                             new SequentialAction(
+                                    Shooter.autoSetTargetRPM(wallRPM),
                                     Paths.directPath(drive, shootPosLeft, rotatePosRight, driveSpeed),
                                     Paths.directSplinePath(drive, rotatePosRight, shootPosRight, driveSpeed),
                                     shootSequence
