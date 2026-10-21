@@ -90,20 +90,21 @@ public class MeepMeepVisualizer {
         Pose2d parkPos;
 
         int posMultiplier = 1;
+        double posRotation = Math.toRadians(90 - posMultiplier*90);
 
         double driveSpeed = 60.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
         double shotTime = 5.0; //Very on safe side for now
         double intakeTime = 3.0; //For garden
 
-        startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posMultiplier*Math.toRadians(0.0));
-        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
-        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posMultiplier*Math.toRadians(0.0));
-        shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posMultiplier*Math.toRadians(180.0)); //Opposite side of the field
-        shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-12.7, posMultiplier*Math.toRadians(0.0)); //Same as start but intake is out now
+        startPos = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
+        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
+        shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
+        shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-12.7, posRotation+Math.toRadians(0.0)); //Same as start but intake is out now
 
-        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posMultiplier*Math.toRadians(0.0));
-        parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posMultiplier*Math.toRadians(0.0));
+        preParkPos = new Pose2d(posMultiplier*24, posMultiplier*-48, posRotation+Math.toRadians(0.0));
+        parkPos = new Pose2d(posMultiplier*-25, posMultiplier*-60, posRotation+Math.toRadians(0.0));
 
 
         myBot.runAction(

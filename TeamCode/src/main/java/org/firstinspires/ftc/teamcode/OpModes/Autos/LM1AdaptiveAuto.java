@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import java.util.List;
 
 //@Disabled
-@Autonomous(name = "Adaptive Auto (WIP) [ROBOT MOVES UPON INITIALIZATION]")
+@Autonomous(name = "Adaptive Auto, Use Gamepad Input")
 public class LM1AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;
     //Currently no plan to ever disable preloads, this saves me work
@@ -37,8 +37,10 @@ public class LM1AdaptiveAuto extends LinearOpMode {
     private static Boolean partnerSource = false; //Picking up against the side of partner who cannot shoot, to be figured out
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
     private int posMultiplier = -1; //Default to blue because of red favored in bracket
+    private double posRotation = Math.toRadians(90 - posMultiplier*90);
     private static Boolean useVision = false; //Use vision to determine hive tips
     private static Boolean buddyPark = false;
+    private static Boolean rightSide = true; //Default to solo auto
     ElapsedTime runtime = new ElapsedTime();
 
     Pose2d startPos;
@@ -75,22 +77,29 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         LEDs.update(LEDColor.AMBER, false, runtime);
 
         double delay = 0;
-        posMultiplier = 1; //TODO: fix transforms here
 
         while (!isStopRequested() && !opModeIsActive()) {
             if (gamepad1.backWasPressed()) {
                 buddyPark = !buddyPark;
             }
 
-//            if (gamepad1.x){
-//                allianceColor = SideColor.BLUE;
-//                posMultiplier = -1;
-//
-//            }
-//            if (gamepad1.b){
-//                allianceColor = SideColor.RED;
-//                posMultiplier = 1;
-//            }
+            if (gamepad1.x){
+                allianceColor = SideColor.BLUE;
+                posMultiplier = -1;
+                posRotation = Math.toRadians(90 - posMultiplier*90);
+            }
+            if (gamepad1.b){
+                allianceColor = SideColor.RED;
+                posMultiplier = 1;
+                posRotation = Math.toRadians(90 - posMultiplier*90);
+            }
+
+            if (gamepad1.dpad_left){
+                rightSide = false;
+            }
+            if (gamepad1.dpad_right){
+                rightSide = true;
+            }
 
 //            if (gamepad1.dpadUpWasPressed()){
 //                delay += 1;
@@ -111,12 +120,20 @@ public class LM1AdaptiveAuto extends LinearOpMode {
 //                partnerSource = !partnerSource;
 //            }
 
+            telemetry.addData("Alliance Color (Press B or X)", allianceColor.getCapitalized());
+            telemetry.addLine();
+
+            if (rightSide){
+                telemetry.addLine("RIGHT Side Auto (DPAD to change)");
+            } else {
+                telemetry.addLine("LEFT Side Auto (DPAD to change)");
+            }
+            telemetry.addLine();
+
             telemetry.addData("Buddy Park (Toggle with back button)", buddyPark);
 
 //            telemetry.addData("Timer Delay before shooting", delay);
 
-//            telemetry.addData("Alliance Color (Press B or X)", allianceColor.getCapitalized());
-//            telemetry.addLine();
 //            telemetry.addLine("Intake Sources: (Use DPAD to toggle)");
 //            telemetry.addData("Garden (Up)", gardenSource);
 //            telemetry.addData("Left Flower (Left)", leftFlower);
