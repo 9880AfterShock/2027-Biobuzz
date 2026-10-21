@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Vision.Limelight;
 import java.util.List;
 
 //@Disabled
-@Autonomous(name = "Adaptive Auto LM!, (Use Gamepad Input)")
+@Autonomous(name = "Adaptive Auto LM1, (Use Gamepad Input)")
 public class LM1AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;
     //Currently no plan to ever disable preloads, this saves me work
@@ -41,8 +41,8 @@ public class LM1AdaptiveAuto extends LinearOpMode {
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
     private int posMultiplier = -1; //Default to blue because of red favored in bracket
     private double posRotation = Math.toRadians(90 - posMultiplier*90);
-    private static Boolean useVision = false; //Use vision to determine hive tips
-    private static Boolean buddyPark = false;
+    private static final Boolean useVision = false; //Use vision to determine hive tips
+    private static Boolean buddyPark = true;
     private static Side startingSide = Side.RIGHT; //Default to solo auto
     ElapsedTime runtime = new ElapsedTime();
 
@@ -165,8 +165,8 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         //Poses here
         startPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
         startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
-        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
+        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-65, posRotation+Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-65, posRotation+Math.toRadians(0.0));
         shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
         shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-12.7, posRotation+Math.toRadians(0.0)); //Same as start but intake is out now
         rotatePosRight = new Pose2d(posMultiplier*40, posMultiplier*-12.7, posRotation+Math.toRadians(180.0));
@@ -200,6 +200,13 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                 BallTunnel.autoBalltunnelIdle()
         );
 
+        Action shootSequence2 = new SequentialAction(
+                BallGate.autoOpen(),
+                BallTunnel.autoBalltunnelShoot(),
+                Paths.wait(drive, shotTime), //Hardcoded wait for shooting rn
+                BallGate.autoClose(),
+                BallTunnel.autoBalltunnelIdle()
+        );
 
 
 
@@ -208,6 +215,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         Side currentSide = startingSide;
 
         Shooter.setHoodAngle(24);
+        LEDs.update(LEDColor.GREEN, false, runtime);
         runtime.reset();
 
         TeleOp.afterAutoPose = drive.localizer.getPose(); //incase something goes wrong
@@ -235,7 +243,9 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                         new SequentialAction(
                                 Intake.autoIntakeOn(),
+                                BallTunnel.autoBalltunnelIntake(),
                                 Paths.directPath(drive, startPosRight, preGardenPos, driveSpeed),
+                                Paths.directPath(drive, preGardenPos, gardenPos, driveSpeed),
                                 Paths.wait(drive, intakeTime),
                                 Intake.autoIntakeOff(),
                                 Paths.directPath(drive, gardenPos, shootPosRight, driveSpeed)
@@ -271,19 +281,18 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                                         Paths.directSplinePath(drive, shootPosRight, rotatePosRight, driveSpeed),
                                         Paths.directPath(drive, rotatePosRight, shootPosLeft, driveSpeed),
 //                                    Intake.autoIntakeDown(false) //DISABLING for now, we want to keep intake up incase balls gather
-                                        shootSequence
+                                        shootSequence2
                                 ),
                                 tickFunctions
                         ), allHubs
                 );
             }
 
-
         } else {
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
                             new SequentialAction(
-                                    shootSequence
+                                    shootSequence2
                             ),
                             tickFunctions
                     ), allHubs
@@ -383,6 +392,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                 );
             }
         }
+        LEDs.update(LEDColor.RED, false, runtime);
 
 //        if (leftFlower) {
 //            if (gardenSource) {
