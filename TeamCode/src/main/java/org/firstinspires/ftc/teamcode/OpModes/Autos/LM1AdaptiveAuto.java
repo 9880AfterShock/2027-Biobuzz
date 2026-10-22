@@ -299,17 +299,35 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             );
         }} else { //LEFT SIDE
 
-
-        CustomActions.runBlockingBulkRead(
-                new RaceAction(
-                        new ParallelAction(
-                                Shooter.autoSetTargetRPM(startPosRPM),
-                                Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
-                                Shooter.autoWaitForSpeed(50, 4)
-                        ),
-                        tickFunctions
-                ), allHubs
-        );
+        if (useVision) {
+            CustomActions.runBlockingBulkRead(
+                    new RaceAction(
+                            new ParallelAction(
+                                    Shooter.autoSetTargetRPM(startPosRPM),
+                                    new RaceAction(
+                                            Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
+                                            new SequentialAction(
+                                                    Limelight.waitForTag(allianceColor),
+                                                    Paths.wait(drive, 2) //Because we see tags about 1 sec early, being safe
+                                            )
+                                    ),
+                                    Shooter.autoWaitForSpeed(50, 4)
+                            ),
+                            tickFunctions
+                    ), allHubs
+            );
+        } else {
+            CustomActions.runBlockingBulkRead(
+                    new RaceAction(
+                            new ParallelAction(
+                                    Shooter.autoSetTargetRPM(startPosRPM),
+                                    Paths.wait(drive, delay),
+                                    Shooter.autoWaitForSpeed(50, 0.5)
+                            ),
+                            tickFunctions
+                    ), allHubs
+            );
+        }
 
 
         boolean hiveClear;
@@ -318,7 +336,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                             new SequentialAction(
                                     Limelight.setFacing(false),
-                                    Limelight.checkTip(allianceColor, 20, 3) //TODO: see above, get values
+                                    Limelight.checkTip(allianceColor, 20, 2) //TODO: see above, get values
                             ),
                             tickFunctions
                     ), allHubs
@@ -334,7 +352,8 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                             new SequentialAction(
                                     Shooter.autoSetTargetRPM(wallRPM),
-                                    Paths.directPath(drive, shootPosLeft, rotatePosRight, driveSpeed),
+                                    Intake.autoIntakeUp(false),
+                                    Paths.directPath(drive, shootPosLeft, rotatePosRight, driveSpeed), //TODO: make it just park if there isnt time to go cross-field
                                     Paths.directSplinePath(drive, rotatePosRight, shootPosRight, driveSpeed),
                                     shootSequence
                             ),
@@ -368,28 +387,54 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                     ), allHubs
             );
         } else {
-            if (buddyPark) {
-                CustomActions.runBlockingBulkRead(
-                        new RaceAction(
-                                new SequentialAction(
-                                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-                                        Intake.autoIntakeDown(false),
-                                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
-                                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
-                                ),
-                                tickFunctions
-                        ), allHubs
-                );
+            if (startingSide == Side.LEFT) {
+                if (buddyPark) {
+                    CustomActions.runBlockingBulkRead(
+                            new RaceAction(
+                                    new SequentialAction(
+                                            Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+                                            Intake.autoIntakeDown(false),
+                                            Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
+                                            Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
+                                    ),
+                                    tickFunctions
+                            ), allHubs
+                    );
+                } else {
+                    CustomActions.runBlockingBulkRead(
+                            new RaceAction(
+                                    new SequentialAction(
+                                            Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+                                            Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
+                                    ),
+                                    tickFunctions
+                            ), allHubs
+                    );
+                }
             } else {
-                CustomActions.runBlockingBulkRead(
-                        new RaceAction(
-                                new SequentialAction(
-                                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-                                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
-                                ),
-                                tickFunctions
-                        ), allHubs
-                );
+                if (buddyPark) {
+                    CustomActions.runBlockingBulkRead(
+                            new RaceAction(
+                                    new SequentialAction(
+                                            Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+                                            Intake.autoIntakeDown(false),
+                                            Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
+                                            Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
+                                    ),
+                                    tickFunctions
+                            ), allHubs
+                    );
+                } else {
+                    CustomActions.runBlockingBulkRead(
+                            new RaceAction(
+                                    new SequentialAction(
+                                            Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+                                            Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
+                                    ),
+                                    tickFunctions
+                            ), allHubs
+                    );
+                }
             }
         }
         LEDs.update(LEDColor.RED, false, runtime);

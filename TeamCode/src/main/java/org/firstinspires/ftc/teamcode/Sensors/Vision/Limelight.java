@@ -92,7 +92,7 @@ public class Limelight {
                     hiveFacing = true;
                 }
                 loops += 1;
-                return scanTime <= timeOut && loops <= checks;
+                return (scanTime <= timeOut && loops <= checks) && !hiveFacing;
             }
         };
     }
