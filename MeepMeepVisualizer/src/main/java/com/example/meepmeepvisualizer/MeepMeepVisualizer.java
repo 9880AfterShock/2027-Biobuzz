@@ -94,7 +94,7 @@ public class MeepMeepVisualizer {
         Pose2d preParkPosLeft;
         Pose2d parkPosLeft;
 
-        int posMultiplier = 1;
+        int posMultiplier = -1;
         double posRotation = Math.toRadians(90 - posMultiplier*90);
 
         double driveSpeed = 60.0; //Probably max we can do
@@ -119,7 +119,7 @@ public class MeepMeepVisualizer {
 
         myBot.runAction(
                 new SequentialAction(
-                        /*RIGHT START
+//                        /*RIGHT START
                         Paths.wait(myBot, shotTime), //preloads, 1st tip
                         Paths.directPath(myBot, startPosRight, preGardenPos, driveSpeed),
                         //Intake On
@@ -134,7 +134,7 @@ public class MeepMeepVisualizer {
 
                         Paths.wait(myBot, shotTime), //half of 2nd tip
                         //RIGHT END */
-//                        /*LEFT START
+                        /*LEFT START
                         //Wait for delay, check LL to see if partner worked
                         //if partner failed
                         Paths.directPath(myBot, shootPosLeft, rotatePosRight, driveSpeed), //Left intake, avoid picking up from 1st pick
@@ -145,17 +145,17 @@ public class MeepMeepVisualizer {
                         //LEFT END*/
 
                         //Park from left side
-//                        Paths.tangentLinearPath(myBot, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed), //leave shooting
+                        Paths.tangentLinearPath(myBot, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed), //leave shooting
                         //With Buddy Park
-//                        Paths.directPath(myBot, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
-//                        Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed) //to park
+                        Paths.directPath(myBot, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
+                        Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed) //to park
                         //Without
 //                        Paths.tangentLinearPath(myBot, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed) //At push speed to be safe, if partner takes up a lot of the zone
 
 
                         //Buddy Park from right side (Without is just a slower speed
-                        Paths.directPath(myBot, shootPosRight, preParkPosRight, driveSpeed), //get ready to ram
-                        Paths.directPath(myBot, preParkPosRight, parkPosRight, ramSpeed) //to park
+//                        Paths.directPath(myBot, shootPosRight, preParkPosRight, driveSpeed), //get ready to ram
+//                        Paths.directPath(myBot, preParkPosRight, parkPosRight, ramSpeed) //to park
                 )
         );//*/
 

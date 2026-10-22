@@ -94,7 +94,7 @@ public class TeleOp extends LinearOpMode {
         Shooter.prime();
         LEDs.update(LEDColor.AMBER, false, runtime);
 
-        double wallRPM = 2600; //TODO: remove just having a single RPM value and get an actual aiming system
+        double wallRPM = 2650; //TODO: remove just having a single RPM value and get an actual aiming system
         Shooter.targetRPM = wallRPM;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be

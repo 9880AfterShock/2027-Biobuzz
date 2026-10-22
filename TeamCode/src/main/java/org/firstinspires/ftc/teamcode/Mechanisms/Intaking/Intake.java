@@ -144,7 +144,7 @@ public class Intake {
                     timer.reset();
                     first = false;
                 }
-                retract();
+                prime();
                 return (lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
             }
         };

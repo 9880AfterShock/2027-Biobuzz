@@ -158,22 +158,22 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         }
 
         //Consts here
-        double startPosRPM = 2650;
-        double wallRPM = 2600;
+        double startPosRPM = 2700;
+        double wallRPM = 2650;
 
         double driveSpeed = 60.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
         if (!buddyPark && startingSide == Side.RIGHT) { //Speed up right side park
             ramSpeed = driveSpeed;
         }
-        double shotTime = 5.0; //Very on safe side for now
+        double shotTime = 3.0; //Playing more dangerous
         double intakeTime = 3.0; //For garden
 
         //Poses here
         startPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
         startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-65, posRotation+Math.toRadians(0.0));
-        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-65, posRotation+Math.toRadians(0.0));
+        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
         shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
         shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-12.7, posRotation+Math.toRadians(0.0)); //Same as start but intake is out now
         rotatePosRight = new Pose2d(posMultiplier*40, posMultiplier*-12.7, posRotation+Math.toRadians(180.0));
@@ -245,7 +245,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                 ), allHubs
         );
 
-        if (gardenSource){
+        if (gardenSource){ //RN a given. IDK what happens if this is false ATM
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
                         new SequentialAction(
@@ -268,7 +268,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                             new SequentialAction(
                                     Limelight.setFacing(false),
-                                    Limelight.checkTip(allianceColor, 20, 3)
+                                    Limelight.checkTip(allianceColor, 60, 3)
                             ),
                             tickFunctions
                     ), allHubs
