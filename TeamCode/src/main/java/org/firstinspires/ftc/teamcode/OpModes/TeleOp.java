@@ -130,7 +130,7 @@ public class TeleOp extends LinearOpMode {
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
 
-            boolean intakePivotOverride = false; //TODO: figure out, GP2
+            boolean intakePivotOverride = gamepad2.a; //TODO: toggle
 
             boolean ballTunnelReverse = gamepad1.a; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
 
@@ -153,7 +153,12 @@ public class TeleOp extends LinearOpMode {
             BallGate.update(shootButton || ballTunnelReverse);
             Turret.update();
             Shooter.update(deltaTime);
-            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+//            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+            if (runtime.seconds() > 110) {
+                LEDs.update(LEDColor.RED, true, runtime); //Flash at last 10 sec for parking reminder
+            } else {
+                LEDs.update(LEDColor.GREEN, false, runtime); //Flash at last 10 sec for parking reminder
+            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
