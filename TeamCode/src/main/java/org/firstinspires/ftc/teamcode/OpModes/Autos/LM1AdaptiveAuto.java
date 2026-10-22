@@ -41,7 +41,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
     private int posMultiplier = -1; //Default to blue because of red favored in bracket
     private double posRotation = Math.toRadians(90 - posMultiplier*90);
-    private static final Boolean useVision = false; //Use vision to determine hive tips
+    private static Boolean useVision = true; //Use vision to determine hive tips
     private static Boolean buddyPark = true;
     private static Side startingSide = Side.RIGHT; //Default to solo auto
     ElapsedTime runtime = new ElapsedTime();
@@ -76,9 +76,9 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         BallGate.init(this);
         Turret.init(this);
         Shooter.init(this);
-        if (useVision) {
+//        if (useVision) {
             Limelight.initDetection(this);
-        }
+//        }
         LEDs.init(this);
 
         Intake.prime();
@@ -92,6 +92,10 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         while (!isStopRequested() && !opModeIsActive()) {
             if (gamepad1.backWasPressed()) {
                 buddyPark = !buddyPark;
+            }
+
+            if (gamepad1.yWasPressed()) {
+                useVision = !useVision;
             }
 
             if (gamepad1.x){
@@ -136,6 +140,9 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             telemetry.addLine();
 
             telemetry.addData("Auto Side (DPAD to change)", startingSide.getCapitalized());
+            telemetry.addLine();
+
+            telemetry.addData("Use vision to check tips (Toggle with Y)", useVision);
             telemetry.addLine();
 
             telemetry.addData("Buddy Park (Toggle with back button)", buddyPark);
