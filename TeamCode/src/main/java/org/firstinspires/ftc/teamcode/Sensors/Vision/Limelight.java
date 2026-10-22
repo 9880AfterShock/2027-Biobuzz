@@ -54,11 +54,11 @@ public class Limelight {
         List<LLResultTypes.FiducialResult> fiducials = lastResult.getFiducialResults();
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             if (alliance == SideColor.BLUE) {
-                if (fiducial.getFiducialId() <= 38 && fiducial.getFiducialId() >= 45) {
+                if (fiducial.getFiducialId() >= 38 && fiducial.getFiducialId() <= 45) {
                     return true;
                 }
             } else {
-                if (fiducial.getFiducialId() <= 30 && fiducial.getFiducialId() >= 37) {
+                if (fiducial.getFiducialId() >= 30 && fiducial.getFiducialId() <= 37) {
                     return true;
                 }
             }

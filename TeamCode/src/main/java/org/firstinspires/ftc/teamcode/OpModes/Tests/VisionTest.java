@@ -58,7 +58,7 @@ public class VisionTest extends LinearOpMode {
             //Tick Functions
             Limelight.update();
             telemetry.addData("Seeing RED tags", Limelight.hiveSideUp(SideColor.RED));
-            telemetry.addData("Seeing BLUE tags", Limelight.hiveSideUp(SideColor.RED));
+            telemetry.addData("Seeing BLUE tags", Limelight.hiveSideUp(SideColor.BLUE));
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
