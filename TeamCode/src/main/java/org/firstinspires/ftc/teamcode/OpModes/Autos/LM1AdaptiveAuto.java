@@ -287,14 +287,15 @@ public class LM1AdaptiveAuto extends LinearOpMode {
 
         if (!missedTip) {
             currentSide = Side.LEFT;
-            if (true) {  //TODO: check if we have time for this, if not just hold preloads and park (don't run this block)
+            if (true) {  //TODO: check if we have time for this, if not just hold preloads and park (don't run this block) (we usually have time right now even with buddy park)
                 CustomActions.runBlockingBulkRead(
                         new RaceAction(
                                 new SequentialAction(
-//                                        Intake.autoIntakeUp(false),
+//                                        Intake.autoIntakeUp(false), //Raise up to avoid over possession
                                         Paths.directSplinePath(drive, shootPosRight, rotatePosRight, driveSpeed),
                                         Paths.directPath(drive, rotatePosRight, shootPosLeft, driveSpeed),
-//                                    Intake.autoIntakeDown(false) //DISABLING for now, we want to keep intake up incase balls gather
+                                        Intake.autoIntakeUp(false), //Raise up to avoid over possession
+//                                    Intake.autoIntakeDown(false) //DISABLING for now, we want to keep intake up in case balls gather
                                         shootSequence2
                                 ),
                                 tickFunctions

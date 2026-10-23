@@ -131,13 +131,14 @@ public class TeleOp extends LinearOpMode {
             boolean relocalize = gamepad1.back;
 
             boolean intakePivotOverride = gamepad2.a; //TODO: toggle
+            boolean depowerIntake = gamepad2.bWasPressed();
 
             boolean ballTunnelReverse = gamepad1.a; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
-            boolean zeroRPM = false;//gamepad2.start; //TODO: find real bind, start is dangerous
+            boolean zeroRPM = gamepad2.backWasPressed();
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
@@ -147,7 +148,7 @@ public class TeleOp extends LinearOpMode {
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(false, gamepad2.back);  //TODO: fix and make work later
-            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
+            Intake.update(intakeButton, ejectButton, /*BallTunnel.full || */intakePivotOverride, depowerIntake);
             MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton || ballTunnelReverse);

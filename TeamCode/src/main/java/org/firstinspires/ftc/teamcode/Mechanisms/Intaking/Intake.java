@@ -25,6 +25,7 @@ public class Intake {
     private static boolean extended;
     private static double rollerPower;
     private static boolean enabled;
+    private static boolean dropIntake;
 
     public static final double startingPos = 0.8; //0.85 if we want to almost touch the side plates //maybe not anymore for the 0.85
     public static final double retractedPos = 0.4;
@@ -45,6 +46,7 @@ public class Intake {
         roller.setPower(0.0);
 
         Intake.opmode = opmode;
+        dropIntake = false;
     }
 
     public static void prime(){
@@ -89,11 +91,15 @@ public class Intake {
         return limitSwitch.getState();
     }
 
-    public static void update(boolean intaking, boolean ejecting, boolean retract) {
+    public static void update(boolean intaking, boolean ejecting, boolean retract, boolean depower) {
         if (!retract){
             extend();
         } else{
             retract();
+        }
+
+        if (depower) {
+            dropIntake = !dropIntake;
         }
 
 //        setPivotPowered(!lowered()); //Disable servo at lowest point
@@ -108,6 +114,7 @@ public class Intake {
             } else {
                 setRollerPower(idlePower);
             }
+            setPivotPowered(dropIntake);
         }
 
         opmode.telemetry.addData("Extended", extended);
@@ -144,7 +151,7 @@ public class Intake {
                     timer.reset();
                     first = false;
                 }
-                prime();
+                retract();
                 return (lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
             }
         };

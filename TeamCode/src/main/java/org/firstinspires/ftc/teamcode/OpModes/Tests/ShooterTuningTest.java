@@ -93,7 +93,7 @@ public class ShooterTuningTest extends LinearOpMode {
             Shooter.update(deltaTime);
 
 //            BallTunnel.update(gamepad1.right_trigger > 0, gamepad1.right_bumper);
-            Intake.update(gamepad1.left_trigger > 0.5, false, false);
+            Intake.update(gamepad1.left_trigger > 0.5, false, false, false);
             BallGate.update(true);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
