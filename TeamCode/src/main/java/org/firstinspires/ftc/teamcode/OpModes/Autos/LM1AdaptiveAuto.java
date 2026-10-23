@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autos;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -63,6 +65,9 @@ public class LM1AdaptiveAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        //Dashboard Telem
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -262,7 +267,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             );
         }
 
-        boolean hiveClear;
+        boolean missedTip; //Is the hive facing us still
         if (useVision) { //Update LL to check for hive
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
@@ -273,12 +278,14 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                             tickFunctions
                     ), allHubs
             );
-            hiveClear = Limelight.hiveFacing;
+            missedTip = Limelight.hiveFacing;
         } else {
-            hiveClear = false;
+            missedTip = true;
         }
+        telemetry.addData("Missed Tip", missedTip);
+        telemetry.update();
 
-        if (hiveClear) {
+        if (!missedTip) {
             currentSide = Side.LEFT;
             if (true) {  //TODO: check if we have time for this, if not just hold preloads and park (don't run this block)
                 CustomActions.runBlockingBulkRead(
@@ -298,9 +305,10 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         } else {
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
-                            new SequentialAction(
-                                    shootSequence2
-                            ),
+                            shootSequence2, //TEMP to see if this works better
+//                            new SequentialAction(
+//                                    shootSequence2
+//                            ),
                             tickFunctions
                     ), allHubs
             );
@@ -337,7 +345,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         }
 
 
-        boolean hiveClear;
+        boolean missedTip;
         if (useVision) { //Update LL to check for hive
             CustomActions.runBlockingBulkRead(
                     new RaceAction(
@@ -348,12 +356,14 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                             tickFunctions
                     ), allHubs
             );
-            hiveClear = Limelight.hiveFacing;
+            missedTip = Limelight.hiveFacing;
         } else {
-            hiveClear = false;
+            missedTip = true;
         }
+        telemetry.addData("Hive Clear", missedTip);
+        telemetry.update();
 
-        if (hiveClear) {
+        if (!missedTip) {
             currentSide = Side.RIGHT;
             CustomActions.runBlockingBulkRead(
                     new RaceAction(

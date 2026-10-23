@@ -45,7 +45,7 @@ public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Below is for if you want FTC dashboard telemetry
-//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 //        logger = new Logger(this,"TeleOP");
 //        dLogger = new DualLogger(logger, this.telemetry);
