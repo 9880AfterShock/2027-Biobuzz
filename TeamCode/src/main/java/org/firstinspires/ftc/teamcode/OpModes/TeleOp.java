@@ -65,7 +65,7 @@ public class TeleOp extends LinearOpMode {
         Drivetrain.init(this);
         Pinpoint.init(this, this.hardwareMap, afterAutoPose);
         Intake.init(this);
-//        MatchLoader.init(this);
+        MatchLoader.init(this);
         BallTunnel.init(this);
         BallGate.init(this);
         Turret.init(this);
@@ -88,7 +88,7 @@ public class TeleOp extends LinearOpMode {
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
         Intake.prime();
         Intake.extend();
-    //    MatchLoader.prime();
+        MatchLoader.prime();
         BallGate.prime();
 //        Turret.prime();
         Shooter.prime();
@@ -148,7 +148,7 @@ public class TeleOp extends LinearOpMode {
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(false, gamepad2.back);  //TODO: fix and make work later
             Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride));
-//            MatchLoader.update(matchLoaderButton);
+            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton || ballTunnelReverse);
             Turret.update();
