@@ -105,14 +105,14 @@ public class MeepMeepVisualizer {
         startPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
         startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
         preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
-        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-65, posRotation+Math.toRadians(0.0));
         shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-        shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-12.7, posRotation+Math.toRadians(0.0)); //Same as start but intake is out now
-        rotatePosRight = new Pose2d(posMultiplier*40, posMultiplier*-12.7, posRotation+Math.toRadians(180.0));
+        shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-10, posRotation+Math.toRadians(0.0)); //Same as start but intake is out now
+        rotatePosRight = new Pose2d(posMultiplier*40, posMultiplier*-10, posRotation+Math.toRadians(180.0));
 
         preParkPosRight = new Pose2d(posMultiplier*24, posMultiplier*-48, posRotation+Math.toRadians(0.0));
         parkPosRight = new Pose2d(posMultiplier*-25, posMultiplier*-60, posRotation+Math.toRadians(0.0));
-        clearPosLeft = new Pose2d(posMultiplier*-24, posMultiplier*-36, posRotation+Math.toRadians(180.0));
+        clearPosLeft = new Pose2d(posMultiplier*-24, posMultiplier*-40, posRotation+Math.toRadians(180.0));
         preParkPosLeft = new Pose2d(posMultiplier*24, posMultiplier*-48, posRotation+Math.toRadians(180.0));
         parkPosLeft = new Pose2d(posMultiplier*-25, posMultiplier*-60, posRotation+Math.toRadians(180.0));
 
