@@ -13,7 +13,7 @@ public class MatchLoader {
     private static Servo matchLoaderServo;
     private static OpMode opmode;
     public static boolean deployed;
-    public static double retractedPos = 0.0;
+    public static double retractedPos = 0.4;
     public static double deployedPos = 1.0;
 
     public static void init(OpMode opmode) {

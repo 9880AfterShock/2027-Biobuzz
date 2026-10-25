@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Enums.Side;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.Intake;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
+import org.firstinspires.ftc.teamcode.Mechanisms.Intaking.MatchLoader;
 import org.firstinspires.ftc.teamcode.Mechanisms.LEDs;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
@@ -76,7 +77,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
 
         //Init
         Intake.init(this);
-//        MatchLoader.init(this);
+        MatchLoader.init(this);
         BallTunnel.init(this);
         BallGate.init(this);
         Turret.init(this);
@@ -89,7 +90,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
         Intake.prime();
         BallGate.prime();
         Shooter.prime();
-//        MatchLoader.prime();
+        MatchLoader.prime();
         LEDs.update(LEDColor.AMBER, false, runtime);
 
         double delay = 0;

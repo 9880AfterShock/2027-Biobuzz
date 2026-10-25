@@ -125,7 +125,7 @@ public class TeleOp extends LinearOpMode {
 
             boolean shootButton = gamepad1.right_trigger > 0.5;
 
-            boolean matchLoaderButton = gamepad1.left_bumper;
+            boolean matchLoaderButton = gamepad1.right_bumper;
 
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
