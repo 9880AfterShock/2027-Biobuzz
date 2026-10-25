@@ -360,7 +360,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
             );
             missedTip = Limelight.hiveFacing;
         } else {
-            missedTip = true;
+            missedTip = false;
         }
         telemetry.addData("Hive Clear", missedTip);
         telemetry.update();

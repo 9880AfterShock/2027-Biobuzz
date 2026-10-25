@@ -92,14 +92,15 @@ public class Intake {
     }
 
     public static void update(boolean intaking, boolean ejecting, boolean retract, boolean depower) {
-        if (!retract){
-            extend();
-        } else{
-            retract();
-        }
-
         if (depower) {
             dropIntake = !dropIntake;
+        }
+
+        if (!retract){
+            extend();
+            setPivotPowered(dropIntake);
+        } else{
+            retract();
         }
 
 //        setPivotPowered(!lowered()); //Disable servo at lowest point
@@ -114,7 +115,6 @@ public class Intake {
             } else {
                 setRollerPower(idlePower);
             }
-            setPivotPowered(dropIntake);
         }
 
         opmode.telemetry.addData("Extended", extended);
