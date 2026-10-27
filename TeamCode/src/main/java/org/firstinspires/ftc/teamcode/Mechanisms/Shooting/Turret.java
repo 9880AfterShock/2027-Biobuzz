@@ -25,9 +25,9 @@ public class Turret {
         //Rev encoder is in encoder port for the turret motor
 
         //TEMP FOR LOCK
-        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turret.setTargetPosition(0);
-        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        turret.setTargetPosition(0);
+//        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        turret.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -62,6 +62,28 @@ public class Turret {
     }
 
     public static void update() {
+
+        //TODO: encoder tracking, abs and quad, read and reset and update
+
+        //TODO: implement PID on setTurretPower using targetPos
+        opmode.telemetry.addData("Turret REV Current Ticks", turret.getCurrentPosition());
+
+        opmode.telemetry.addData("Turret Target", targetPos);
+        opmode.telemetry.addData("Turret Power", turretPower);
+        opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));
+    }
+
+    public static void updateTest(boolean powerOn, boolean reverse) {
+        if (powerOn) {
+            if (reverse) {
+                turret.setPower(-1.0);
+            } else {
+                turret.setPower(1.0);
+            }
+        } else {
+            turret.setPower(0.0);
+        }
+
         //TODO: encoder tracking, abs and quad, read and reset and update
 
         //TODO: implement PID on setTurretPower using targetPos
