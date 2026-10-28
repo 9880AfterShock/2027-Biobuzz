@@ -16,8 +16,8 @@ public class Turret {
     private static OpMode opmode;
     private static double turretPower;
     private static double targetPos;
-    private static final double minRotation = -200; //TBD
-    private static final double maxRotation = 200; //TBD
+    private static final double minRotation = -170; //TBD
+    private static final double maxRotation = 170; //TBD
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     public static void init(OpMode opmode) {
