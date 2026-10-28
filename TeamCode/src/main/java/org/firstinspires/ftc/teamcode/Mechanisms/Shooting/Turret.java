@@ -58,7 +58,7 @@ public class Turret {
     }
 
     public static double getCurrentPosition(){ //Doing conversion here because it means the PID will not need to be modified on a different encoder
-        return turret.getCurrentPosition() * (105.0/36.0) / 8192.0 ; //Multiply by the pulley ratio, divide by encoder resolution
+        return turret.getCurrentPosition() * (36.0/105.0) / 8192.0 ; //Multiply by the pulley ratio, divide by encoder resolution
     }
 
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) {
