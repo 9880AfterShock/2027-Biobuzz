@@ -86,7 +86,11 @@ public class Turret {
 
     public static void updateTest(double x, double y, boolean change, double deltaTime) { //Ignore this, temp wrapper for the test program
         if (change) {
-            setTurretTarget(Math.atan2(y, x));
+            if (x == 0 && y == 0) {
+                setTurretTarget(0);
+            } else {
+                setTurretTarget(90 + Math.toDegrees(Math.atan2(y, x)));
+            }
         }
 
         update(deltaTime);
