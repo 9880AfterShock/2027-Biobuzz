@@ -25,7 +25,8 @@ public class Turret {
     public static double P = 0.0;
     public static double I = 0;
     public static double D = 0;
-    public static double kStatic = 0.0; //Temp for dashboard
+    public static double kStatic = 0.16; //Temp for dashboard
+    public static double errorMargin = 0.5; //Dead band for kStatic
 
     public static void init(OpMode opmode) {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
@@ -55,7 +56,7 @@ public class Turret {
     }
 
     public static void setTurretPower(double power) {
-        power = Range.clip(power, -1, 1);
+        power = -Range.clip(power, -1, 1);
         if (turretPower != power) {
             turretPower = power;
             turret.setPower(power);
@@ -67,7 +68,7 @@ public class Turret {
     }
 
     public static double getCurrentPosition(){ //Doing conversion here because it means the PID will not need to be modified on a different encoder
-        return turret.getCurrentPosition() * (36.0/105.0) / 8192.0 ; //Multiply by the pulley ratio, divide by encoder resolution
+        return turret.getCurrentPosition() * (36.0/105.0) / 8192.0 * 360; //Multiply by the pulley ratio, divide by encoder resolution, times by 360 to get degrees
     }
 
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) {
@@ -85,10 +86,10 @@ public class Turret {
         //I know the getTurretPosition(); is kind of useless right now but it will change later to use ABS and a reset, so please just use it for now
 
         double staticBoost = kStatic * Math.signum(targetPos - getCurrentPosition());
-        if (Math.abs(targetPos - getCurrentPosition()) < 0.1) {
+        if (Math.abs(targetPos - getCurrentPosition()) < errorMargin) {
             staticBoost = 0.0;
         }
-        turret.setPower(turretPIDController.step(targetPos, getCurrentPosition(), deltaTime) + staticBoost);
+        setTurretPower(turretPIDController.step(targetPos, getCurrentPosition(), deltaTime) + staticBoost);
 
         //We want a PD with but NOT a feedforward (no I)
         //We also want a static friction constant (easy to tune, test just it until the turret TWITCHES, not nessasarily MOVES, that goes in either direction, and is 0 if the target is within like 0.5 degrees
