@@ -46,8 +46,10 @@ public class TurretTest extends LinearOpMode {
         }
 
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
-
         Turret.prime();
+
+        double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
+        double lastLoopTimestamp = 0.0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -60,13 +62,16 @@ public class TurretTest extends LinearOpMode {
 //            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 
             //Tick Functions
-            Turret.updateTest(gamepad1.a, gamepad1.b);
+            Turret.updateTest(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.left_stick_button, deltaTime);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
             telemetry.update();
+
+            deltaTime = runtime.milliseconds() - lastLoopTimestamp;
+            lastLoopTimestamp = runtime.milliseconds();
         }
     }
 

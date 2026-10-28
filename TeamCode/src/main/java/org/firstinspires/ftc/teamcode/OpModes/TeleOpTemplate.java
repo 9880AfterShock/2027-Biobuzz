@@ -48,6 +48,9 @@ public class TeleOpTemplate extends LinearOpMode {
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
         //GO HERE
 
+        double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
+        double lastLoopTimestamp = 0.0;
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             for (LynxModule hub : allHubs) { //Bulk read first thing
@@ -66,6 +69,9 @@ public class TeleOpTemplate extends LinearOpMode {
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
             telemetry.update();
+
+            deltaTime = runtime.milliseconds() - lastLoopTimestamp;
+            lastLoopTimestamp = runtime.milliseconds();
         }
     }
 

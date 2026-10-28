@@ -21,13 +21,16 @@ public class Turret {
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     public static void init(OpMode opmode) {
-        turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub
+        turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
         //Rev encoder is in encoder port for the turret motor
 
         //TEMP FOR LOCK
 //        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        turret.setTargetPosition(0);
 //        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //This means no encoder to enforce internal PID, not that we do not get readings
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        turret.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -38,10 +41,8 @@ public class Turret {
 
     public static void prime() {
         //TEMP locking code
-        turret.setTargetPosition(0);
-        turret.setPower(1.0);
 
-        //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos
+        //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos //Caden, I will do this later
     }
 
     public static void setTurretPower(double power) {
@@ -56,41 +57,41 @@ public class Turret {
         targetPos = Range.clip(target, minRotation, maxRotation);
     }
 
+    public static double getCurrentPosition(){ //Doing conversion here because it means the PID will not need to be modified on a different encoder
+        return turret.getCurrentPosition() * (105.0/36.0) / 8192.0 ; //Multiply by the pulley ratio, divide by encoder resolution
+    }
+
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) {
         //TODO: make this work, calc offset of turret on robot
+        //Caden i'll take care of this, need to wait on some tuning data first
         return 0.0;
     }
 
-    public static void update() {
-
+    public static void update(double deltaTime) {
         //TODO: encoder tracking, abs and quad, read and reset and update
+        //Caden I need to get smth figured out on the sensorange first, just take the existing getPosition function for now
 
-        //TODO: implement PID on setTurretPower using targetPos
-        opmode.telemetry.addData("Turret REV Current Ticks", turret.getCurrentPosition());
 
-        opmode.telemetry.addData("Turret Target", targetPos);
+        //TODO: CADEN, implement PID on setTurretPower using targetPos and getTurretPosition();
+        //I know the getTurretPosition(); is kind of useless right now but it will change later to use ABS and a reset, so please just use it for now
+        //We want a PD with but NOT a feedforward (no I)
+        //We also want a static friction constant (easy to tune, test just it until the turret TWITCHES, not nessasarily MOVES, that goes in either direction, and is 0 if the target is within like 0.5 degrees
+
+
+        opmode.telemetry.addData("Turret Target Rotation", targetPos);
+        opmode.telemetry.addData("Turret Current Rotation", getCurrentPosition());
         opmode.telemetry.addData("Turret Power", turretPower);
         opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));
     }
 
-    public static void updateTest(boolean powerOn, boolean reverse) {
-        if (powerOn) {
-            if (reverse) {
-                turret.setPower(-1.0);
-            } else {
-                turret.setPower(1.0);
-            }
-        } else {
-            turret.setPower(0.0);
+    public static void updateTest(double x, double y, boolean change, double deltaTime) { //Ignore this, temp wrapper for the test program
+        if (change) {
+            setTurretTarget(Math.atan2(y, x));
         }
 
-        //TODO: encoder tracking, abs and quad, read and reset and update
-
-        //TODO: implement PID on setTurretPower using targetPos
-        opmode.telemetry.addData("Turret REV Current Ticks", turret.getCurrentPosition());
-
-        opmode.telemetry.addData("Turret Target", targetPos);
-        opmode.telemetry.addData("Turret Power", turretPower);
-        opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));
+        update(deltaTime);
     }
+
+    //TODO: add tick actions with delta time in auto
+    //Caden I should probably do this
 }
