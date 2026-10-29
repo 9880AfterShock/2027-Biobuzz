@@ -110,7 +110,7 @@ public class Turret {
             if (x == 0 && y == 0) {
                 setTurretTarget(0);
             } else {
-                setTurretTarget(90 + Math.toDegrees(Math.atan2(y, x)));
+                setTurretTarget(Math.toDegrees(Math.atan2(-x,-y)));
             }
         }
 

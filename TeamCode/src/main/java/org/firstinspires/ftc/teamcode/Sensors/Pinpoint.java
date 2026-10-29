@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Localizer;
 import org.firstinspires.ftc.teamcode.PinpointLocalizer;
 
@@ -108,13 +109,17 @@ public class Pinpoint {
         return new Pose2d(x, y, heading);
     }
 
-    public static void update(boolean snap, boolean originReset) {
+    public static void update(boolean snap, boolean originReset, SideColor alliance) {
         localizer.update();
         if (snap){
             setPose(snapPose(localizer.getPose()));
         }
         if (originReset) {
-            setPose(new Pose2d(0.0, 0.0, 0.0));
+            if (alliance == SideColor.BLUE) {
+                setPose(new Pose2d(0.0, 0.0, Math.toRadians(-90.0)));
+            } else {
+                setPose(new Pose2d(0.0, 0.0, Math.toRadians(90.0)));
+            }
         }
 
         opmode.telemetry.addData("PINPOINT Yaw SNAPPED heading",  (Math.round(localizer.getPose().heading.toDouble() / (Math.PI/2)) % 4) * (Math.PI/2));

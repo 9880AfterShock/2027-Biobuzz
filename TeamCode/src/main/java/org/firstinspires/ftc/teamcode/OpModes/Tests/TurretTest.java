@@ -64,7 +64,6 @@ public class TurretTest extends LinearOpMode {
             //Tick Functions
             Turret.updateTest(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.left_stick_button, deltaTime);
 
-
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
             telemetry.addData("Looptime (MS per Loop)", runtime.milliseconds()/loops);
