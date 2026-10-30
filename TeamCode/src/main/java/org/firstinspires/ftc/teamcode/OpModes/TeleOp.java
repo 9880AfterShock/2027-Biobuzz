@@ -105,10 +105,19 @@ public class TeleOp extends LinearOpMode {
             for (LynxModule hub : allHubs) { //Bulk read first thing
                 hub.clearBulkCache();
             }
+            telemetry.addData("Alliance", alliance.getCapitalized());
             telemetry.addData("Control Hub Voltage", controlHub.getInputVoltage(VoltageUnit.VOLTS));
             telemetry.addData("Expansion Hub Voltage", expansionHub.getInputVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
+
+            if (gamepad2.backWasPressed()) {
+                if (alliance == SideColor.BLUE) {
+                    alliance = SideColor.RED;
+                } else {
+                    alliance = SideColor.BLUE;
+                }
+            }
 
 
 
@@ -138,7 +147,7 @@ public class TeleOp extends LinearOpMode {
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
-            boolean zeroRPM = gamepad2.backWasPressed();
+            boolean zeroRPM = true; //gamepad2.backWasPressed();
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
@@ -147,7 +156,7 @@ public class TeleOp extends LinearOpMode {
 
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
-            Pinpoint.update(false, gamepad2.back);  //TODO: fix and make work later
+            Pinpoint.update(gamepad2.y, gamepad2.x, alliance);  //TODO: fix and make work later
             Intake.update(intakeButton, ejectButton, /*BallTunnel.full || */intakePivotOverride, depowerIntake);
             MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);

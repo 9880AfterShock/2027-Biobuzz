@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -24,7 +24,7 @@ public class TurretTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Below is for if you want FTC dashboard telemetry
-//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         allHubs = hardwareMap.getAll(LynxModule.class); //Set for bulk read
         LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub"); //Individual for voltage readings
@@ -63,7 +63,6 @@ public class TurretTest extends LinearOpMode {
 
             //Tick Functions
             Turret.updateTest(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.left_stick_button, deltaTime);
-
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
