@@ -25,10 +25,10 @@ public class Turret {
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     private static PID turretPIDController;
-    public static double P = 0.0002;
+    public static double P = 0.00018;
     public static double I = 0;
     public static double D = 0;
-    public static double kStatic = 0.16; //Temp for dashboard
+    public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
     public static Pose2d goalPos = new Pose2d(440.890786 * 0.0393701, 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
 
@@ -86,7 +86,7 @@ public class Turret {
     public static Pose2d calcTurretPosition(Pose2d robotPos){
         double x = (turretPositionOffset * Math.cos(robotPos.heading.toDouble())) + robotPos.position.x;
         double y = (turretPositionOffset * Math.sin(robotPos.heading.toDouble())) + robotPos.position.y;
-        return new Pose2d(x, y,  robotPos.heading.toDouble() + Math.toRadians(getCurrentPosition()));
+        return new Pose2d(x, y,  robotPos.heading.toDouble() + Math.toRadians(getCurrentPosition()) + Math.toRadians(180));
     }
 
     private static void updateTurretPower(double deltaTime) {
