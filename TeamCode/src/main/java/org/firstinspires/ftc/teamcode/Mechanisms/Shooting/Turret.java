@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Utils.Controllers.PID;
 
 @Config
 public class Turret {
+    private static final double turretPositionOffset = -85.38998 * 0.0393701; //How far (currently backwards) the turret is from the center of the robot in inches
+    //Finals for each hive pos? or just flip based on color/side?
     private static DcMotorEx turret;
     private static OpMode opmode;
     private static double turretPower;
@@ -27,11 +29,15 @@ public class Turret {
     public static double D = 0;
     public static double kStatic = 0.16; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
+    public static Pose2d goalPos = new Pose2d(440.890786 * 0.0393701, 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
 
     public static void init(OpMode opmode) {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
         //Rev encoder is in encoder port for the turret motor
 
+        turretPIDController.p = P;
+        turretPIDController.i = I;
+        turretPIDController.d = D;
         turretPIDController = new PID(P, I, D);
 
         //TEMP FOR LOCK
@@ -55,7 +61,7 @@ public class Turret {
         //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos //Caden, I will do this later
     }
 
-    public static void setTurretPower(double power) {
+    private static void setTurretPower(double power) {
         power = -Range.clip(power, -1, 1);
         if (turretPower != power) {
             turretPower = power;
@@ -72,28 +78,27 @@ public class Turret {
     }
 
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) {
+        double x = (turretPositionOffset * Math.cos(robotPos.heading.toDouble())) + robotPos.position.x;
+        double y = (turretPositionOffset * Math.sin(robotPos.heading.toDouble())) + robotPos.position.y;
+
+
         //TODO: make this work, calc offset of turret on robot
         //Caden i'll take care of this, need to wait on some tuning data first
         return 0.0;
     }
 
-    public static void update(double deltaTime) {
-        //TODO: encoder tracking, abs and quad, read and reset and update
-        //Caden I need to get smth figured out on the sensorange first, just take the existing getPosition function for now
-
-
-        //TODO: CADEN, implement PID on setTurretPower using targetPos and getTurretPosition();
-        //I know the getTurretPosition(); is kind of useless right now but it will change later to use ABS and a reset, so please just use it for now
-
+    private static void updateTurretPower(double deltaTime) {
         double staticBoost = kStatic * Math.signum(targetPos - getCurrentPosition());
         if (Math.abs(targetPos - getCurrentPosition()) < errorMargin) {
             staticBoost = 0.0;
         }
         setTurretPower(turretPIDController.step(targetPos, getCurrentPosition(), deltaTime) + staticBoost);
+    }
 
-        //We want a PD with but NOT a feedforward (no I)
-        //We also want a static friction constant (easy to tune, test just it until the turret TWITCHES, not nessasarily MOVES, that goes in either direction, and is 0 if the target is within like 0.5 degrees
+    public static void update(double deltaTime) {
+        //TODO: encoder tracking, abs and quad, read and reset and update
 
+        updateTurretPower(deltaTime);
 
         opmode.telemetry.addData("Turret Target Rotation", targetPos);
         opmode.telemetry.addData("Turret Current Rotation", getCurrentPosition());
