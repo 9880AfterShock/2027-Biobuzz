@@ -113,6 +113,8 @@ public class Turret {
         turretPIDController.i = I;
         turretPIDController.d = D;
 
+//        setTurretTarget(Pinpoint.normalize(calcTurretAngle(Pinpoint.getPose(), goalPos) - Pinpoint.getPose().heading.toDouble(), Math.PI*2));
+
         if (change) {
             if (x == 0 && y == 0) {
                 setTurretTarget(0);
