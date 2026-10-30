@@ -42,7 +42,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
     private static Boolean rightFlower = true; //Alliance Side Perspective
     private static Boolean partnerSource = false; //Picking up against the side of partner who cannot shoot, to be figured out
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
-    private int posMultiplier = -1; //Default to blue because of red favored in bracket
+    private int posMultiplier = 1; //Default to blue because of red favored in bracket
     private double posRotation = Math.toRadians(90 - posMultiplier*90);
     private static Boolean useVision = true; //Use vision to determine hive tips
     private static Boolean buddyPark = true;
@@ -106,12 +106,12 @@ public class LM1AdaptiveAuto extends LinearOpMode {
 
             if (gamepad1.x){
                 allianceColor = SideColor.BLUE;
-                posMultiplier = -1;
+                posMultiplier = 1;
                 posRotation = Math.toRadians(90 - posMultiplier*90);
             }
             if (gamepad1.b){
                 allianceColor = SideColor.RED;
-                posMultiplier = 1;
+                posMultiplier = -1;
                 posRotation = Math.toRadians(90 - posMultiplier*90);
             }
 
