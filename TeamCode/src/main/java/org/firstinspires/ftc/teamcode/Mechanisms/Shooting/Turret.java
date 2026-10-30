@@ -113,7 +113,7 @@ public class Turret {
         turretPIDController.i = I;
         turretPIDController.d = D;
 
-        setTurretTarget(Math.toDegrees(Pinpoint.normalize(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
+        setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
 
 //        if (change) {
 //            if (x == 0 && y == 0) {
@@ -127,7 +127,9 @@ public class Turret {
         opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
         opmode.telemetry.addData("GOAL ANGLE", calcTurretAngle(Pinpoint.getPose(), goalPos));
     }
-
     //TODO: add tick actions with delta time in auto
     //Caden I should probably do this
+    public static double normalizeNegative(double angle, double rotation){
+        return ((angle % rotation) + rotation) % rotation - (rotation / 2);
+    }
 }
