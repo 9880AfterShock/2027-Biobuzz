@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import org.firstinspires.ftc.teamcode.Utils.Controllers.PID;
 
 @Config
@@ -35,9 +36,6 @@ public class Turret {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
         //Rev encoder is in encoder port for the turret motor
 
-        turretPIDController.p = P;
-        turretPIDController.i = I;
-        turretPIDController.d = D;
         turretPIDController = new PID(P, I, D);
 
         //TEMP FOR LOCK
@@ -77,14 +75,12 @@ public class Turret {
         return turret.getCurrentPosition() * (36.0/105.0) / 8192.0 * 360; //Multiply by the pulley ratio, divide by encoder resolution, times by 360 to get degrees
     }
 
-    public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) {
-        double x = (turretPositionOffset * Math.cos(robotPos.heading.toDouble())) + robotPos.position.x;
-        double y = (turretPositionOffset * Math.sin(robotPos.heading.toDouble())) + robotPos.position.y;
+    public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) { //In radians, be careful
+        return Math.atan2(goalPos.position.y - calcTurretPosition(robotPos).position.y, goalPos.position.x - calcTurretPosition(robotPos).position.x);
+    }
 
-
-        //TODO: make this work, calc offset of turret on robot
-        //Caden i'll take care of this, need to wait on some tuning data first
-        return 0.0;
+    public static double calcGoalDistance(Pose2d robotPos, Pose2d goalPos) {
+        return Math.hypot(goalPos.position.x - calcTurretPosition(robotPos).position.x, goalPos.position.y - calcTurretPosition(robotPos).position.y);
     }
 
     public static Pose2d calcTurretPosition(Pose2d robotPos){
@@ -124,8 +120,10 @@ public class Turret {
                 setTurretTarget(Math.toDegrees(Math.atan2(-x,-y)));
             }
         }
-
         update(deltaTime);
+
+        opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
+        opmode.telemetry.addData("GOAL ANGLE", calcTurretAngle(Pinpoint.getPose(), goalPos));
     }
 
     //TODO: add tick actions with delta time in auto

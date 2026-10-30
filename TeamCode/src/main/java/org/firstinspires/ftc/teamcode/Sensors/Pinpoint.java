@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Localizer;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.PinpointLocalizer;
 
 public class Pinpoint {
@@ -134,10 +135,17 @@ public class Pinpoint {
     }
 
     public static void draw(TelemetryPacket packet) {
-        packet.fieldOverlay().setStroke("#00ffee");
+        //Drive:
+        packet.fieldOverlay().setStroke("#00FFEE"); //Robot Pos
         Drawing.drawRobot(packet.fieldOverlay(), localizer.getPose());
-        packet.fieldOverlay().setStroke("#00FF00");
+        packet.fieldOverlay().setStroke("#00FF00"); //Snap Pos
         Drawing.drawRobot(packet.fieldOverlay(), snapPose(localizer.getPose()));
+
+        //Turret:
+        packet.fieldOverlay().setStroke("#FF0000"); //Goal Pos
+        Drawing.drawRobot(packet.fieldOverlay(), new Pose2d(Turret.goalPos.position.x, Turret.goalPos.position.y, Turret.calcTurretAngle(localizer.getPose(), Turret.goalPos)));
+        packet.fieldOverlay().setStroke("#000000"); //Turret Pos
+        Drawing.drawRobot(packet.fieldOverlay(), Turret.calcTurretPosition(localizer.getPose()));
     }
 
     public static double normalize(double angle, double rotation){

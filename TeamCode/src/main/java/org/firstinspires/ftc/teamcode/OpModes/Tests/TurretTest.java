@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,7 +10,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.teamcode.Enums.SideColor;
+import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
+import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
 import java.util.List;
 
@@ -19,6 +23,7 @@ public class TurretTest extends LinearOpMode {
 
     // Declare OpMode members.
     ElapsedTime runtime = new ElapsedTime();
+    SideColor alliance = SideColor.BLUE;
     int loops = 0;
 
     @Override
@@ -32,6 +37,8 @@ public class TurretTest extends LinearOpMode {
 
         //Init Functions
         Turret.init(this);
+        Drivetrain.init(this);
+        Pinpoint.init(this, hardwareMap, new Pose2d(0.0, 0.0, 0.0));
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -53,15 +60,25 @@ public class TurretTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            if (gamepad1.b) {
+                alliance = SideColor.RED;
+            }
+            if (gamepad1.x) {
+                alliance = SideColor.BLUE;
+            }
+
             for (LynxModule hub : allHubs) { //Bulk read first thing
                 hub.clearBulkCache();
             }
+            telemetry.addData("ALLIANCE", alliance.getCapitalized());
             telemetry.addData("Control Hub Voltage", controlHub.getInputVoltage(VoltageUnit.VOLTS));
             telemetry.addData("Expansion Hub Voltage", expansionHub.getInputVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 
             //Tick Functions
+            Drivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, false, gamepad1.back);
+            Pinpoint.update(gamepad1.a, gamepad1.y, SideColor.BLUE);
             Turret.updateTest(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.left_stick_button, deltaTime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
