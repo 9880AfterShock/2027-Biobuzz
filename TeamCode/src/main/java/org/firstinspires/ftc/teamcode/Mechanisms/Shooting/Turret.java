@@ -76,7 +76,7 @@ public class Turret {
     }
 
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) { //In radians, be careful
-        return Math.atan2(calcTurretPosition(robotPos).position.y - goalPos.position.y, calcTurretPosition(robotPos).position.x - goalPos.position.x);
+        return Math.atan2(goalPos.position.y - calcTurretPosition(robotPos).position.y, goalPos.position.x - calcTurretPosition(robotPos).position.x);
     }
 
     public static double calcGoalDistance(Pose2d robotPos, Pose2d goalPos) {
@@ -113,6 +113,8 @@ public class Turret {
         turretPIDController.i = I;
         turretPIDController.d = D;
 
+
+        //TODO: fix aiming with the wrong side of the turret (may have fixed, need to test)
         setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
 
 //        if (change) {
