@@ -87,6 +87,12 @@ public class Turret {
         return 0.0;
     }
 
+    public static Pose2d calcTurretPosition(Pose2d robotPos){
+        double x = (turretPositionOffset * Math.cos(robotPos.heading.toDouble())) + robotPos.position.x;
+        double y = (turretPositionOffset * Math.sin(robotPos.heading.toDouble())) + robotPos.position.y;
+        return new Pose2d(x, y,  robotPos.heading.toDouble() + Math.toRadians(getCurrentPosition()));
+    }
+
     private static void updateTurretPower(double deltaTime) {
         double staticBoost = kStatic * Math.signum(targetPos - getCurrentPosition());
         if (Math.abs(targetPos - getCurrentPosition()) < errorMargin) {
