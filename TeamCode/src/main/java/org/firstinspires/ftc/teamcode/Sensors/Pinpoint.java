@@ -57,10 +57,15 @@ public class Pinpoint {
         return sinceReset.seconds();
     }
 
-    public static void setPose(Pose2d newPose) {
+    public static void setPose(Pose2d newPose, SideColor alliance) {
         localizer.setPose(newPose);
         sinceReset.reset();
-        yawOffsetOverride = 0.0;
+
+        if (alliance == SideColor.BLUE) { //For setting the
+            yawOffsetOverride = -90;
+        } else {
+            yawOffsetOverride = 90;
+        }
     }
 
     public static Pose2d snapPose(Pose2d approximatePos) { //TODO: make sure when approx. pos is fed it using any driver IMU correction?
@@ -113,13 +118,13 @@ public class Pinpoint {
     public static void update(boolean snap, boolean originReset, SideColor alliance) {
         localizer.update();
         if (snap){
-            setPose(snapPose(localizer.getPose()));
+            setPose(snapPose(localizer.getPose()), alliance);
         }
         if (originReset) {
             if (alliance == SideColor.BLUE) {
-                setPose(new Pose2d(0.0, 0.0, Math.toRadians(-90.0)));
+                setPose(new Pose2d(0.0, 0.0, Math.toRadians(90.0)), alliance);
             } else {
-                setPose(new Pose2d(0.0, 0.0, Math.toRadians(90.0)));
+                setPose(new Pose2d(0.0, 0.0, Math.toRadians(-90.0)), alliance);
             }
         }
 

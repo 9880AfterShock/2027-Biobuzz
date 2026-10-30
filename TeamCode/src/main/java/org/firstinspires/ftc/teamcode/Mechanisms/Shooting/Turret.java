@@ -76,7 +76,7 @@ public class Turret {
     }
 
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) { //In radians, be careful
-        return Math.atan2(goalPos.position.y - calcTurretPosition(robotPos).position.y, goalPos.position.x - calcTurretPosition(robotPos).position.x);
+        return Math.atan2(calcTurretPosition(robotPos).position.y - goalPos.position.y, calcTurretPosition(robotPos).position.x - goalPos.position.x);
     }
 
     public static double calcGoalDistance(Pose2d robotPos, Pose2d goalPos) {
@@ -113,15 +113,15 @@ public class Turret {
         turretPIDController.i = I;
         turretPIDController.d = D;
 
-//        setTurretTarget(Pinpoint.normalize(calcTurretAngle(Pinpoint.getPose(), goalPos) - Pinpoint.getPose().heading.toDouble(), Math.PI*2));
+        setTurretTarget(Math.toDegrees(Pinpoint.normalize(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
 
-        if (change) {
-            if (x == 0 && y == 0) {
-                setTurretTarget(0);
-            } else {
-                setTurretTarget(Math.toDegrees(Math.atan2(-x,-y)));
-            }
-        }
+//        if (change) {
+//            if (x == 0 && y == 0) {
+//                setTurretTarget(0);
+//            } else {
+//                setTurretTarget(Math.toDegrees(Math.atan2(-x,-y)));
+//            }
+//        }
         update(deltaTime);
 
         opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
