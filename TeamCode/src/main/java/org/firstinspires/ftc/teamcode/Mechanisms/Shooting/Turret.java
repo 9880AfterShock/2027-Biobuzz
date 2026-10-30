@@ -25,7 +25,7 @@ public class Turret {
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     private static PID turretPIDController;
-    public static double P = 0.00018;
+    public static double P = 0.003;
     public static double I = 0;
     public static double D = 0;
     public static double kStatic = 0.09; //Temp for dashboard
