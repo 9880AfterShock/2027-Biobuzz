@@ -140,6 +140,8 @@ public class Pinpoint {
     }
 
     public static void draw(TelemetryPacket packet) {
+        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice.png", -72, -72, 144, 144);
+
         //Drive:
         packet.fieldOverlay().setStroke("#00FFEE"); //Robot Pos
         Drawing.drawRobot(packet.fieldOverlay(), localizer.getPose());
