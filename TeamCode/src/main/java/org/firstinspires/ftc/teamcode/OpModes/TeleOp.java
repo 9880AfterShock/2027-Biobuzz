@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Sensors.Gyro;
+import org.firstinspires.ftc.teamcode.Sensors.I2CDistance;
 import org.firstinspires.ftc.teamcode.Utils.Logging.DualLogger;
 import org.firstinspires.ftc.teamcode.Utils.Logging.Logger;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
@@ -72,6 +73,7 @@ public class TeleOp extends LinearOpMode {
         Shooter.init(this);
         LEDs.init(this);
 //        Gyro.init(this);
+        I2CDistance.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -136,6 +138,10 @@ public class TeleOp extends LinearOpMode {
 
             boolean matchLoaderButton = gamepad1.right_bumper;
 
+            //To change if needed
+            boolean useSensors = true; //TODO: make operator be able to override?
+            boolean fieldRelocalize = true; //TODO: make this actually change stuff and not be a dummy value
+
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
 
@@ -147,7 +153,7 @@ public class TeleOp extends LinearOpMode {
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
-            boolean zeroRPM = true; //gamepad2.backWasPressed();
+            boolean zeroRPM = false; //gamepad2.backWasPressed();
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
@@ -156,8 +162,8 @@ public class TeleOp extends LinearOpMode {
 
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
-            Pinpoint.update(gamepad2.y, gamepad2.x, alliance);  //TODO: fix and make work later
-            Intake.update(intakeButton, ejectButton, /*BallTunnel.full || */intakePivotOverride, depowerIntake);
+            Pinpoint.update(gamepad2.y, gamepad2.x, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
+            Intake.update(intakeButton, ejectButton || (useSensors && I2CDistance.ballsHeld() > 4), !intakeButton && (intakePivotOverride || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
             MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton || ballTunnelReverse);
@@ -169,6 +175,7 @@ public class TeleOp extends LinearOpMode {
             } else {
                 LEDs.update(LEDColor.GREEN, false, runtime); //Flash at last 10 sec for parking reminder
             }
+            I2CDistance.update();
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;

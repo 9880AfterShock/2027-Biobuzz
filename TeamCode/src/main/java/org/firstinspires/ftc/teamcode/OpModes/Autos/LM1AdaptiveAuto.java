@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -27,7 +26,6 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
-import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import org.firstinspires.ftc.teamcode.Sensors.Vision.Limelight;
 
 import java.util.List;
@@ -207,18 +205,18 @@ public class LM1AdaptiveAuto extends LinearOpMode {
 
         Action shootSequence = new SequentialAction(
                 BallGate.autoOpen(),
-                BallTunnel.autoBalltunnelShoot(),
+                BallTunnel.autoBallTunnelShoot(),
                 Paths.wait(drive, shotTime), //Hardcoded wait for shooting rn
                 BallGate.autoClose(),
-                BallTunnel.autoBalltunnelIdle()
+                BallTunnel.autoBallTunnelIdle()
         );
 
         Action shootSequence2 = new SequentialAction(
                 BallGate.autoOpen(),
-                BallTunnel.autoBalltunnelShoot(),
+                BallTunnel.autoBallTunnelShoot(),
                 Paths.wait(drive, shotTime), //Hardcoded wait for shooting rn
                 BallGate.autoClose(),
-                BallTunnel.autoBalltunnelIdle()
+                BallTunnel.autoBallTunnelIdle()
         );
 
 
@@ -256,7 +254,7 @@ public class LM1AdaptiveAuto extends LinearOpMode {
                     new RaceAction(
                         new SequentialAction(
                                 Intake.autoIntakeOn(),
-                                BallTunnel.autoBalltunnelIntake(),
+                                BallTunnel.autoBallTunnelIntake(),
                                 Paths.directPath(drive, startPosRight, preGardenPos, driveSpeed),
                                 Paths.directPath(drive, preGardenPos, gardenPos, driveSpeed),
                                 Paths.wait(drive, intakeTime),
