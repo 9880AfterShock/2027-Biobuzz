@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Sensors;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -31,7 +36,7 @@ public class I2CDistance {
 
         slotMemory = new double[] {9880, 9880, 9880, 9880, 9880}; //Big values to not trip a reading (9880 because team spirit!)
 
-        loopNumber = 1;
+        loopNumber = 0;
         I2CDistance.opmode = opmode;
     }
 
@@ -46,7 +51,7 @@ public class I2CDistance {
     public static int ballsHeld() { //Sensors tripped
         int balls = 0;
         for (double distance: slotMemory) {
-            if (distance >= threshold) {
+            if (distance < threshold) {
                 balls++;
             }
         }
@@ -56,7 +61,7 @@ public class I2CDistance {
     public static int ballsSecured() { //How many balls are in their resting place, checking starting from shooter
         int balls = 0;
         for (double distance: slotMemory) {
-            if (distance < threshold) {
+            if (distance > threshold) {
                 return balls;
             }
             balls += 1;
@@ -66,9 +71,9 @@ public class I2CDistance {
 
     public static void update() {
         loopNumber++;
-        if (loopNumber == checkCount) {
+        if (loopNumber >= checkCount) {
             updateReadings();
-            loopNumber = 1;
+            loopNumber = 0;
         }
 
         opmode.telemetry.addData("Balls Held", ballsHeld());
@@ -80,5 +85,35 @@ public class I2CDistance {
         opmode.telemetry.addData("Last slot", slotMemory[3]);
         opmode.telemetry.addData("Intake slot (Overpossession)", slotMemory[4]);
         //nothing for now
+    }
+
+    public static Action waitToEmpty(int timeout) {
+        return new Action() {
+            private boolean first = true;
+            ElapsedTime timer = new ElapsedTime();;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    timer.reset();
+                    first = false;
+                }
+                updateReadings();
+                return ballsHeld() != 0 && timer.seconds() <= timeout;
+            }
+        };
+    }
+
+    public static Action waitToFill(int timeout) {
+        return new Action() {
+            private boolean first = true;
+            ElapsedTime timer = new ElapsedTime();;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    timer.reset();
+                    first = false;
+                }
+                updateReadings();
+                return ballsSecured() < 4 && timer.seconds() <= timeout;
+            }
+        };
     }
 }
