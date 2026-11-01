@@ -140,7 +140,9 @@ public class Pinpoint {
     }
 
     public static void draw(TelemetryPacket packet) {
+        //Set field sprite:
         packet.fieldOverlay().drawImage("/images/Biobuzz-Juice.png", -72, -72, 144, 144);
+//        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice-White.png", -72, -72, 144, 144);
 
         //Drive:
         packet.fieldOverlay().setStroke("#00FFEE"); //Robot Pos
@@ -152,6 +154,7 @@ public class Pinpoint {
         packet.fieldOverlay().setStroke("#FF0000"); //Goal Pos
         Drawing.drawRobot(packet.fieldOverlay(), new Pose2d(Turret.goalPos.position.x, Turret.goalPos.position.y, Turret.calcTurretAngle(localizer.getPose(), Turret.goalPos)));
         packet.fieldOverlay().setStroke("#FFFFFF"); //Turret Pos
+//        packet.fieldOverlay().setStroke("#000000");
         Drawing.drawRobot(packet.fieldOverlay(), Turret.calcTurretPosition(localizer.getPose()));
     }
 
