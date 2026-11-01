@@ -151,7 +151,7 @@ public class Pinpoint {
         //Turret:
         packet.fieldOverlay().setStroke("#FF0000"); //Goal Pos
         Drawing.drawRobot(packet.fieldOverlay(), new Pose2d(Turret.goalPos.position.x, Turret.goalPos.position.y, Turret.calcTurretAngle(localizer.getPose(), Turret.goalPos)));
-        packet.fieldOverlay().setStroke("#000000"); //Turret Pos
+        packet.fieldOverlay().setStroke("#FFFFFF"); //Turret Pos
         Drawing.drawRobot(packet.fieldOverlay(), Turret.calcTurretPosition(localizer.getPose()));
     }
 
