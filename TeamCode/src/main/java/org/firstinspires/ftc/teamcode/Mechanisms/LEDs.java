@@ -34,19 +34,19 @@ public class LEDs {
     private static LEDColor backLeftLED = LEDColor.OFF;
     private static LEDColor backRightLED = LEDColor.OFF;
 
-    private static double lastBlink = 0; //TODO: remove this temp solution for blinking all
+    private static double lastBlink = 0; //TODO: implement a real 5hz limit (game manual rule)
 
     private static OpMode opmode;
 
     public static void init(OpMode opmode) { //TODO: this absurd config
-        frontLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDGreen"); //Port n on ___ hub
-        frontLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDRed"); //Port n+1 on ___ hub
-        frontRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDGreen"); //Port n on ___ hub
-        frontRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDRed"); //Port n+1 on ___ hub
-        backLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDGreen"); //Port n on ___ hub
-        backLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDRed"); //Port n+1 on ___ hub
-        backRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDGreen"); //Port n on ___ hub
-        backRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDRed"); //Port n+1 on ___ hub
+        frontLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDGreen"); //Port 2 on control hub
+        frontLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontLeftLEDRed"); //Port 3 on control hub
+        frontRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDGreen"); //Port 0 on expansion hub
+        frontRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "frontRightLEDRed"); //Port 1 on expansion hub
+        backLeftLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDGreen"); //Port 4 on control hub
+        backLeftLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backLeftLEDRed"); //Port 5 on control hub
+        backRightLEDGreen = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDGreen"); //Port 2 on expansion hub
+        backRightLEDRed = opmode.hardwareMap.get(DigitalChannel.class, "backRightLEDRed"); //Port 3 on expansion hub
 
         frontLeftLEDGreen.setMode(DigitalChannel.Mode.OUTPUT);
         frontLeftLEDRed.setMode(DigitalChannel.Mode.OUTPUT);
@@ -67,7 +67,7 @@ public class LEDs {
             LEDGreen.setState(newColor.greenPower());
         }
         if (newColor.redPower() != oldColor.redPower()) {
-            LEDGreen.setState(newColor.redPower());
+            LEDRed.setState(newColor.redPower());
         }
     }
 
@@ -99,10 +99,14 @@ public class LEDs {
     }
 
     public static void update(LEDColor allColor, boolean blinking, ElapsedTime runtime) { //TODO: add more reading states, ex. blinking, cycling, spinning, ect.
-        setFrontLeftColor(allColor);
-        setFrontRightColor(allColor);
-        setBackLeftColor(allColor);
-        setBackRightColor(allColor);
+        if (blinking && runtime.seconds() - Math.floor(runtime.seconds()) < 0.5) { //blink at 2hz, 1st half of every second is off
+            turnOff();
+        } else {
+            setFrontLeftColor(allColor);
+            setFrontRightColor(allColor);
+            setBackLeftColor(allColor);
+            setBackRightColor(allColor);
+        }
 
         opmode.telemetry.addData("Front Left", frontLeftLED.state());
         opmode.telemetry.addData("Front Right", frontRightLED.state());

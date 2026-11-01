@@ -112,10 +112,10 @@ public class LM0BuddyPark8 extends LinearOpMode {
         Action shootSequence = new SequentialAction(
                 Shooter.autoWaitForSpeed(50, 4),
                 BallGate.autoOpen(),
-                BallTunnel.autoBalltunnelShoot(),
+                BallTunnel.autoBallTunnelShoot(),
                 Paths.wait(drive, shotTime), //Hardcoded wait for shooting rn
                 BallGate.autoClose(),
-                BallTunnel.autoBalltunnelIdle()
+                BallTunnel.autoBallTunnelIdle()
         );
 
 
@@ -141,7 +141,7 @@ public class LM0BuddyPark8 extends LinearOpMode {
 
                                 Paths.directPath(drive, startPos, preGardenPos, driveSpeed), //to pre pickup
                                 Intake.autoIntakeOn(),
-                                Intake.autoIntakeDown(),
+                                Intake.autoIntakeDown(true),
                                 Paths.directPath(drive, preGardenPos, gardenPos, intakeSpeed), //pickup garden
                                 Paths.wait(drive, intakeTime), //wait for vectoring
 

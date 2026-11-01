@@ -14,6 +14,13 @@ public class Paths {
                 .splineToLinearHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
                 .build();
     }
+    public static Action directSplinePath(RoadRunnerBotEntity drive, Pose2d startPos, Pose2d endPose, double minSpeed){
+        double tangent = Math.atan2(endPose.position.y - startPos.position.y, endPose.position.x - startPos.position.x);
+        return drive.getDrive().actionBuilder(startPos)
+                .setTangent(tangent)
+                .splineToSplineHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
+                .build();
+    }
     public static Action tangentLinearPath(RoadRunnerBotEntity drive, Pose2d startPos, double leaveTangent, Pose2d endPose, double arriveTangent, double minSpeed){ //Really just a shortcut for spline to linear
         return drive.getDrive().actionBuilder(startPos)
                 .setTangent(leaveTangent)

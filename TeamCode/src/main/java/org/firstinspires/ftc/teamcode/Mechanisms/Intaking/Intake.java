@@ -25,7 +25,7 @@ public class Intake {
     private static boolean extended;
     private static double rollerPower;
     private static boolean enabled;
-    private static boolean defaultRetractState = false;
+    private static boolean dropIntake;
 
     public static final double startingPos = 0.8; //0.85 if we want to almost touch the side plates //maybe not anymore for the 0.85
     public static final double retractedPos = 0.4;
@@ -46,6 +46,7 @@ public class Intake {
         roller.setPower(0.0);
 
         Intake.opmode = opmode;
+        dropIntake = false;
     }
 
     public static void prime(){
@@ -90,17 +91,19 @@ public class Intake {
         return limitSwitch.getState();
     }
 
-    public static void update(boolean intaking, boolean ejecting, boolean modify, boolean toggleDefault) {
-        if (toggleDefault) {
-            defaultRetractState = !defaultRetractState;
+    public static void update(boolean intaking, boolean ejecting, boolean retract, boolean depower) {
+        if (depower) {
+            dropIntake = !dropIntake;
         }
-        if (modify ^ defaultRetractState){
+
+        if (!retract){
             extend();
+            setPivotPowered(dropIntake);
         } else{
             retract();
         }
 
-        setPivotPowered(!lowered()); //Disable servo at lowest point
+//        setPivotPowered(!lowered()); //Disable servo at lowest point
 
         //TODO: deadzone for nectar
 
@@ -117,14 +120,13 @@ public class Intake {
         opmode.telemetry.addData("Extended", extended);
         opmode.telemetry.addData("Intaking", intaking);
         opmode.telemetry.addData("Ejecting", ejecting);
-        opmode.telemetry.addData("Default Retract State", defaultRetractState);
 
         opmode.telemetry.addData("Lowered (Limit Switch)", lowered());
 
         opmode.telemetry.addData("Intake Roller Amps", roller.getCurrent(CurrentUnit.AMPS));
     }
 
-    public static Action autoIntakeDown() {
+    public static Action autoIntakeDown(boolean checkSwitch) {
         return new Action() {
             private boolean first = true;
             ElapsedTime timer = new ElapsedTime();;
@@ -135,7 +137,22 @@ public class Intake {
                 }
                 extend();
 //                setPivotPowered(!lowered());
-                return !lowered() && timer.seconds() <= 3.0; //Timeout, can change
+                return (!lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
+            }
+        };
+    }
+
+    public static Action autoIntakeUp(boolean checkSwitch) {
+        return new Action() {
+            private boolean first = true;
+            ElapsedTime timer = new ElapsedTime();;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    timer.reset();
+                    first = false;
+                }
+                retract();
+                return (lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
             }
         };
     }

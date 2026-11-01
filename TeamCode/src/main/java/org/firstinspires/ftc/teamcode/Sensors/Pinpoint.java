@@ -11,7 +11,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Localizer;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.PinpointLocalizer;
 
 public class Pinpoint {
@@ -22,8 +24,8 @@ public class Pinpoint {
 
     //For calculating corner pose alignments, inches from center of robot to wall when braced against on that side
     public static final double frontDistance = 0.0393701 * (291.10703 + 4);
-    public static final double leftDistance = 0.0393701 * (215.90000 + 15); //TODO: make sure the side values reflect matchloader (plate is the ~215)
-    public static final double rightDistance = 0.0393701 * (215.90000 + 15); //TODO: make sure the side values reflect matchloader (plate is the ~215)
+    public static final double leftDistance = 0.0393701 * (215.90000 + 10 + 2.2); //TODO: make sure the side values reflect matchloader WITH SCREWS (plate is the ~215)
+    public static final double rightDistance = 0.0393701 * (215.90000 + 10 + 2.2); //TODO: make sure the side values reflect matchloader WITH SCREWS (plate is the ~215)
     public static final double backDistance = 0.0393701 * (213.50939 + 4);
     //Field Constants
     private static final double fieldSize = 72; //Distance in both directions from center of the field to the walls
@@ -55,10 +57,15 @@ public class Pinpoint {
         return sinceReset.seconds();
     }
 
-    public static void setPose(Pose2d newPose) {
+    public static void setPose(Pose2d newPose, SideColor alliance) {
         localizer.setPose(newPose);
         sinceReset.reset();
-        yawOffsetOverride = 0.0;
+
+        if (alliance == SideColor.BLUE) { //For setting the
+            yawOffsetOverride = -90;
+        } else {
+            yawOffsetOverride = 90;
+        }
     }
 
     public static Pose2d snapPose(Pose2d approximatePos) { //TODO: make sure when approx. pos is fed it using any driver IMU correction?
@@ -108,11 +115,20 @@ public class Pinpoint {
         return new Pose2d(x, y, heading);
     }
 
-    public static void update(boolean snap) {
+    public static void update(boolean snap, boolean originReset, SideColor alliance) {
         localizer.update();
         if (snap){
-            localizer.setPose(snapPose(localizer.getPose()));
+            setPose(snapPose(localizer.getPose()), alliance);
         }
+        if (originReset) {
+            if (alliance == SideColor.BLUE) {
+                setPose(new Pose2d(0.0, 0.0, Math.toRadians(90.0)), alliance);
+            } else {
+                setPose(new Pose2d(0.0, 0.0, Math.toRadians(-90.0)), alliance);
+            }
+        }
+
+        opmode.telemetry.addData("PINPOINT Yaw SNAPPED heading",  (Math.round(localizer.getPose().heading.toDouble() / (Math.PI/2)) % 4) * (Math.PI/2));
 
         opmode.telemetry.addData("PINPOINT Yaw", Math.toDegrees(getYawRadians()));
         opmode.telemetry.addData("PINPOINT Yaw Offset Override", Math.toDegrees(yawOffsetOverride));
@@ -124,8 +140,22 @@ public class Pinpoint {
     }
 
     public static void draw(TelemetryPacket packet) {
-        packet.fieldOverlay().setStroke("#00ffee");
+        //Set field sprite:
+        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice.png", -72, -72, 144, 144);
+//        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice-White.png", -72, -72, 144, 144);
+
+        //Drive:
+        packet.fieldOverlay().setStroke("#00FFEE"); //Robot Pos
         Drawing.drawRobot(packet.fieldOverlay(), localizer.getPose());
+        packet.fieldOverlay().setStroke("#00FF00"); //Snap Pos
+        Drawing.drawRobot(packet.fieldOverlay(), snapPose(localizer.getPose()));
+
+        //Turret:
+        packet.fieldOverlay().setStroke("#FF0000"); //Goal Pos
+        Drawing.drawRobot(packet.fieldOverlay(), new Pose2d(Turret.goalPos.position.x, Turret.goalPos.position.y, Turret.calcTurretAngle(localizer.getPose(), Turret.goalPos)));
+        packet.fieldOverlay().setStroke("#FFFFFF"); //Turret Pos
+//        packet.fieldOverlay().setStroke("#000000");
+        Drawing.drawRobot(packet.fieldOverlay(), Turret.calcTurretPosition(localizer.getPose()));
     }
 
     public static double normalize(double angle, double rotation){

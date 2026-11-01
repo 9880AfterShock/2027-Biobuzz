@@ -15,7 +15,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
 public class BallTunnel {
-    public static boolean full = false; //TODO: Use sensors to determine when the ball tunnel is full
     private static DcMotorEx feeder;
     private static OpMode opmode;
     public static double feederPower;
@@ -62,7 +61,7 @@ public class BallTunnel {
         opmode.telemetry.addData("Ball Tunnel Feeder Amps", feeder.getCurrent(CurrentUnit.AMPS));
     }
 
-    public static Action autoBalltunnelShoot() {
+    public static Action autoBallTunnelShoot() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setFeederPower(transferPower);
@@ -71,7 +70,7 @@ public class BallTunnel {
         };
     }
 
-    public static Action autoBalltunnelIntake() {
+    public static Action autoBallTunnelIntake() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setFeederPower(intakingPower);
@@ -79,7 +78,7 @@ public class BallTunnel {
             }
         };
     }
-    public static Action autoBalltunnelIdle() {
+    public static Action autoBallTunnelIdle() {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setFeederPower(holdPower);

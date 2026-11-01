@@ -12,11 +12,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.teamcode.Enums.LEDColor;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Sensors.Gyro;
+import org.firstinspires.ftc.teamcode.Sensors.I2CDistance;
 import org.firstinspires.ftc.teamcode.Utils.Logging.DualLogger;
 import org.firstinspires.ftc.teamcode.Utils.Logging.Logger;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
@@ -44,7 +46,7 @@ public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Below is for if you want FTC dashboard telemetry
-//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 //        logger = new Logger(this,"TeleOP");
 //        dLogger = new DualLogger(logger, this.telemetry);
@@ -64,13 +66,14 @@ public class TeleOp extends LinearOpMode {
         Drivetrain.init(this);
         Pinpoint.init(this, this.hardwareMap, afterAutoPose);
         Intake.init(this);
-//        MatchLoader.init(this);
+        MatchLoader.init(this);
         BallTunnel.init(this);
         BallGate.init(this);
         Turret.init(this);
         Shooter.init(this);
-//        LEDs.init(this);
+        LEDs.init(this);
 //        Gyro.init(this);
+        I2CDistance.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -87,28 +90,36 @@ public class TeleOp extends LinearOpMode {
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
         Intake.prime();
         Intake.extend();
-    //    MatchLoader.prime();
+        MatchLoader.prime();
         BallGate.prime();
 //        Turret.prime();
         Shooter.prime();
+        LEDs.update(LEDColor.AMBER, false, runtime);
 
-        double wallRPM = 2600; //TODO: remove just having a single RPM value and get an actual aiming system
+        double wallRPM = 2650; //TODO: remove just having a single RPM value and get an actual aiming system
         Shooter.targetRPM = wallRPM;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
         double lastLoopTimestamp = 0.0;
-
-        double targetRPM = 2750;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             for (LynxModule hub : allHubs) { //Bulk read first thing
                 hub.clearBulkCache();
             }
+            telemetry.addData("Alliance", alliance.getCapitalized());
             telemetry.addData("Control Hub Voltage", controlHub.getInputVoltage(VoltageUnit.VOLTS));
             telemetry.addData("Expansion Hub Voltage", expansionHub.getInputVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Control Hub Aux Rail Voltage", controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
 //            telemetry.addData("Expansion Hub Aux Rail Voltage", expansionHub.getAuxiliaryVoltage(VoltageUnit.VOLTS));
+
+            if (gamepad2.backWasPressed()) {
+                if (alliance == SideColor.BLUE) {
+                    alliance = SideColor.RED;
+                } else {
+                    alliance = SideColor.BLUE;
+                }
+            }
 
 
 
@@ -125,38 +136,46 @@ public class TeleOp extends LinearOpMode {
 
             boolean shootButton = gamepad1.right_trigger > 0.5;
 
-            boolean matchLoaderButton = gamepad1.a;
+            boolean matchLoaderButton = gamepad1.right_bumper;
+
+            //To change if needed
+            boolean useSensors = true; //TODO: make operator be able to override?
+            boolean fieldRelocalize = true; //TODO: make this actually change stuff and not be a dummy value
 
             //Overrides/Safeties
             boolean relocalize = gamepad1.back;
 
-            boolean intakePivotOverride = gamepad2.a;
-            boolean intakePivotSwapDefault = gamepad2.bWasPressed();
+            boolean intakePivotOverride = gamepad2.a; //TODO: toggle
+            boolean depowerIntake = gamepad2.bWasPressed();
 
-            boolean ballTunnelReverse = gamepad1.right_bumper;
+            boolean ballTunnelReverse = gamepad1.a; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
-            boolean zeroRPM = gamepad2.start;
+            boolean zeroRPM = false; //gamepad2.backWasPressed();
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
-            if (zeroRPM || runtime.seconds() > 121) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
-
-
-
+            if (zeroRPM || ((runtime.seconds() > 121) && (runtime.seconds() < 122))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
-            Pinpoint.update(false);  //TODO: fix and make work later
-            Intake.update(intakeButton, ejectButton, (/*BallTunnel.full || */intakePivotOverride), intakePivotSwapDefault);
-//            MatchLoader.update(matchLoaderButton);
+            Pinpoint.update(gamepad2.y, gamepad2.x, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
+            Intake.update(intakeButton, ejectButton || (useSensors && I2CDistance.ballsHeld() > 4), !intakeButton && (intakePivotOverride || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
+            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
-            BallGate.update(shootButton);
+            BallGate.update(shootButton || ballTunnelReverse);
+            Turret.update(deltaTime);
             Shooter.update(deltaTime);
-//            LEDs.update(tbd, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+//            LEDs.update(LEDColor.GREEN, runtime.seconds() > 110, runtime); //Flash at last 10 sec for parking reminder
+            if (runtime.seconds() > 110) {
+                LEDs.update(LEDColor.RED, true, runtime); //Flash at last 10 sec for parking reminder
+            } else {
+                LEDs.update(LEDColor.GREEN, false, runtime); //Flash at last 10 sec for parking reminder
+            }
+            I2CDistance.update();
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
@@ -168,7 +187,7 @@ public class TeleOp extends LinearOpMode {
             deltaTime = runtime.milliseconds() - lastLoopTimestamp;
             lastLoopTimestamp = runtime.milliseconds();
         }
-//        LEDs.turnOff();
+        LEDs.turnOff();
 //        try {
 //            logger.write();
 //        } catch (IOException e) {

@@ -104,7 +104,7 @@ public class Shooter {
         }
     }
 
-    private static void updateFlywheel(double deltaTime) {
+    private static void updateFlywheel(double deltaTime) { //TODO: make it able to go downwards
 //        double voltage = hubVoltageSensor.getVoltage();
         //TODO: fix the temp lock on backdriving with a proper slew rate limiter for later comps than lm0
         if (targetRPM == 0 || targetRPM-getCurrentRPM() < 0) { //Allow setting to 0 to just drop power, rather than waste power trying to force the flywheel back to a stop

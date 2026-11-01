@@ -116,10 +116,10 @@ public class LM0BuddyPark3 extends LinearOpMode {
                 Shooter.autoWaitForSpeed(50, 4),
                 Paths.wait(drive, delay),
                 BallGate.autoOpen(),
-                BallTunnel.autoBalltunnelShoot(),
+                BallTunnel.autoBallTunnelShoot(),
                 Paths.wait(drive, shotTime), //Hardcoded wait for shooting rn
                 BallGate.autoClose(),
-                BallTunnel.autoBalltunnelIdle()
+                BallTunnel.autoBallTunnelIdle()
         );
 
 

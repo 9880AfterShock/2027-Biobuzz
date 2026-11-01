@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallGate;
 import org.firstinspires.ftc.teamcode.Mechanisms.Transfering.BallTunnel;
 import org.firstinspires.ftc.teamcode.OpModes.Autos.Paths;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
-import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
 import java.util.List;
 
@@ -97,10 +96,10 @@ public class LM0LeftSide4 extends LinearOpMode {
         Action shootSequence = new SequentialAction(
                 Shooter.autoWaitForSpeed(50, 4),
                 BallGate.autoOpen(),
-                BallTunnel.autoBalltunnelShoot(),
+                BallTunnel.autoBallTunnelShoot(),
                 Paths.wait(drive, shotTime), //Hardcoded wait for shooting rn
                 BallGate.autoClose(),
-                BallTunnel.autoBalltunnelIdle()
+                BallTunnel.autoBallTunnelIdle()
         );
 
 
@@ -128,7 +127,7 @@ public class LM0LeftSide4 extends LinearOpMode {
 
                                 Paths.tangentLinearPath(drive, startPos, posMultiplier*Math.toRadians(0.0), parkPos, posMultiplier*Math.toRadians(270.0), driveSpeed), //Park
 
-                                Intake.autoIntakeDown() //To have ready for teleop
+                                Intake.autoIntakeDown(true) //To have ready for teleop
                         ),
                         tickFunctions
                 ), allHubs
