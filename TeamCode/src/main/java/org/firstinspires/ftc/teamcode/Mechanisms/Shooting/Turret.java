@@ -5,11 +5,11 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
+import org.firstinspires.ftc.teamcode.Utils.Controllers.ChoiceController;
 import org.firstinspires.ftc.teamcode.Utils.Controllers.PID;
 
 @Config
@@ -24,10 +24,16 @@ public class Turret {
     private static final double maxRotation = 150; //TBD
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
-    private static PID turretPIDController;
-    public static double P = 0.003;
-    public static double I = 0;
-    public static double D = 0;
+    private static PID nearTurretPIDController;
+    private static PID farTurretPIDController;
+    private static ChoiceController turretController;
+    public static double nearP = 0.003;
+    public static double nearI = 0;
+    public static double nearD = 0;
+
+    public static double farP = 0.003;
+    public static double farI = 0;
+    public static double farD = 0;
     public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
     public static Pose2d goalPos = new Pose2d(440.890786 * 0.0393701, 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
@@ -36,7 +42,11 @@ public class Turret {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
         //Rev encoder is in encoder port for the turret motor
 
-        turretPIDController = new PID(P, I, D);
+        nearTurretPIDController = new PID(nearP, nearI, nearD);
+        farTurretPIDController = new PID(farP, farI, farD);
+        turretController = new ChoiceController();
+        turretController.addController(nearTurretPIDController,10);
+        turretController.addController(farTurretPIDController, Double.MAX_VALUE);
 
         //TEMP FOR LOCK
 //        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -94,7 +104,7 @@ public class Turret {
         if (Math.abs(targetPos - getCurrentPosition()) < errorMargin) {
             staticBoost = 0.0;
         }
-        setTurretPower(turretPIDController.step(targetPos, getCurrentPosition(), deltaTime) + staticBoost);
+        setTurretPower(turretController.step(targetPos, getCurrentPosition(), deltaTime) + staticBoost);
     }
 
     public static void update(double deltaTime) {
@@ -109,9 +119,9 @@ public class Turret {
     }
 
     public static void updateTest(double x, double y, boolean change, double deltaTime) { //Ignore this, temp wrapper for the test program
-        turretPIDController.p = P;
-        turretPIDController.i = I;
-        turretPIDController.d = D;
+        nearTurretPIDController.p = nearP;
+        nearTurretPIDController.i = nearI;
+        nearTurretPIDController.d = nearD;
 
 
         //TODO: fix aiming with the wrong side of the turret (may have fixed, need to test)
