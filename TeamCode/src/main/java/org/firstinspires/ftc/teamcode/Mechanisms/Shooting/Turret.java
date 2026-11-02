@@ -30,10 +30,10 @@ public class Turret {
     public static double nearP = 0.003;
     public static double nearI = 0;
     public static double nearD = 0;
-
     public static double farP = 0.003;
     public static double farI = 0;
     public static double farD = 0;
+    public static double switchValue = 15; //Value where the PID switches
     public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
     public static Pose2d goalPos = new Pose2d(440.890786 * 0.0393701, 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
@@ -45,7 +45,7 @@ public class Turret {
         nearTurretPIDController = new PID(nearP, nearI, nearD);
         farTurretPIDController = new PID(farP, farI, farD);
         turretController = new ChoiceController();
-        turretController.addController(nearTurretPIDController,10);
+        turretController.addController(nearTurretPIDController,switchValue);
         turretController.addController(farTurretPIDController, Double.MAX_VALUE);
 
         //TEMP FOR LOCK
@@ -122,6 +122,10 @@ public class Turret {
         nearTurretPIDController.p = nearP;
         nearTurretPIDController.i = nearI;
         nearTurretPIDController.d = nearD;
+
+        farTurretPIDController.p = farP;
+        farTurretPIDController.i = farI;
+        farTurretPIDController.d = farD;
 
 
         //TODO: fix aiming with the wrong side of the turret (may have fixed, need to test)
