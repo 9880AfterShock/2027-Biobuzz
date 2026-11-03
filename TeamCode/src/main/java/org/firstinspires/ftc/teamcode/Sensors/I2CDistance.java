@@ -20,8 +20,8 @@ public class I2CDistance {
     private static DistanceSensor slot1;
     private static DistanceSensor slot2;
     private static DistanceSensor slot3; //Closest to intake
-    private static DistanceSensor slot4; //Intake, for detecting overpossesion
-    private static double[] slotMemory = {9880, 9880, 9880, 9880, 9880}; //Big values to not trip a reading (9880 because team spirit!)
+//    private static DistanceSensor slot4; //Intake, for detecting overpossesion
+    private static double[] slotMemory = {9880, 9880, 9880, 9880/*, 9880*/}; //Big values to not trip a reading (9880 because team spirit!)
     private static int loopNumber = 1;
     public static int checkCount = 5; //the number of normal loops for every 1 I2C loop
     public static double threshold = 47.0; //public for dash
@@ -32,9 +32,9 @@ public class I2CDistance {
         slot1 = opmode.hardwareMap.get(DistanceSensor.class, "slot1"); //I2C Bus _ on _ hub
         slot2 = opmode.hardwareMap.get(DistanceSensor.class, "slot2"); //I2C Bus _ on _ hub
         slot3 = opmode.hardwareMap.get(DistanceSensor.class, "slot3"); //I2C Bus _ on _ hub
-        slot4 = opmode.hardwareMap.get(DistanceSensor.class, "slot4"); //I2C Bus _ on _ hub
+//        slot4 = opmode.hardwareMap.get(DistanceSensor.class, "slot4"); //I2C Bus _ on _ hub
 
-        slotMemory = new double[] {9880, 9880, 9880, 9880, 9880}; //Big values to not trip a reading (9880 because team spirit!)
+        slotMemory = new double[] {9880, 9880, 9880, 9880/*, 9880*/}; //Big values to not trip a reading (9880 because team spirit!)
 
         loopNumber = 0;
         I2CDistance.opmode = opmode;
@@ -45,7 +45,7 @@ public class I2CDistance {
         slotMemory[1] = slot1.getDistance(DistanceUnit.MM);
         slotMemory[2] = slot2.getDistance(DistanceUnit.MM);
         slotMemory[3] = slot3.getDistance(DistanceUnit.MM);
-        slotMemory[4] = slot4.getDistance(DistanceUnit.MM);
+//        slotMemory[4] = slot4.getDistance(DistanceUnit.MM);
     }
 
     public static int ballsHeld() { //Sensors tripped
@@ -83,7 +83,7 @@ public class I2CDistance {
         opmode.telemetry.addData("2nd slot", slotMemory[1]);
         opmode.telemetry.addData("3rd slot", slotMemory[2]);
         opmode.telemetry.addData("Last slot", slotMemory[3]);
-        opmode.telemetry.addData("Intake slot (Overpossession)", slotMemory[4]);
+//        opmode.telemetry.addData("Intake slot (Overpossession)", slotMemory[4]);
         //nothing for now
     }
 
