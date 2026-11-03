@@ -79,11 +79,11 @@ public class I2CDistance {
         opmode.telemetry.addData("Balls Held", ballsHeld());
         opmode.telemetry.addData("Balls Secured", ballsSecured());
 
-        opmode.telemetry.addData("Shooter slot", slotMemory[0]);
-        opmode.telemetry.addData("2nd slot", slotMemory[1]);
-        opmode.telemetry.addData("3rd slot", slotMemory[2]);
-        opmode.telemetry.addData("Last slot", slotMemory[3]);
-//        opmode.telemetry.addData("Intake slot (Overpossession)", slotMemory[4]);
+        opmode.telemetry.addData("Shooter slot (slot0)", slotMemory[0]);
+        opmode.telemetry.addData("2nd slot (slot1)", slotMemory[1]);
+        opmode.telemetry.addData("3rd slot (slot2)", slotMemory[2]);
+        opmode.telemetry.addData("Last slot (slot3)", slotMemory[3]);
+//        opmode.telemetry.addData("Intake slot (Overpossession) (slot4)", slotMemory[4]);
         //nothing for now
     }
 
