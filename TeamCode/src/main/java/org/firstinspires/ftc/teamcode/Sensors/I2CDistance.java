@@ -72,7 +72,7 @@ public class I2CDistance {
     public static void update() {
         loopNumber++;
         if (loopNumber >= checkCount) {
-            updateReadings();
+//            updateReadings();
             loopNumber = 0;
         }
 

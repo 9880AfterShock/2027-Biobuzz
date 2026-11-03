@@ -38,8 +38,8 @@ public class Turret {
     public static double switchValue = 15; //Value where the PID switches
     public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
-    public static double goalDepth = 440.890786 * 0.0393701; //How far from the fulcrum of the hive we are shooting, change to control how far in we shoot
-    public static double goalCenter = 323.850000 * 0.0393701; //Offset of the fulcrum of the hive to the center for the field, change to change our aim left/right facing the goal
+    public static double goalDepth = (495.631795 + 306.312426 / 2) * 0.0393701; //How far from the fulcrum of the hive we are shooting, change to control how far in we shoot //Right now the average of the furthest out and furthest in points of the open goal face
+    public static double goalCenter = 323.638 * 0.0393701; //Offset of the fulcrum of the hive to the center for the field, change to change our aim left/right facing the goal
     public static Pose2d goalPos = new Pose2d(goalDepth, goalCenter, 0.0); //Blue goal audience side at the moment
 
     public static void init(OpMode opmode) {
@@ -58,17 +58,20 @@ public class Turret {
 //        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //Need to make not reset after auto, until we have full sensorange implementation
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //This means no encoder to enforce internal PID, not that we do not get readings
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        turret.setDirection(DcMotorSimple.Direction.FORWARD);
         turret.setPower(0.0);
+        targetPos = 0;
 
         Turret.opmode = opmode;
     }
 
     public static void prime() {
-        //TEMP locking code
+//        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos //Caden, I will do this later
     }
@@ -112,16 +115,26 @@ public class Turret {
     }
 
     public static void update(double deltaTime, SideColor alliance) {
+        nearTurretPIDController.p = nearP;
+        nearTurretPIDController.i = nearI;
+        nearTurretPIDController.d = nearD;
+
+        farTurretPIDController.p = farP;
+        farTurretPIDController.i = farI;
+        farTurretPIDController.d = farD;
+
         //TODO: encoder tracking, abs and quad, read and reset and update
 
         //Flip Goal based on what side of the field and what alliance
         int sideSign;
         if (alliance == SideColor.BLUE) {
-            sideSign = 1;
-        } else {
             sideSign = -1;
+        } else {
+            sideSign = 1;
         }
-        goalPos = new Pose2d(Math.signum(calcTurretPosition(Pinpoint.getPose()).position.x) * 440.890786 * 0.0393701, sideSign * 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
+        if (Math.abs(Math.hypot(Pinpoint.getPose().position.x, Pinpoint.getPose().position.y)) > 5) { //Make sure we are not in the center in overlap, which jerks the turret
+            goalPos = new Pose2d(Math.signum(calcTurretPosition(Pinpoint.getPose()).position.x) * 440.890786 * 0.0393701, sideSign * 323.850000 * 0.0393701, 0.0);
+        }
 
         setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
 
@@ -131,16 +144,19 @@ public class Turret {
         opmode.telemetry.addData("Turret Current Rotation", getCurrentPosition());
         opmode.telemetry.addData("Turret Power", turretPower);
         opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));
+
+        opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
+        opmode.telemetry.addData("GOAL ANGLE", calcTurretAngle(Pinpoint.getPose(), goalPos));
     }
 
     public static void updateTest(double x, double y, boolean change, double deltaTime, SideColor alliance) { //Ignore this, temp wrapper for the test program
-        nearTurretPIDController.p = nearP;
-        nearTurretPIDController.i = nearI;
-        nearTurretPIDController.d = nearD;
-
-        farTurretPIDController.p = farP;
-        farTurretPIDController.i = farI;
-        farTurretPIDController.d = farD;
+//        nearTurretPIDController.p = nearP;
+//        nearTurretPIDController.i = nearI;
+//        nearTurretPIDController.d = nearD;
+//
+//        farTurretPIDController.p = farP;
+//        farTurretPIDController.i = farI;
+//        farTurretPIDController.d = farD;
 
 
         //TODO: fix aiming with the wrong side of the turret (may have fixed, need to test)

@@ -9,6 +9,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
@@ -97,6 +98,7 @@ public class TeleOp extends LinearOpMode {
         LEDs.update(LEDColor.AMBER, false, runtime);
 
         double wallRPM = 2650; //TODO: remove just having a single RPM value and get an actual aiming system
+        double hoodAngle = 12;
         Shooter.targetRPM = wallRPM;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
@@ -156,15 +158,23 @@ public class TeleOp extends LinearOpMode {
             boolean zeroRPM = false; //gamepad2.backWasPressed();
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
+            if (gamepad2.dpadLeftWasPressed()) { Shooter.targetRPM -= 500; }
+            if (gamepad2.dpadRightWasPressed()) { Shooter.targetRPM += 500; }
+            if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
             if (zeroRPM || ((runtime.seconds() > 121) && (runtime.seconds() < 122))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
+
+
+            if (gamepad1.dpadUpWasPressed()) { hoodAngle += 0.5; }
+            if (gamepad1.dpadDownWasPressed()) { hoodAngle -= 0.5; }
+            Shooter.setHoodAngle(hoodAngle);
 
 
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
             Pinpoint.update(gamepad2.y, gamepad2.x, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
             Intake.update(intakeButton, ejectButton || (useSensors && I2CDistance.ballsHeld() > 4), !intakeButton && (intakePivotOverride || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
-            MatchLoader.update(matchLoaderButton);
+//            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton || ballTunnelReverse);
             Turret.update(deltaTime, alliance);

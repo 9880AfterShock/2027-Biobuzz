@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Mechanisms.Drivetrain;
+import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Shooter;
 import org.firstinspires.ftc.teamcode.Mechanisms.Shooting.Turret;
 import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 
@@ -39,6 +40,7 @@ public class TurretTest extends LinearOpMode {
         Turret.init(this);
         Drivetrain.init(this);
         Pinpoint.init(this, hardwareMap, new Pose2d(0.0, 0.0, 0.0));
+        Shooter.init(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -80,6 +82,7 @@ public class TurretTest extends LinearOpMode {
             Drivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, false, gamepad1.back);
             Pinpoint.update(gamepad1.a, gamepad1.y, SideColor.BLUE);
             Turret.updateTest(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.left_stick_button, deltaTime, alliance);
+            Shooter.update(deltaTime);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;
