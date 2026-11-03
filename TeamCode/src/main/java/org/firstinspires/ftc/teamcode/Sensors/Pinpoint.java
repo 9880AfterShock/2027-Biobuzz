@@ -141,7 +141,7 @@ public class Pinpoint {
 
     public static void draw(TelemetryPacket packet) {
         //Set field sprite:
-        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice.png", -72, -72, 144, 144);
+        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice.png", 0, 0, 144, 144);
 //        packet.fieldOverlay().drawImage("/images/Biobuzz-Juice-White.png", -72, -72, 144, 144);
 
         //Drive:

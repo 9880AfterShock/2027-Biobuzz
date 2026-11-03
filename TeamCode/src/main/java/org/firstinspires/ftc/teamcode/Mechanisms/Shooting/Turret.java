@@ -27,12 +27,12 @@ public class Turret {
     private static PID nearTurretPIDController;
     private static PID farTurretPIDController;
     private static ChoiceController turretController;
-    public static double nearP = 0.003;
-    public static double nearI = 0;
-    public static double nearD = 0;
-    public static double farP = 0.003;
-    public static double farI = 0;
-    public static double farD = 0;
+    public static double nearP = 0.001;
+    public static double nearI = 0.0;
+    public static double nearD = 0.0;
+    public static double farP = 0.001;
+    public static double farI = 0.0;
+    public static double farD = 0.0;
     public static double switchValue = 15; //Value where the PID switches
     public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
