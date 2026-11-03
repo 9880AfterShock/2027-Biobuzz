@@ -79,7 +79,7 @@ public class TurretTest extends LinearOpMode {
             //Tick Functions
             Drivetrain.updateDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, false, gamepad1.back);
             Pinpoint.update(gamepad1.a, gamepad1.y, SideColor.BLUE);
-            Turret.updateTest(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.left_stick_button, deltaTime);
+            Turret.updateTest(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.left_stick_button, deltaTime, alliance);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             loops += 1;

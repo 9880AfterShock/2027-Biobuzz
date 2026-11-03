@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Enums.Side;
+import org.firstinspires.ftc.teamcode.Enums.SideColor;
 import org.firstinspires.ftc.teamcode.Sensors.Pinpoint;
 import org.firstinspires.ftc.teamcode.Utils.Controllers.ChoiceController;
 import org.firstinspires.ftc.teamcode.Utils.Controllers.PID;
@@ -36,7 +38,9 @@ public class Turret {
     public static double switchValue = 15; //Value where the PID switches
     public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
-    public static Pose2d goalPos = new Pose2d(440.890786 * 0.0393701, 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
+    public static double goalDepth = 440.890786 * 0.0393701; //How far from the fulcrum of the hive we are shooting, change to control how far in we shoot
+    public static double goalCenter = 323.850000 * 0.0393701; //Offset of the fulcrum of the hive to the center for the field, change to change our aim left/right facing the goal
+    public static Pose2d goalPos = new Pose2d(goalDepth, goalCenter, 0.0); //Blue goal audience side at the moment
 
     public static void init(OpMode opmode) {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
@@ -107,8 +111,19 @@ public class Turret {
         setTurretPower(turretController.step(targetPos, getCurrentPosition(), deltaTime) + staticBoost);
     }
 
-    public static void update(double deltaTime) {
+    public static void update(double deltaTime, SideColor alliance) {
         //TODO: encoder tracking, abs and quad, read and reset and update
+
+        //Flip Goal based on what side of the field and what alliance
+        int sideSign;
+        if (alliance == SideColor.BLUE) {
+            sideSign = 1;
+        } else {
+            sideSign = -1;
+        }
+        goalPos = new Pose2d(Math.signum(calcTurretPosition(Pinpoint.getPose()).position.x) * 440.890786 * 0.0393701, sideSign * 323.850000 * 0.0393701, 0.0); //Blue goal audience side at the moment
+
+        setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
 
         updateTurretPower(deltaTime);
 
@@ -118,7 +133,7 @@ public class Turret {
         opmode.telemetry.addData("Turret Amps", turret.getCurrent(CurrentUnit.AMPS));
     }
 
-    public static void updateTest(double x, double y, boolean change, double deltaTime) { //Ignore this, temp wrapper for the test program
+    public static void updateTest(double x, double y, boolean change, double deltaTime, SideColor alliance) { //Ignore this, temp wrapper for the test program
         nearTurretPIDController.p = nearP;
         nearTurretPIDController.i = nearI;
         nearTurretPIDController.d = nearD;
@@ -138,7 +153,7 @@ public class Turret {
 //                setTurretTarget(Math.toDegrees(Math.atan2(-x,-y)));
 //            }
 //        }
-        update(deltaTime);
+        update(deltaTime, alliance);
 
         opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
         opmode.telemetry.addData("GOAL ANGLE", calcTurretAngle(Pinpoint.getPose(), goalPos));
