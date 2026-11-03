@@ -28,10 +28,10 @@ public class I2CDistance {
     private static OpMode opmode;
 
     public static void init(OpMode opmode) {
-        slot0 = opmode.hardwareMap.get(DistanceSensor.class, "slot0"); //I2C Bus _ on _ hub
-        slot1 = opmode.hardwareMap.get(DistanceSensor.class, "slot1"); //I2C Bus _ on _ hub
-        slot2 = opmode.hardwareMap.get(DistanceSensor.class, "slot2"); //I2C Bus _ on _ hub
-        slot3 = opmode.hardwareMap.get(DistanceSensor.class, "slot3"); //I2C Bus _ on _ hub
+        slot0 = opmode.hardwareMap.get(DistanceSensor.class, "slot0"); //I2C Bus 0 (Device 0) on expansion hub
+        slot1 = opmode.hardwareMap.get(DistanceSensor.class, "slot1"); //I2C Bus 1 (Device 0) on expansion hub
+        slot2 = opmode.hardwareMap.get(DistanceSensor.class, "slot2"); //I2C Bus 2 (Device 0) on expansion hub
+        slot3 = opmode.hardwareMap.get(DistanceSensor.class, "slot3"); //I2C Bus 3 (Device 0) on expansion hub
 //        slot4 = opmode.hardwareMap.get(DistanceSensor.class, "slot4"); //I2C Bus _ on _ hub
 
         slotMemory = new double[] {9880, 9880, 9880, 9880/*, 9880*/}; //Big values to not trip a reading (9880 because team spirit!)
