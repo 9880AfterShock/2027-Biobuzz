@@ -102,6 +102,7 @@ public class TeleOp extends LinearOpMode {
         double wallRPM = 2650; //TODO: remove just having a single RPM value and get an actual aiming system
         double hoodAngle = 12;
         Shooter.targetRPM = wallRPM;
+        boolean useSensors = true;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
         double lastLoopTimestamp = 0.0;
@@ -143,16 +144,18 @@ public class TeleOp extends LinearOpMode {
             boolean matchLoaderButton = gamepad1.right_bumper;
 
             //To change if needed
-            boolean useSensors = true; //TODO: make operator be able to override?
-            boolean fieldRelocalize = true; //TODO: make this actually change stuff and not be a dummy value
+            if (gamepad2.yWasPressed()) { useSensors = !useSensors; }
 
             //Overrides/Safeties
-            boolean relocalize = gamepad1.back;
+            boolean resetGyro = gamepad1.back; //TODO: figure out if we even need this still, if gyro is off odo is off and we need to reset anyways
 
-            boolean intakePivotOverride = gamepad2.a; //TODO: toggle
-            boolean depowerIntake = gamepad2.bWasPressed();
+            boolean resetOrigin = gamepad2.xWasPressed(); //TODO: check on presses/vs held here
+            boolean snapCorner = gamepad1.right_bumper; //TODO: give to Owen as well?
 
-            boolean ballTunnelReverse = gamepad1.a; //TODO: determine control (GP2 or when reverse intake is held with a modifier)
+            boolean liftIntake = gamepad2.a; //TODO: toggle? ask Emmett if he got this and depower swapped
+            boolean depowerIntake = gamepad2.right_trigger > 0.45; //Note: Emmett likes a easier to trigger zone, hence the 45% over Owen's 50%
+
+            boolean ballTunnelReverse = gamepad1.a || gamepad2.b;
 
             boolean fudgeUp = gamepad2.dpadUpWasPressed();
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
@@ -160,22 +163,23 @@ public class TeleOp extends LinearOpMode {
             boolean zeroRPM = false; //gamepad2.backWasPressed();
             if (fudgeUp) { Shooter.targetRPM += 50; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
-            if (gamepad2.dpadLeftWasPressed()) { Shooter.targetRPM -= 500; }
-            if (gamepad2.dpadRightWasPressed()) { Shooter.targetRPM += 500; }
             if (fudgeDown) { Shooter.targetRPM -= 50; }
             if (resetRPM) { Shooter.targetRPM = wallRPM; }
             if (zeroRPM || ((runtime.seconds() > 121) && (runtime.seconds() < 122))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
+            //Temp for tuning
+            if (gamepad2.dpadLeftWasPressed()) { Shooter.targetRPM -= 500; }
+            if (gamepad2.dpadRightWasPressed()) { Shooter.targetRPM += 500; }
             if (gamepad1.dpadUpWasPressed()) { hoodAngle += 0.5; }
             if (gamepad1.dpadDownWasPressed()) { hoodAngle -= 0.5; }
             Shooter.setHoodAngle(hoodAngle);
 
 
             //Tick Functions
-            Drivetrain.updateDrive(strafe, drive, turn, slowMode, relocalize);
-            Pinpoint.update(gamepad2.y, gamepad2.x, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
-            Intake.update(intakeButton, ejectButton || (useSensors && I2CDistance.ballsHeld() > 4), !intakeButton && (intakePivotOverride || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
+            Drivetrain.updateDrive(strafe, drive, turn, slowMode, resetGyro);
+            Pinpoint.update(snapCorner, resetOrigin, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
+            Intake.update(intakeButton, ejectButton, !intakeButton && (liftIntake || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
 //            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton || ballTunnelReverse);
