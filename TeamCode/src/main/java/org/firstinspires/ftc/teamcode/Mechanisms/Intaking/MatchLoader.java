@@ -13,6 +13,7 @@ public class MatchLoader {
     private static Servo matchLoaderServo;
     private static OpMode opmode;
     public static boolean deployed;
+    public static double startingPos = 0.2;
     public static double retractedPos = 0.3;
     public static double deployedPos = 0.8875;
 
@@ -22,7 +23,7 @@ public class MatchLoader {
     }
 
     public static void prime() {
-        matchLoaderServo.setPosition(retractedPos);
+        matchLoaderServo.setPosition(startingPos);
         deployed = false;
     }
 

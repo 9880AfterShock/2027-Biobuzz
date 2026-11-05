@@ -150,7 +150,7 @@ public class TeleOp extends LinearOpMode {
             boolean resetGyro = gamepad1.back; //TODO: figure out if we even need this still, if gyro is off odo is off and we need to reset anyways
 
             boolean resetOrigin = gamepad2.xWasPressed(); //TODO: check on presses/vs held here
-            boolean snapCorner = gamepad1.right_bumper; //TODO: give to Owen as well?
+            boolean snapCorner = gamepad2.right_bumper; //TODO: give to Owen as well?
 
             boolean liftIntake = gamepad2.a; //TODO: toggle? ask Emmett if he got this and depower swapped
             boolean depowerIntake = gamepad2.right_trigger > 0.45; //Note: Emmett likes a easier to trigger zone, hence the 45% over Owen's 50%

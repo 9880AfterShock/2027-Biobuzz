@@ -41,7 +41,7 @@ public class Shooter {
     public static double errorMargin = 50; //error margin in RPM to be allowed to shooter, maybe make into a scalar at some point? (more lenience at higher speeds)
     private final static double hoodRatio = 7; //TBD, number to multiply a degree target by to get that degree on the hood. will need other consts for the hood as well
     private final static double hoodMin = 12; //tbd, hood min and max in degrees
-    private final static double hoodMax = 24;
+    private final static double hoodMax = 27;
     private final static double ticksPerRotation = 28; //1:1 sprocket
     private static final boolean nectar = false; //Change + un-comment out other code later
 
