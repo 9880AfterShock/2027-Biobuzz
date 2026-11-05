@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -55,6 +56,7 @@ public class TeleOp extends LinearOpMode {
         allHubs = hardwareMap.getAll(LynxModule.class); //Set for bulk read
         LynxModule controlHub = hardwareMap.get(LynxModule.class, "Control Hub"); //Individual for voltage readings
         LynxModule expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
+        VoltageSensor robotVoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         if (afterAutoPose == null) { //If no auto was run, assume we are in the center so we can safely reset in either corner opposite of the side we started on
             afterAutoPose = new Pose2d(0.0, 0.0, 0.0);

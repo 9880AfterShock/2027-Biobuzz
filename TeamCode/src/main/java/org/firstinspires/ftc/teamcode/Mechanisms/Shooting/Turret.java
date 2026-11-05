@@ -22,8 +22,8 @@ public class Turret {
     private static OpMode opmode;
     private static double turretPower;
     private static double targetPos;
-    private static final double minRotation = -150; //TBD
-    private static final double maxRotation = 150; //TBD
+    private static final double minRotation = -120; //TBD
+    private static final double maxRotation = 120; //TBD
     private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
 
     private static PID nearTurretPIDController;
@@ -31,10 +31,10 @@ public class Turret {
     private static ChoiceController turretController;
     public static double nearP = 0.001;
     public static double nearI = 0.0;
-    public static double nearD = 0.0;
-    public static double farP = 0.001;
+    public static double nearD = 1.0;
+    public static double farP = 0.0005;
     public static double farI = 0.0;
-    public static double farD = 0.0;
+    public static double farD = 3.0;
     public static double switchValue = 15; //Value where the PID switches
     public static double kStatic = 0.09; //Temp for dashboard
     public static double errorMargin = 0.5; //Dead band for kStatic
@@ -135,8 +135,9 @@ public class Turret {
         if (Math.abs(Math.hypot(Pinpoint.getPose().position.x, Pinpoint.getPose().position.y)) > 5) { //Make sure we are not in the center in overlap, which jerks the turret
             goalPos = new Pose2d(Math.signum(calcTurretPosition(Pinpoint.getPose()).position.x) * 440.890786 * 0.0393701, sideSign * 323.850000 * 0.0393701, 0.0);
         }
-
-        setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
+        if (Math.abs(Math.hypot(Pinpoint.getPose().position.x - goalPos.position.x, Pinpoint.getPose().position.y - goalPos.position.y)) > 3) { //Make sure we aren't under the goal directly, which jerks the turret
+            setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
+        }
 
         updateTurretPower(deltaTime);
 
