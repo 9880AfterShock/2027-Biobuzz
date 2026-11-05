@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Shooting;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -179,5 +184,24 @@ public class Turret {
     //Caden I should probably do this
     public static double normalizeNegative(double angle, double rotation){
         return ((angle % rotation) + rotation) % rotation - (rotation / 2);
+    }
+
+    public static Action autoUpdateLoop(SideColor alliance) {
+        return new Action() {
+            private double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
+            private double lastLoopTimestamp = 0.0;
+            private ElapsedTime turretLooptimer = new ElapsedTime();
+            private boolean first = true;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    turretLooptimer.reset();
+                    first = false;
+                }
+                update(deltaTime, alliance);
+                deltaTime = turretLooptimer.milliseconds() - lastLoopTimestamp;
+                lastLoopTimestamp = turretLooptimer.milliseconds();
+                return true;
+            }
+        };
     }
 }

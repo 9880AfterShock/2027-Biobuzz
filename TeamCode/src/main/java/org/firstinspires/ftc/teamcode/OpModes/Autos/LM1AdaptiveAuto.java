@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -30,7 +31,7 @@ import org.firstinspires.ftc.teamcode.Sensors.Vision.Limelight;
 
 import java.util.List;
 
-//@Disabled
+@Disabled
 @Autonomous(name = "Adaptive Auto LM1, (Use Gamepad Input)")
 public class LM1AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;

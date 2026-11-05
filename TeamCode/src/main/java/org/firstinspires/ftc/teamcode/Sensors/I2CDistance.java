@@ -87,7 +87,7 @@ public class I2CDistance {
         //nothing for now
     }
 
-    public static Action waitToEmpty(int timeout) {
+    public static Action waitToEmpty(double timeout, boolean disableReadings) {
         return new Action() {
             private boolean first = true;
             ElapsedTime timer = new ElapsedTime();;
@@ -97,12 +97,12 @@ public class I2CDistance {
                     first = false;
                 }
                 updateReadings();
-                return ballsHeld() != 0 && timer.seconds() <= timeout;
+                return (ballsHeld() != 0 && !disableReadings) && timer.seconds() <= timeout;
             }
         };
     }
 
-    public static Action waitToFill(int timeout) {
+    public static Action waitToFill(double timeout, boolean disableReadings) {
         return new Action() {
             private boolean first = true;
             ElapsedTime timer = new ElapsedTime();;
@@ -112,7 +112,7 @@ public class I2CDistance {
                     first = false;
                 }
                 updateReadings();
-                return ballsSecured() < 4 && timer.seconds() <= timeout;
+                return (ballsSecured() < 4 && !disableReadings) && timer.seconds() <= timeout;
             }
         };
     }
