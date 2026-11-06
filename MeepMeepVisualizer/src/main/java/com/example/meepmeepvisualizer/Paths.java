@@ -2,6 +2,7 @@ package com.example.meepmeepvisualizer;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
@@ -11,7 +12,7 @@ public class Paths {
         double tangent = Math.atan2(endPose.position.y - startPos.position.y, endPose.position.x - startPos.position.x);
         return drive.getDrive().actionBuilder(startPos)
                 .setTangent(tangent)
-                .splineToLinearHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed))
+                .splineToLinearHeading(endPose, tangent, new TranslationalVelConstraint(minSpeed), new ProfileAccelConstraint(-80.0, 80.0))
                 .build();
     }
     public static Action directSplinePath(RoadRunnerBotEntity drive, Pose2d startPos, Pose2d endPose, double minSpeed){

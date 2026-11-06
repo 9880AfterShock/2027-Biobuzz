@@ -205,4 +205,17 @@ public class Turret {
             }
         };
     }
+
+    public static Action setTarget(Pose2d robotPos, boolean waitForAlign) {
+        return new Action() {
+            private boolean first = true;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (first){
+                    setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(robotPos, goalPos) - (robotPos.heading.toDouble() + Math.PI*2), Math.PI*2)));
+                    first = false;
+                }
+                return waitForAlign && Math.abs(getCurrentPosition() - targetPos) > errorMargin; //TODO: figure out margin better
+            }
+        };
+    }
 }

@@ -11,6 +11,8 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+
 import javax.imageio.ImageIO;
 
 public class MeepMeepVisualizer {
@@ -79,7 +81,7 @@ public class MeepMeepVisualizer {
         );*/
 
         //LM0 8 Buddy Park (4 left)
-        ///*
+        /*
         Pose2d startPosRight;
         Pose2d startPosLeft;
         Pose2d preGardenPos;
@@ -143,6 +145,7 @@ public class MeepMeepVisualizer {
 
                         Paths.wait(myBot, shotTime), //Just shooting and parking
                         //LEFT END*/
+        /*
 
                         //Park from left side
                         Paths.tangentLinearPath(myBot, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed), //leave shooting
@@ -217,6 +220,130 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, shootPos4, parkPos1, driveSpeed) //to park
                 )
         ); */
+
+
+
+
+
+
+
+        //LM2 Adaptive
+        ///*
+        Pose2d centerStartPosRight;
+        Pose2d startPosRight;
+        Pose2d startPosLeft;
+
+        Pose2d preGardenPos;
+        Pose2d gardenPos;
+
+        Pose2d leftTransitPos;
+        Pose2d rightTransitPos;
+        Pose2d rightFlowerTransitPos;
+
+        Pose2d preLeftFlowerPos;
+        Pose2d leftFlowerPos;
+        Pose2d preRightFlowerPos;
+        Pose2d rightFlowerPos;
+
+        Pose2d preParkPosRightFlower;
+        Pose2d parkPosRightFlower;
+
+        Pose2d preParkPosRight;
+        Pose2d parkPosRight;
+        Pose2d preParkPosLeft;
+        Pose2d parkPosLeft;
+
+        int posMultiplier = 1;
+        double posRotation = Math.toRadians(90 - posMultiplier*90);
+
+        double driveSpeed = 80.0; //Probably max we can do
+        double ramSpeed = 20.0; //Being safer
+        double flowerSpeed = 15.0; //For ramming the matchloader into the flower
+        double shotTime = 5.0; //Very on safe side for now
+        double intakeTime = 3.0; //For garden vectoring. If we do change to sideways we want a speed of 5 in/sec to vector them in well
+        double flowerTime = 2.0; //How long to wait at flower for balls to come down? Maybe just have addition to shoot time
+
+        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        startPosRight = new Pose2d(posMultiplier*57.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+
+        preGardenPos = new Pose2d(posMultiplier*56.0, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
+
+        leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightTransitPos = new Pose2d(posMultiplier*30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightFlowerTransitPos = new Pose2d(posMultiplier*-25.0, posMultiplier*-36.0, posRotation+Math.toRadians(270.0));
+
+        preLeftFlowerPos = new Pose2d(posMultiplier*-52, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
+        leftFlowerPos = new Pose2d(posMultiplier*-55.426695, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
+
+        preRightFlowerPos = new Pose2d(posMultiplier*24.0, posMultiplier*-52, posRotation+Math.toRadians(270.0));
+        rightFlowerPos = new Pose2d(posMultiplier*24.0, posMultiplier*-55.426695, posRotation+Math.toRadians(270.0));
+
+        preParkPosRightFlower = new Pose2d(posMultiplier*10.0, posMultiplier*-55.0, posRotation+Math.toRadians(270.0));
+        parkPosRightFlower = new Pose2d(posMultiplier*-25.0, posMultiplier*-58.0, posRotation+Math.toRadians(270.0));
+
+        preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
+        parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
+
+        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
+
+
+        myBot.runAction(
+                new SequentialAction(
+//                        /*RIGHT START
+                        //Set turret + shooter stuff
+                        Paths.wait(myBot, shotTime), //preloads, 1st tip
+                        Paths.directPath(myBot, centerStartPosRight, preGardenPos, driveSpeed), //put actual deploy here
+
+
+
+                        //Intake On + Down (Down during shooter?)
+                        Paths.directPath(myBot, startPosRight, gardenPos, driveSpeed), //Pickup garden, reset ODO after this
+                        Paths.wait(myBot, intakeTime), //wait for vectoring
+                        //Raise intake
+                        //Check hive tip, if didn't tip shoot
+
+                        //Garden to left side:
+                        Paths.tangentSplinePath(myBot, gardenPos, posRotation+Math.toRadians(135.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
+                        //Intake down here
+                        Paths.directPath(myBot, rightTransitPos, leftTransitPos, driveSpeed),
+                        Paths.tangentSplinePath(myBot, leftTransitPos, posRotation+Math.toRadians(180.0), preLeftFlowerPos, posRotation+Math.toRadians(135.0), driveSpeed),
+                        Paths.wait(myBot, shotTime), //Shoot if tipped, otherwise go straight to pickup
+
+                        //Pickup Left Flower
+                        Paths.directPath(myBot, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
+                        Paths.wait(myBot, shotTime), //2nd tip if everything worked (if partner shot preloads on left we might have extra shots on goal here)
+
+
+
+                        Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
+//                        Paths.directPath(myBot, leftFlowerPos, leftTransitPos, driveSpeed),
+//                        Paths.directPath(myBot, leftTransitPos, preParkPosLeft, driveSpeed), //get ready to ram
+                        Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed)
+
+
+
+
+                        //Cutting for reliable park
+
+                        /* Left Flower to Right Flower
+                        Paths.tangentSplinePath(myBot, leftFlowerPos, posRotation+Math.toRadians(315.0), rightFlowerTransitPos, posRotation+Math.toRadians(0.0), driveSpeed),
+//                        Paths.directPath(myBot, leftTransitPos, rightTransitPos, driveSpeed),
+                        Paths.tangentLinearPath(myBot, rightFlowerTransitPos, posRotation+Math.toRadians(0.0), preRightFlowerPos, posRotation+Math.toRadians(270.0), driveSpeed),
+
+                        //Pickup Right Flower
+                        Paths.directPath(myBot, preRightFlowerPos, rightFlowerPos, flowerSpeed)//,
+                        //Check hive vision? Do we have time for either side + buddy park?
+
+                        //To Shoot Left
+
+
+                        /*Direct Buddy Park
+                        Paths.directPath(myBot, rightFlowerPos, preParkPosRightFlower, driveSpeed),
+                        //Raise matchloader
+                        Paths.directPath(myBot, preParkPosRightFlower, parkPosRightFlower, ramSpeed) //*/
+                )
+        );//*/
 
 //        Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
 //        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));
