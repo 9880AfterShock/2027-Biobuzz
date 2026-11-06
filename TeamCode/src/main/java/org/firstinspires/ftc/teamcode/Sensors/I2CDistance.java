@@ -87,7 +87,7 @@ public class I2CDistance {
         //nothing for now
     }
 
-    public static Action waitToEmpty(double timeout, boolean disableReadings) {
+    public static Action waitToEmpty(double timeout, boolean useSensor) {
         return new Action() {
             private boolean first = true;
             ElapsedTime timer = new ElapsedTime();;
@@ -97,12 +97,12 @@ public class I2CDistance {
                     first = false;
                 }
                 updateReadings();
-                return (ballsHeld() != 0 && !disableReadings) && timer.seconds() <= timeout;
+                return (ballsHeld() != 0 && useSensor) && timer.seconds() <= timeout;
             }
         };
     }
 
-    public static Action waitToFill(double timeout, boolean disableReadings) {
+    public static Action waitToFill(double timeout, boolean useSensor) {
         return new Action() {
             private boolean first = true;
             ElapsedTime timer = new ElapsedTime();;
@@ -112,7 +112,7 @@ public class I2CDistance {
                     first = false;
                 }
                 updateReadings();
-                return (ballsSecured() < 4 && !disableReadings) && timer.seconds() <= timeout;
+                return (ballsSecured() < 4 && useSensor) && timer.seconds() <= timeout;
             }
         };
     }

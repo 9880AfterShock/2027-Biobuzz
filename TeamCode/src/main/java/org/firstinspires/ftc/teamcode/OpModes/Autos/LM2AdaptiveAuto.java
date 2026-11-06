@@ -39,10 +39,10 @@ import java.util.List;
 public class LM2AdaptiveAuto extends LinearOpMode {
     private static List<LynxModule> allHubs;
     //Currently no plan to ever disable preloads, this saves me work
-    private static Boolean gardenSource = true;
-    private static Boolean leftFlower = true; //Alliance Side Perspective
-    private static Boolean rightFlower = true; //Alliance Side Perspective
-    private static Boolean partnerSource = false; //Picking up against the side of partner who cannot shoot, to be figured out
+//    private static Boolean gardenSource = true;
+//    private static Boolean leftFlower = true; //Alliance Side Perspective
+//    private static Boolean rightFlower = true; //Alliance Side Perspective
+//    private static Boolean partnerSource = false; //Picking up against the side of partner who cannot shoot, to be figured out
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
     private int posMultiplier = 1; //Default to blue because of red favored in bracket
     private double posRotation = Math.toRadians(90 - posMultiplier*90); //Also default to blue for same reason
@@ -52,17 +52,27 @@ public class LM2AdaptiveAuto extends LinearOpMode {
     private static Side startingSide = Side.RIGHT; //Default to solo auto
     ElapsedTime runtime = new ElapsedTime();
 
+    Pose2d centerStartPosRight;
     Pose2d startPosRight;
     Pose2d startPosLeft;
+
     Pose2d preGardenPos;
     Pose2d gardenPos;
-    Pose2d traversePos;
-    Pose2d shootPosLeft;
-    Pose2d shootPosRight;
-    Pose2d rotatePosRight;
+
+    Pose2d leftTransitPos;
+    Pose2d rightTransitPos;
+    Pose2d rightFlowerTransitPos;
+
+    Pose2d preLeftFlowerPos;
+    Pose2d leftFlowerPos;
+    Pose2d preRightFlowerPos;
+    Pose2d rightFlowerPos;
+
+    Pose2d preParkPosRightFlower;
+    Pose2d parkPosRightFlower;
+
     Pose2d preParkPosRight;
     Pose2d parkPosRight;
-    Pose2d clearPosLeft;
     Pose2d preParkPosLeft;
     Pose2d parkPosLeft;
 
@@ -180,35 +190,51 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         }
 
         //Consts here
-        double startPosRPM = 2700;
-        double wallRPM = 2650;
+        double startPosRPM = 2000; //TODO: take from regression
+        double cornerRPM = 2000;
+        double preFlowerRPM = 2000;
+        double flowerRPM = 2000;
 
-        double driveSpeed = 60.0; //Probably max we can do
+        double driveSpeed = 80.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
         if (!buddyPark && startingSide == Side.RIGHT) { //Speed up right side park
             ramSpeed = driveSpeed;
         }
-        double shotTime = 3.0; //Playing more dangerous
-        double intakeTime = 3.0; //For garden
+        double flowerSpeed = 15.0; //For ramming the matchloader into the flower
+        double shotTime = 5.0; //On safe side for now
+        double intakeTime = 3.0; //For garden vectoring. If we do change to sideways we want a speed of 5 in/sec to vector them in well
+        double flowerTime = 2.0; //How long to wait at flower for balls to come down? Maybe just have addition to shoot time
 
         //Poses here
-        startPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
-        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-        preGardenPos = new Pose2d(posMultiplier*57.742, posMultiplier*-63.303150, posRotation+Math.toRadians(0.0));
-        gardenPos = new Pose2d(posMultiplier*60.542169, posMultiplier*-65, posRotation+Math.toRadians(0.0));
-        shootPosLeft = new Pose2d(posMultiplier*-60.542169, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-        shootPosRight = new Pose2d(posMultiplier*60.542169, posMultiplier*-10, posRotation+Math.toRadians(0.0)); //Same as start but intake is out now
-        rotatePosRight = new Pose2d(posMultiplier*40, posMultiplier*-10, posRotation+Math.toRadians(180.0));
+        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        startPosRight = new Pose2d(posMultiplier*57.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
 
-        preParkPosRight = new Pose2d(posMultiplier*24, posMultiplier*-48, posRotation+Math.toRadians(0.0));
-        parkPosRight = new Pose2d(posMultiplier*-25, posMultiplier*-60, posRotation+Math.toRadians(0.0));
-        clearPosLeft = new Pose2d(posMultiplier*-24, posMultiplier*-40, posRotation+Math.toRadians(180.0));
-        preParkPosLeft = new Pose2d(posMultiplier*24, posMultiplier*-48, posRotation+Math.toRadians(180.0));
-        parkPosLeft = new Pose2d(posMultiplier*-25, posMultiplier*-60, posRotation+Math.toRadians(180.0));
+        preGardenPos = new Pose2d(posMultiplier*56.0, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0));
+        gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
+
+        leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightTransitPos = new Pose2d(posMultiplier*30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightFlowerTransitPos = new Pose2d(posMultiplier*-25.0, posMultiplier*-36.0, posRotation+Math.toRadians(270.0));
+
+        preLeftFlowerPos = new Pose2d(posMultiplier*-52, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
+        leftFlowerPos = new Pose2d(posMultiplier*-55.426695, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
+
+        preRightFlowerPos = new Pose2d(posMultiplier*24.0, posMultiplier*-52, posRotation+Math.toRadians(270.0));
+        rightFlowerPos = new Pose2d(posMultiplier*24.0, posMultiplier*-55.426695, posRotation+Math.toRadians(270.0));
+
+        preParkPosRightFlower = new Pose2d(posMultiplier*10.0, posMultiplier*-55.0, posRotation+Math.toRadians(270.0));
+        parkPosRightFlower = new Pose2d(posMultiplier*-25.0, posMultiplier*-58.0, posRotation+Math.toRadians(270.0));
+
+        preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
+        parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
+
+        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
+
+
 
         MecanumDrive drive;
         if (startingSide == Side.RIGHT) {
-            drive = new MecanumDrive(hardwareMap, startPosRight);
+            drive = new MecanumDrive(hardwareMap, centerStartPosRight);
         } else {
             drive = new MecanumDrive(hardwareMap, startPosLeft);
         }
@@ -231,9 +257,15 @@ public class LM2AdaptiveAuto extends LinearOpMode {
                 BallTunnel.autoBallTunnelIdle()
         );
 
-        Action shootSequence2 = new SequentialAction(
-                BallGate.autoOpen() //TODO: figure out why dupes are breaking
+        Action shootSequence2 = new SequentialAction( //TODO: figure out why dupes are breaking
+                BallGate.autoOpen(),
+                BallTunnel.autoBallTunnelShoot(),
+                I2CDistance.waitToEmpty(shotTime, useDistance),
+                BallGate.autoClose(),
+                BallTunnel.autoBallTunnelIdle()
         );
+
+        //Shoot sequence 3 is just part of left flower, we always fire on goal no matter vision rn
 
 
 
@@ -242,24 +274,21 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
         Action rightSideStart = new RaceAction(
                 new SequentialAction(
+                        Turret.setTarget(centerStartPosRight, false),
                         Shooter.autoSetTargetRPM(startPosRPM),
                         Shooter.autoWaitForSpeed(50, 4),
                         shootSequence,
+                        Turret.setTarget(gardenPos, false),
                         Intake.autoIntakeDown(false),
-                        Shooter.autoSetTargetRPM(wallRPM)
-                ),
-                tickFunctions
-        );
-
-        Action rightSideGardenPickup = new RaceAction(
-                new SequentialAction(
+                        Shooter.autoSetTargetRPM(cornerRPM), //incase we need to go back to wall to shoot
+                        //Garden pickup:
                         Intake.autoIntakeOn(),
                         BallTunnel.autoBallTunnelIntake(),
-                        Paths.directPath(drive, startPosRight, preGardenPos, driveSpeed),
+                        Paths.directPath(drive, centerStartPosRight, preGardenPos, driveSpeed),
                         Paths.directPath(drive, preGardenPos, gardenPos, driveSpeed),
-                        Paths.wait(drive, intakeTime),
+                        I2CDistance.waitToFill(intakeTime, useDistance),
                         Intake.autoIntakeOff(),
-                        Paths.directPath(drive, gardenPos, shootPosRight, driveSpeed)
+                        Intake.autoIntakeUp(false)
                 ),
                 tickFunctions
         );
@@ -267,19 +296,47 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         Action rightSideVisionCheck = new RaceAction(
                 new SequentialAction(
                         Limelight.setFacing(false),
-                        Limelight.checkTip(allianceColor, 60, 3)
+                        Limelight.checkTip(allianceColor, 30, 1)
                 ),
                 tickFunctions
         );
 
-        Action rightSideGardenToLeft = new RaceAction(
+        //Modified format to work in sequential without dual reads
+        Action rightSideGardenToLeft = //new RaceAction(
                 new SequentialAction(
-//                                        Intake.autoIntakeUp(false), //Raise up to avoid over possession
-                        Paths.directSplinePath(drive, shootPosRight, rotatePosRight, driveSpeed),
-                        Paths.directPath(drive, rotatePosRight, shootPosLeft, driveSpeed),
-                        Intake.autoIntakeUp(false), //Raise up to avoid over possession
-//                                    Intake.autoIntakeDown(false) //DISABLING for now, we want to keep intake up in case balls gather
-                        shootSequence2
+                        Shooter.autoSetTargetRPM(preFlowerRPM),
+                        Turret.setTarget(preLeftFlowerPos, false),
+                        Paths.tangentSplinePath(drive, gardenPos, posRotation+Math.toRadians(135.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
+                        Intake.autoIntakeDown(false),
+                        MatchLoader.autoDeploy(),
+                        Paths.directPath(drive, rightTransitPos, leftTransitPos, driveSpeed),
+                        Paths.tangentSplinePath(drive, leftTransitPos, posRotation+Math.toRadians(180.0), preLeftFlowerPos, posRotation+Math.toRadians(135.0), driveSpeed)
+//                ),
+//                tickFunctions
+        );
+
+        Action leftFlower = new RaceAction(
+                new SequentialAction(
+                        BallGate.autoOpen(),
+                        BallTunnel.autoBallTunnelShoot(),
+                        Turret.setTarget(leftFlowerPos, false),
+                        Intake.autoIntakeOn(),
+                        BallTunnel.autoBallTunnelIntake(),
+                        Paths.directPath(drive, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
+                        Paths.wait(drive, flowerTime + shotTime),
+                        BallGate.autoClose(),
+                        BallTunnel.autoBallTunnelIdle()
+                ),
+                tickFunctions
+        );
+
+        Action leftFlowerBuddyPark = new RaceAction(
+                new SequentialAction(
+                        Shooter.autoSetTargetRPM(0),
+                        Turret.setTarget(parkPosLeft, false),
+                        Paths.tangentLinearPath(drive, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
+                        MatchLoader.autoRetract(),
+                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
                 ),
                 tickFunctions
         );
@@ -289,100 +346,100 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         //LEFT SIDE BELOW, RIGHT SIDE ABOVE
 
 
-
-        Action leftSideVisionWait = new RaceAction(
-                new ParallelAction(
-                        Shooter.autoSetTargetRPM(startPosRPM),
-                        new RaceAction(
-                                Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
-                                new SequentialAction(
-                                        Limelight.waitForTag(allianceColor),
-                                        Paths.wait(drive, 2) //Because we see tags about 1 sec early, being safe
-                                )
-                        ),
-                        Shooter.autoWaitForSpeed(50, 4)
-                ),
-                tickFunctions
-        );
-
-        Action leftSideBlindWait = new RaceAction(
-                new ParallelAction(
-                        Shooter.autoSetTargetRPM(startPosRPM),
-                        Paths.wait(drive, delay),
-                        Shooter.autoWaitForSpeed(50, 0.5)
-                ),
-                tickFunctions
-        );
-
-        Action leftSideVisionCheck = new RaceAction(
-                new SequentialAction(
-                        Limelight.setFacing(false),
-                        Limelight.checkTip(allianceColor, 20, 2) //TODO: see about not waiting at all since this only triggers if our partner has not tipped anyway
-                ),
-                tickFunctions
-        );
-
-        Action leftSideCrossField = new RaceAction(
-                new SequentialAction(
-                        Shooter.autoSetTargetRPM(wallRPM),
-                        Intake.autoIntakeUp(false),
-                        Paths.directPath(drive, shootPosLeft, rotatePosRight, driveSpeed), //TODO: make it just park if there isnt time to go cross-field
-                        Paths.directSplinePath(drive, rotatePosRight, shootPosRight, driveSpeed),
-                        shootSequence
-                ),
-                tickFunctions
-        );
-
-
-
-
-
-        //Park Below
-
-        Action rightSidePark = new RaceAction(
-                new SequentialAction(
-                        Intake.autoIntakeDown(false),
-                        Paths.directPath(drive, shootPosRight, preParkPosRight, driveSpeed), //get ready to ram
-                        Paths.directPath(drive, preParkPosRight, parkPosRight, ramSpeed) //to park
-                ),
-                tickFunctions
-        );
-
-        Action leftSideStartBuddyPark = new RaceAction(
-                new SequentialAction(
-                        Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-                        Intake.autoIntakeDown(false),
-                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
-                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
-                ),
-                tickFunctions
-        );
-
-        Action leftSideStartPark = new RaceAction(
-                new SequentialAction(
-                        Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
-                ),
-                tickFunctions
-        );
-
-        Action leftSideBuddyPark = new RaceAction( //NOT left start pos buddy park, that's above
-                new SequentialAction(
-                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-                        Intake.autoIntakeDown(false),
-                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
-                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
-                ),
-                tickFunctions
-        );
-
-        Action leftSidePark = new RaceAction( //NOT left start pos park, that's above
-                new SequentialAction(
-                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
-                ),
-                tickFunctions
-        );
+//TODO: make left side real
+//        Action leftSideVisionWait = new RaceAction(
+//                new ParallelAction(
+//                        Shooter.autoSetTargetRPM(startPosRPM),
+//                        new RaceAction(
+//                                Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
+//                                new SequentialAction(
+//                                        Limelight.waitForTag(allianceColor),
+//                                        Paths.wait(drive, 2) //Because we see tags about 1 sec early, being safe
+//                                )
+//                        ),
+//                        Shooter.autoWaitForSpeed(50, 4)
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSideBlindWait = new RaceAction(
+//                new ParallelAction(
+//                        Shooter.autoSetTargetRPM(startPosRPM),
+//                        Paths.wait(drive, delay),
+//                        Shooter.autoWaitForSpeed(50, 0.5)
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSideVisionCheck = new RaceAction(
+//                new SequentialAction(
+//                        Limelight.setFacing(false),
+//                        Limelight.checkTip(allianceColor, 20, 2) //TODO: see about not waiting at all since this only triggers if our partner has not tipped anyway
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSideCrossField = new RaceAction(
+//                new SequentialAction(
+//                        Shooter.autoSetTargetRPM(wallRPM),
+//                        Intake.autoIntakeUp(false),
+//                        Paths.directPath(drive, shootPosLeft, rotatePosRight, driveSpeed), //TODO: make it just park if there isnt time to go cross-field
+//                        Paths.directSplinePath(drive, rotatePosRight, shootPosRight, driveSpeed),
+//                        shootSequence
+//                ),
+//                tickFunctions
+//        );
+//
+//
+//
+//
+//
+//        //Park Below
+//
+//        Action rightSidePark = new RaceAction(
+//                new SequentialAction(
+//                        Intake.autoIntakeDown(false),
+//                        Paths.directPath(drive, shootPosRight, preParkPosRight, driveSpeed), //get ready to ram
+//                        Paths.directPath(drive, preParkPosRight, parkPosRight, ramSpeed) //to park
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSideStartBuddyPark = new RaceAction(
+//                new SequentialAction(
+//                        Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+//                        Intake.autoIntakeDown(false),
+//                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
+//                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSideStartPark = new RaceAction(
+//                new SequentialAction(
+//                        Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+//                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSideBuddyPark = new RaceAction( //NOT left start pos buddy park, that's above
+//                new SequentialAction(
+//                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+//                        Intake.autoIntakeDown(false),
+//                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
+//                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
+//                ),
+//                tickFunctions
+//        );
+//
+//        Action leftSidePark = new RaceAction( //NOT left start pos park, that's above
+//                new SequentialAction(
+//                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
+//                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
+//                ),
+//                tickFunctions
+//        );
 
 
 
@@ -403,10 +460,6 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         if (startingSide == Side.RIGHT) { //RIGHT SIDE
             CustomActions.runBlockingBulkRead(rightSideStart, allHubs);
 
-            if (gardenSource){ //RN a given. IDK what happens if this is false ATM
-                CustomActions.runBlockingBulkRead(rightSideGardenPickup, allHubs);
-            }
-
             boolean missedTip; //Is the hive facing us still
             if (useVision) { //Update LL to check for hive
                 CustomActions.runBlockingBulkRead(rightSideVisionCheck, allHubs);
@@ -419,18 +472,34 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
             if (!missedTip) {
                 currentSide = Side.LEFT;
-                if (true) {  //TODO: check if we have time for this, if not just hold preloads and park (don't run this block) (we usually have time right now even with buddy park)
-                    CustomActions.runBlockingBulkRead(rightSideGardenToLeft, allHubs);
-                }
+                CustomActions.runBlockingBulkRead(
+                        new RaceAction(
+                                new SequentialAction(
+                                        rightSideGardenToLeft,
+                                        shootSequence2
+                                ),
+                                tickFunctions
+                        ), allHubs
+                );
 
             } else {
                 CustomActions.runBlockingBulkRead(
                         new RaceAction(
-                                shootSequence2, //TODO: test if need to declare as new to reset memory pointer?
+                                new SequentialAction(
+                                        shootSequence2,
+                                        rightSideGardenToLeft
+                                ),
                                 tickFunctions
                         ), allHubs
                 );
-            }} else { //LEFT SIDE
+            }
+
+            CustomActions.runBlockingBulkRead(leftFlower, allHubs);
+            CustomActions.runBlockingBulkRead(leftFlowerBuddyPark, allHubs);
+
+
+
+        } /*else { //LEFT SIDE
 
             if (useVision) {
                 CustomActions.runBlockingBulkRead(leftSideVisionWait, allHubs);
@@ -463,27 +532,7 @@ public class LM2AdaptiveAuto extends LinearOpMode {
                 );
             }
 
-        }
-
-
-        //Park
-        if (currentSide == Side.RIGHT) {
-            CustomActions.runBlockingBulkRead(rightSidePark, allHubs);
-        } else {
-            if (startingSide == Side.LEFT) {
-                if (buddyPark) {
-                    CustomActions.runBlockingBulkRead(leftSideStartBuddyPark, allHubs);
-                } else {
-                    CustomActions.runBlockingBulkRead(leftSideStartPark, allHubs);
-                }
-            } else {
-                if (buddyPark) {
-                    CustomActions.runBlockingBulkRead(leftSideBuddyPark, allHubs);
-                } else {
-                    CustomActions.runBlockingBulkRead(leftSidePark, allHubs);
-                }
-            }
-        }
+        } */
         LEDs.update(LEDColor.RED, false, runtime);
     }
 }
