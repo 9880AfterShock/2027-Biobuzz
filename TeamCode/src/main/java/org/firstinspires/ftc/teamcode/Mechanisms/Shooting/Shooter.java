@@ -122,6 +122,7 @@ public class Shooter {
     }
 
     public static void updateShooterFromDistance(double distance) {
+//        targetRPM = 0; //Add in if we want to disable for testing
         targetRPM = RPMRegressionA * Math.pow(distance, 4)  + RPMRegressionB * Math.pow(distance, 3)  + RPMRegressionC * Math.pow(distance, 2)  + RPMRegressionD * distance + RPMRegressionE + fudgeRPM;
         setHoodAngle(hoodRegressionA * Math.pow(distance, 4)  + hoodRegressionB * Math.pow(distance, 3)  + hoodRegressionC * Math.pow(distance, 2)  + hoodRegressionD * distance + hoodRegressionE);
     }

@@ -93,13 +93,12 @@ public class TeleOp extends LinearOpMode {
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
         Intake.prime();
         Intake.extend();
-        MatchLoader.prime();
+        MatchLoader.retract();
         BallGate.prime();
 //        Turret.prime();
         Shooter.prime();
         LEDs.update(LEDColor.AMBER, false, runtime);
 
-        double hoodAngle = 12;
         boolean useSensors = true;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
@@ -166,19 +165,11 @@ public class TeleOp extends LinearOpMode {
             if (zeroRPM || ((runtime.seconds() > 121) && (runtime.seconds() < 122))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
-            //Temp for tuning
-            if (gamepad2.dpadLeftWasPressed()) { Shooter.targetRPM -= 500; }
-            if (gamepad2.dpadRightWasPressed()) { Shooter.targetRPM += 500; }
-            if (gamepad1.dpadUpWasPressed()) { hoodAngle += 0.5; }
-            if (gamepad1.dpadDownWasPressed()) { hoodAngle -= 0.5; }
-            Shooter.setHoodAngle(hoodAngle);
-
-
             //Tick Functions
             Drivetrain.updateDrive(strafe, drive, turn, slowMode, resetGyro);
             Pinpoint.update(snapCorner, resetOrigin, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
             Intake.update(intakeButton, ejectButton, !intakeButton && (liftIntake || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
-//            MatchLoader.update(matchLoaderButton);
+            MatchLoader.update(matchLoaderButton);
             BallTunnel.update(shootButton, ballTunnelReverse, intakeButton);
             BallGate.update(shootButton || ballTunnelReverse);
             Turret.update(deltaTime, alliance);
