@@ -11,6 +11,8 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+
 import javax.imageio.ImageIO;
 
 public class MeepMeepVisualizer {
@@ -227,8 +229,11 @@ public class MeepMeepVisualizer {
 
         //LM2 Adaptive
         ///*
+        Pose2d centerStartPosRight;
         Pose2d startPosRight;
         Pose2d startPosLeft;
+
+        Pose2d preGardenPos;
         Pose2d gardenPos;
 
         Pose2d leftTransitPos;
@@ -258,7 +263,10 @@ public class MeepMeepVisualizer {
         double intakeTime = 3.0; //For garden vectoring. If we do change to sideways we want a speed of 5 in/sec to vector them in well
         double flowerTime = 2.0; //How long to wait at flower for balls to come down? Maybe just have addition to shoot time
 
+        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
         startPosRight = new Pose2d(posMultiplier*57.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+
+        preGardenPos = new Pose2d(posMultiplier*56.0, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0));
         gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
 
         leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
@@ -274,6 +282,9 @@ public class MeepMeepVisualizer {
         preParkPosRightFlower = new Pose2d(posMultiplier*10.0, posMultiplier*-55.0, posRotation+Math.toRadians(270.0));
         parkPosRightFlower = new Pose2d(posMultiplier*-25.0, posMultiplier*-58.0, posRotation+Math.toRadians(270.0));
 
+        preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
+        parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
+
         startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
 
 
@@ -282,6 +293,10 @@ public class MeepMeepVisualizer {
 //                        /*RIGHT START
                         //Set turret + shooter stuff
                         Paths.wait(myBot, shotTime), //preloads, 1st tip
+                        Paths.directPath(myBot, centerStartPosRight, preGardenPos, driveSpeed), //put actual deploy here
+
+
+
                         //Intake On + Down (Down during shooter?)
                         Paths.directPath(myBot, startPosRight, gardenPos, driveSpeed), //Pickup garden, reset ODO after this
                         Paths.wait(myBot, intakeTime), //wait for vectoring
@@ -299,7 +314,19 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
                         Paths.wait(myBot, shotTime), //2nd tip if everything worked (if partner shot preloads on left we might have extra shots on goal here)
 
-                        //Left Flower to Right Flower
+
+
+                        Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
+//                        Paths.directPath(myBot, leftFlowerPos, leftTransitPos, driveSpeed),
+//                        Paths.directPath(myBot, leftTransitPos, preParkPosLeft, driveSpeed), //get ready to ram
+                        Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed)
+
+
+
+
+                        //Cutting for reliable park
+
+                        /* Left Flower to Right Flower
                         Paths.tangentSplinePath(myBot, leftFlowerPos, posRotation+Math.toRadians(315.0), rightFlowerTransitPos, posRotation+Math.toRadians(0.0), driveSpeed),
 //                        Paths.directPath(myBot, leftTransitPos, rightTransitPos, driveSpeed),
                         Paths.tangentLinearPath(myBot, rightFlowerTransitPos, posRotation+Math.toRadians(0.0), preRightFlowerPos, posRotation+Math.toRadians(270.0), driveSpeed),
@@ -311,7 +338,7 @@ public class MeepMeepVisualizer {
                         //To Shoot Left
 
 
-                        /*/Direct Buddy Park
+                        /*Direct Buddy Park
                         Paths.directPath(myBot, rightFlowerPos, preParkPosRightFlower, driveSpeed),
                         //Raise matchloader
                         Paths.directPath(myBot, preParkPosRightFlower, parkPosRightFlower, ramSpeed) //*/
