@@ -130,8 +130,14 @@ public class Shooter {
     private static void updateFlywheel(double deltaTime) { //TODO: make it able to go downwards
 //        double voltage = hubVoltageSensor.getVoltage();
         //TODO: fix the temp lock on backdriving with a proper slew rate limiter for later comps than lm0
-        if (targetRPM == 0 || targetRPM-getCurrentRPM() < 0) { //Allow setting to 0 to just drop power, rather than waste power trying to force the flywheel back to a stop
-            setFlywheelPower(0.0);
+        double pollenPower = pollenFFController.step(targetRPM, getCurrentRPM(), deltaTime) + pollenPIDController.step(targetRPM, getCurrentRPM(), deltaTime);
+        double nectarPower = nectarFFController.step(targetRPM, getCurrentRPM(), deltaTime) + nectarPIDController.step(targetRPM, getCurrentRPM(), deltaTime);
+        if (pollenPower <= 0) { //Allow setting to 0 to just drop power, rather than waste power trying to force the flywheel back to a stop
+            if (pollenPower <= -0.5) {
+                flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            } else {
+                flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
             return;
         }
         if (nectar) {
