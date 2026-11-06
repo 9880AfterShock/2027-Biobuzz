@@ -27,6 +27,11 @@ public class MatchLoader {
         deployed = false;
     }
 
+    public static void forceDeploy() {
+        matchLoaderServo.setPosition(deployedPos);
+        deployed = true;
+    }
+
     public static void deploy() {
         if (!deployed) {
             matchLoaderServo.setPosition(deployedPos);

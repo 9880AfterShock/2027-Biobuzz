@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.google.gson.internal.bind.SqlDateTypeAdapter;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -75,6 +76,8 @@ public class LM2AdaptiveAuto extends LinearOpMode {
     Pose2d parkPosRight;
     Pose2d preParkPosLeft;
     Pose2d parkPosLeft;
+
+    Pose2d goalPos;
 
 
     public static Action updateTeleOpPos(MecanumDrive drive) {
@@ -190,11 +193,6 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         }
 
         //Consts here
-        double startPosRPM = 2000; //TODO: take from regression
-        double cornerRPM = 2000;
-        double preFlowerRPM = 2000;
-        double flowerRPM = 2000;
-
         double driveSpeed = 80.0; //Probably max we can do
         double ramSpeed = 20.0; //Being safer
         if (!buddyPark && startingSide == Side.RIGHT) { //Speed up right side park
@@ -213,7 +211,7 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
 
         leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
-        rightTransitPos = new Pose2d(posMultiplier*30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightTransitPos = new Pose2d(posMultiplier*40.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
         rightFlowerTransitPos = new Pose2d(posMultiplier*-25.0, posMultiplier*-36.0, posRotation+Math.toRadians(270.0));
 
         preLeftFlowerPos = new Pose2d(posMultiplier*-52, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
@@ -230,7 +228,16 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
         startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
 
+        goalPos = new Pose2d(posMultiplier*Turret.goalDepth, posMultiplier*-Turret.goalCenter, 0.0);
 
+        double startPosRPM = Shooter.RPMRegression(Turret.calcGoalDistance(centerStartPosRight, goalPos));
+        double startPosHoodAngle = Shooter.hoodRegression(Turret.calcGoalDistance(centerStartPosRight, goalPos));
+        double cornerRPM = Shooter.RPMRegression(Turret.calcGoalDistance(gardenPos, goalPos));
+        double cornerHoodAngle = Shooter.hoodRegression(Turret.calcGoalDistance(gardenPos, goalPos));
+        double preFlowerRPM = Shooter.RPMRegression(Turret.calcGoalDistance(preLeftFlowerPos, goalPos));
+        double preFlowerHoodAngle = Shooter.hoodRegression(Turret.calcGoalDistance(preLeftFlowerPos, goalPos));
+        double flowerRPM = Shooter.RPMRegression(Turret.calcGoalDistance(leftFlowerPos, goalPos));
+        double flowerHoodAngle = Shooter.hoodRegression(Turret.calcGoalDistance(leftFlowerPos, goalPos));
 
         MecanumDrive drive;
         if (startingSide == Side.RIGHT) {
@@ -257,7 +264,8 @@ public class LM2AdaptiveAuto extends LinearOpMode {
                 BallTunnel.autoBallTunnelIdle()
         );
 
-        Action shootSequence2 = new SequentialAction( //TODO: figure out why dupes are breaking
+        Action shootSequence2 = new SequentialAction(
+                Shooter.autoWaitForSpeed(50, 3),
                 BallGate.autoOpen(),
                 BallTunnel.autoBallTunnelShoot(),
                 I2CDistance.waitToEmpty(shotTime, useDistance),
@@ -274,13 +282,15 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
         Action rightSideStart = new RaceAction(
                 new SequentialAction(
-                        Turret.setTarget(centerStartPosRight, false),
+                        Turret.setTarget(centerStartPosRight, goalPos, false),
                         Shooter.autoSetTargetRPM(startPosRPM),
+                        Shooter.autoSetHoodAngle(startPosHoodAngle),
                         Shooter.autoWaitForSpeed(50, 4),
                         shootSequence,
-                        Turret.setTarget(gardenPos, false),
+                        Turret.setTarget(gardenPos, goalPos,false),
                         Intake.autoIntakeDown(false),
                         Shooter.autoSetTargetRPM(cornerRPM), //incase we need to go back to wall to shoot
+                        Shooter.autoSetHoodAngle(cornerHoodAngle), //incase we need to go back to wall to shoot
                         //Garden pickup:
                         Intake.autoIntakeOn(),
                         BallTunnel.autoBallTunnelIntake(),
@@ -305,8 +315,9 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         Action rightSideGardenToLeft = //new RaceAction(
                 new SequentialAction(
                         Shooter.autoSetTargetRPM(preFlowerRPM),
-                        Turret.setTarget(preLeftFlowerPos, false),
-                        Paths.tangentSplinePath(drive, gardenPos, posRotation+Math.toRadians(135.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
+                        Shooter.autoSetHoodAngle(preFlowerHoodAngle),
+                        Turret.setTarget(preLeftFlowerPos, goalPos, false),
+                        Paths.tangentSplinePath(drive, gardenPos, posRotation+Math.toRadians(120.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
                         Intake.autoIntakeDown(false),
                         MatchLoader.autoDeploy(),
                         Paths.directPath(drive, rightTransitPos, leftTransitPos, driveSpeed),
@@ -316,16 +327,27 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         );
 
         Action leftFlower = new RaceAction(
-                new SequentialAction(
-                        BallGate.autoOpen(),
-                        BallTunnel.autoBallTunnelShoot(),
-                        Turret.setTarget(leftFlowerPos, false),
-                        Intake.autoIntakeOn(),
-                        BallTunnel.autoBallTunnelIntake(),
-                        Paths.directPath(drive, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
-                        Paths.wait(drive, flowerTime + shotTime),
-                        BallGate.autoClose(),
-                        BallTunnel.autoBallTunnelIdle()
+                new ParallelAction(
+                        new SequentialAction(
+                                Turret.setTarget(leftFlowerPos, goalPos, false),
+                                Shooter.autoSetTargetRPM(flowerRPM),
+                                Shooter.autoSetHoodAngle(flowerHoodAngle),
+                                Shooter.autoWaitForSpeed(50, 2),
+
+                                BallGate.autoOpen(),
+                                BallTunnel.autoBallTunnelShoot(),
+
+                                Paths.wait(drive, flowerTime + shotTime),
+
+                                Intake.autoIntakeOff(),
+                                BallGate.autoClose(),
+                                BallTunnel.autoBallTunnelIdle()
+                        ),
+                        new SequentialAction(
+                                Intake.autoIntakeOn(),
+                                BallTunnel.autoBallTunnelIntake(),
+                                Paths.directPath(drive, preLeftFlowerPos, leftFlowerPos, flowerSpeed)
+                        )
                 ),
                 tickFunctions
         );
@@ -333,7 +355,7 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         Action leftFlowerBuddyPark = new RaceAction(
                 new SequentialAction(
                         Shooter.autoSetTargetRPM(0),
-                        Turret.setTarget(parkPosLeft, false),
+                        Turret.setTarget(parkPosLeft, goalPos, false),
                         Paths.tangentLinearPath(drive, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
                         MatchLoader.autoRetract(),
                         Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)

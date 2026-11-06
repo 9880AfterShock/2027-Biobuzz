@@ -93,7 +93,7 @@ public class TeleOp extends LinearOpMode {
         //Prime Functions (check if auto and if there are alt functions, ex. deploy intake)
         Intake.prime();
         Intake.extend();
-        MatchLoader.retract();
+        MatchLoader.forceDeploy();
         BallGate.prime();
 //        Turret.prime();
         Shooter.prime();

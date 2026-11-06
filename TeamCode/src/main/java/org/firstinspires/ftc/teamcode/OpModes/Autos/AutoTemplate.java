@@ -19,6 +19,7 @@ public class AutoTemplate extends LinearOpMode {
     public static List<LynxModule> allHubs;
     @Override
     public void runOpMode() {
+        allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO); //At some point need to make a manual one that works for auto, but this is good enough for now (Done, use custom action run blocking)
         }

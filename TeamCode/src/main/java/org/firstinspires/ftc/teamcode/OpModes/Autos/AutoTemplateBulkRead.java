@@ -20,6 +20,7 @@ public class AutoTemplateBulkRead extends LinearOpMode {
     public static List<LynxModule> allHubs;
     @Override
     public void runOpMode() {
+        allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             hub.clearBulkCache();

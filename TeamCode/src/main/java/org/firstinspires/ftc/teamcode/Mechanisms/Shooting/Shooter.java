@@ -123,8 +123,16 @@ public class Shooter {
 
     public static void updateShooterFromDistance(double distance) {
 //        targetRPM = 0; //Add in if we want to disable for testing
-        targetRPM = RPMRegressionA * Math.pow(distance, 4)  + RPMRegressionB * Math.pow(distance, 3)  + RPMRegressionC * Math.pow(distance, 2)  + RPMRegressionD * distance + RPMRegressionE + fudgeRPM;
-        setHoodAngle(hoodRegressionA * Math.pow(distance, 4)  + hoodRegressionB * Math.pow(distance, 3)  + hoodRegressionC * Math.pow(distance, 2)  + hoodRegressionD * distance + hoodRegressionE);
+        targetRPM = RPMRegression(distance) + fudgeRPM;
+        setHoodAngle(hoodRegression(distance));
+    }
+
+    public static double RPMRegression(double distance) {
+        return RPMRegressionA * Math.pow(distance, 4)  + RPMRegressionB * Math.pow(distance, 3)  + RPMRegressionC * Math.pow(distance, 2)  + RPMRegressionD * distance + RPMRegressionE;
+    }
+
+    public static double hoodRegression(double distance) {
+        return hoodRegressionA * Math.pow(distance, 4)  + hoodRegressionB * Math.pow(distance, 3)  + hoodRegressionC * Math.pow(distance, 2)  + hoodRegressionD * distance + hoodRegressionE;
     }
 
     private static void updateFlywheel(double deltaTime) { //TODO: make it able to go downwards
@@ -187,6 +195,15 @@ public class Shooter {
         return new Action() {
             public boolean run(@NonNull TelemetryPacket packet) {
                 setTargetRPM(RPM);
+                return false;
+            }
+        };
+    }
+
+    public static Action autoSetHoodAngle(double angle) {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                setHoodAngle(angle);
                 return false;
             }
         };

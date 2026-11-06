@@ -270,7 +270,7 @@ public class MeepMeepVisualizer {
         gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
 
         leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
-        rightTransitPos = new Pose2d(posMultiplier*30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightTransitPos = new Pose2d(posMultiplier*40.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
         rightFlowerTransitPos = new Pose2d(posMultiplier*-25.0, posMultiplier*-36.0, posRotation+Math.toRadians(270.0));
 
         preLeftFlowerPos = new Pose2d(posMultiplier*-52, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
@@ -304,7 +304,7 @@ public class MeepMeepVisualizer {
                         //Check hive tip, if didn't tip shoot
 
                         //Garden to left side:
-                        Paths.tangentSplinePath(myBot, gardenPos, posRotation+Math.toRadians(135.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
+                        Paths.tangentSplinePath(myBot, gardenPos, posRotation+Math.toRadians(120.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
                         //Intake down here
                         Paths.directPath(myBot, rightTransitPos, leftTransitPos, driveSpeed),
                         Paths.tangentSplinePath(myBot, leftTransitPos, posRotation+Math.toRadians(180.0), preLeftFlowerPos, posRotation+Math.toRadians(135.0), driveSpeed),
