@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autos;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -42,10 +45,10 @@ public class LM2AdaptiveAuto extends LinearOpMode {
     private static Boolean partnerSource = false; //Picking up against the side of partner who cannot shoot, to be figured out
     public static SideColor allianceColor = SideColor.BLUE;  //Default to blue because of red favored in bracket
     private int posMultiplier = 1; //Default to blue because of red favored in bracket
-    private double posRotation = Math.toRadians(90 - posMultiplier*90);
+    private double posRotation = Math.toRadians(90 - posMultiplier*90); //Also default to blue for same reason
     private static Boolean useVision = true; //Use vision to determine hive tips
     private static Boolean useDistance = true; //Use I2C distance sensors to determine when intaking or shooting is done
-    private static Boolean buddyPark = true;
+    private static Boolean buddyPark = true; //Make sure we push our partner into the park zone
     private static Side startingSide = Side.RIGHT; //Default to solo auto
     ElapsedTime runtime = new ElapsedTime();
 
@@ -63,6 +66,15 @@ public class LM2AdaptiveAuto extends LinearOpMode {
     Pose2d preParkPosLeft;
     Pose2d parkPosLeft;
 
+
+    public static Action updateTeleOpPos(MecanumDrive drive) {
+        return new Action() {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                TeleOp.afterAutoPose = drive.localizer.getPose(); //Feed ending pos to teleop
+                return true;
+            }
+        };
+    }
 
     @Override
     public void runOpMode() {
@@ -206,7 +218,8 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
         Action tickFunctions = new ParallelAction(
                 Shooter.autoUpdateLoop(),
-                Turret.autoUpdateLoop(allianceColor)
+                Turret.autoUpdateLoop(allianceColor),
+                updateTeleOpPos(drive)
         );
 
         Action shootSequence = new SequentialAction(
@@ -468,16 +481,5 @@ public class LM2AdaptiveAuto extends LinearOpMode {
             }
         }
         LEDs.update(LEDColor.RED, false, runtime);
-
-//        if (leftFlower) {
-//            if (gardenSource) {
-//
-//            } else {
-//
-//            }
-//
-//        }
-
-        TeleOp.afterAutoPose = drive.localizer.getPose(); //Feed ending pos to teleop
     }
 }
