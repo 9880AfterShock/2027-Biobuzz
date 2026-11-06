@@ -32,7 +32,8 @@ public class Shooter {
     private static FeedForward nectarFFController;
     private static PID nectarPIDController;
     private static double shooterPower;
-    public static double targetRPM;
+    public static double targetRPM = 0;
+    public static double fudgeRPM = 0;
     private static double hoodAngle;
 //    public static double flywheelPollenPos = 0.0; //TODO: add final to all servo poses after tuned (and errorMargin)
 //    public static double hoodPollenPos = 0.0;
@@ -51,6 +52,20 @@ public class Shooter {
     public static double I = 0;
     public static double D = 0;
 
+    //RPM Regression
+    private static final double RPMRegressionA = -0.000168452877;
+    private static final double RPMRegressionB = 0.02851832226;
+    private static final double RPMRegressionC = -1.513016875;
+    private static final double RPMRegressionD = 39.5680453;
+    private static final double RPMRegressionE = 2120.879526;
+
+    //Hood Regression
+    private static final double hoodRegressionA = 0.00001259945572;
+    private static final double hoodRegressionB = -0.001933631783;
+    private static final double hoodRegressionC = 0.09856812134;
+    private static final double hoodRegressionD = -1.640975732;
+    private static final double hoodRegressionE = 23.83546895;
+
     public static void init(OpMode opmode) {
         flywheel = opmode.hardwareMap.get(DcMotorEx.class, "flywheel"); //Port 1 on expansion hub
         hoodAngleServo = opmode.hardwareMap.get(Servo.class, "hoodAngler"); //Port 5 on expansion hub
@@ -67,6 +82,8 @@ public class Shooter {
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel.setPower(0.0);
+
+        fudgeRPM = 0;
 
 //        nectar = false;
 
@@ -102,6 +119,11 @@ public class Shooter {
             shooterPower = power;
             flywheel.setPower(power);
         }
+    }
+
+    public static void updateShooterFromDistance(double distance) {
+        targetRPM = RPMRegressionA * Math.pow(distance, 4)  + RPMRegressionB * Math.pow(distance, 3)  + RPMRegressionC * Math.pow(distance, 2)  + RPMRegressionD * distance + RPMRegressionE + fudgeRPM;
+        setHoodAngle(hoodRegressionA * Math.pow(distance, 4)  + hoodRegressionB * Math.pow(distance, 3)  + hoodRegressionC * Math.pow(distance, 2)  + hoodRegressionD * distance + hoodRegressionE);
     }
 
     private static void updateFlywheel(double deltaTime) { //TODO: make it able to go downwards

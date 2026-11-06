@@ -142,6 +142,7 @@ public class Turret {
         }
         if (Math.abs(Math.hypot(Pinpoint.getPose().position.x - goalPos.position.x, Pinpoint.getPose().position.y - goalPos.position.y)) > 3) { //Make sure we aren't under the goal directly, which jerks the turret
             setTurretTarget(Math.toDegrees(normalizeNegative(calcTurretAngle(Pinpoint.getPose(), goalPos) - (Pinpoint.getPose().heading.toDouble() + Math.PI*2), Math.PI*2)));
+            Shooter.updateShooterFromDistance(calcGoalDistance(Pinpoint.getPose(), goalPos));
         }
 
         updateTurretPower(deltaTime);

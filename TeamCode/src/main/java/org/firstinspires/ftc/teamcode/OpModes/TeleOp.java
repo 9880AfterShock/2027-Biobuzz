@@ -99,9 +99,7 @@ public class TeleOp extends LinearOpMode {
         Shooter.prime();
         LEDs.update(LEDColor.AMBER, false, runtime);
 
-        double wallRPM = 2650; //TODO: remove just having a single RPM value and get an actual aiming system
         double hoodAngle = 12;
-        Shooter.targetRPM = wallRPM;
         boolean useSensors = true;
 
         double deltaTime = 1.0; //Not 0 as that might cause some things to be multiplied by 0 that shouldn't be
@@ -161,10 +159,10 @@ public class TeleOp extends LinearOpMode {
             boolean fudgeDown = gamepad2.dpadDownWasPressed();
             boolean resetRPM = gamepad2.dpad_left;
             boolean zeroRPM = false; //gamepad2.backWasPressed();
-            if (fudgeUp) { Shooter.targetRPM += 50; }
-            if (fudgeDown) { Shooter.targetRPM -= 50; }
-            if (fudgeDown) { Shooter.targetRPM -= 50; }
-            if (resetRPM) { Shooter.targetRPM = wallRPM; }
+            if (fudgeUp) { Shooter.fudgeRPM += 50; }
+            if (fudgeDown) { Shooter.fudgeRPM -= 50; }
+            if (fudgeDown) { Shooter.fudgeRPM -= 50; }
+            if (resetRPM) { Shooter.fudgeRPM = 0; }
             if (zeroRPM || ((runtime.seconds() > 121) && (runtime.seconds() < 122))) { Shooter.targetRPM = 0; } //Auto de-power shooter at timer end incase we are slow on the DS
 
 
