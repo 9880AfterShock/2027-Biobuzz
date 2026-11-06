@@ -79,7 +79,7 @@ public class MeepMeepVisualizer {
         );*/
 
         //LM0 8 Buddy Park (4 left)
-        ///*
+        /*
         Pose2d startPosRight;
         Pose2d startPosLeft;
         Pose2d preGardenPos;
@@ -143,6 +143,7 @@ public class MeepMeepVisualizer {
 
                         Paths.wait(myBot, shotTime), //Just shooting and parking
                         //LEFT END*/
+        /*
 
                         //Park from left side
                         Paths.tangentLinearPath(myBot, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed), //leave shooting
@@ -217,6 +218,74 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, shootPos4, parkPos1, driveSpeed) //to park
                 )
         ); */
+
+
+
+
+
+
+
+        //LM2 Adaptive
+        ///*
+        Pose2d startPosRight;
+        Pose2d startPosLeft;
+        Pose2d gardenPos;
+
+        Pose2d leftTransitPos;
+        Pose2d rightTransitPos;
+
+        Pose2d preLeftFlowerPos;
+        Pose2d leftFlowerPos;
+        Pose2d preRightFlowerPos;
+        Pose2d RightFlowerPos;
+
+        Pose2d preParkPosRight;
+        Pose2d parkPosRight;
+        Pose2d preParkPosLeft;
+        Pose2d parkPosLeft;
+
+        int posMultiplier = -1;
+        double posRotation = Math.toRadians(90 - posMultiplier*90);
+
+        double driveSpeed = 60.0; //Probably max we can do
+        double ramSpeed = 20.0; //Being safer
+        double shotTime = 5.0; //Very on safe side for now
+        double intakeTime = 3.0; //For garden
+
+        startPosRight = new Pose2d(posMultiplier*57.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
+
+        leftTransitPos = new Pose2d(posMultiplier*-36, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        rightTransitPos = new Pose2d(posMultiplier*36, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+
+        preLeftFlowerPos = new Pose2d(posMultiplier*-52, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
+        leftFlowerPos = new Pose2d(posMultiplier*-55.426695, posMultiplier*-24.0, posRotation+Math.toRadians(180.0));
+
+        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
+
+
+        myBot.runAction(
+                new SequentialAction(
+//                        /*RIGHT START
+                        //Set turret + shooter stuff
+                        Paths.wait(myBot, shotTime), //preloads, 1st tip
+                        //Intake On + Down (Down during shooter?)
+                        Paths.directPath(myBot, startPosRight, gardenPos, driveSpeed), //Pickup garden
+                        Paths.wait(myBot, intakeTime), //wait for vectoring
+                        //Check hive tip
+                        //CHOOSE:
+
+                        //Garden to left side:
+                        Paths.directPath(myBot, gardenPos, rightTransitPos, driveSpeed),
+                        Paths.directPath(myBot, rightTransitPos, leftTransitPos, driveSpeed),
+                        Paths.directPath(myBot, leftTransitPos, preLeftFlowerPos, driveSpeed)
+
+                        //Garden to left flower direct:
+
+                        //Garden to right flower (missed twice? do we assume it tipped and we missed it here?)
+
+                )
+        );//*/
 
 //        Pose2d startPos = new Pose2d(0.0, 0.0, Math.toRadians(0.0));
 //        Pose2d endPos = new Pose2d(24.0, 24.0, Math.toRadians(90.0));

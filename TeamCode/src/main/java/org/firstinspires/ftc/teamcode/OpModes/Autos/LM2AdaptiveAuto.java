@@ -103,9 +103,10 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         LEDs.init(this);
 
         Intake.prime();
-        BallGate.prime();
-        Shooter.prime();
         MatchLoader.prime();
+        BallGate.prime();
+        Turret.prime();
+        Shooter.prime();
         LEDs.update(LEDColor.AMBER, false, runtime);
 
         double delay = 0;
@@ -233,6 +234,9 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         Action shootSequence2 = new SequentialAction(
                 BallGate.autoOpen() //TODO: figure out why dupes are breaking
         );
+
+
+
 
 
 
