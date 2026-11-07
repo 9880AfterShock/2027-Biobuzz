@@ -63,8 +63,8 @@ public class Turret {
 //        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //Need to make not reset after auto, until we have full sensorange implementation
-        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //This means no encoder to enforce internal PID, not that we do not get readings
+//        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //Need to make not reset after auto, until we have full sensorange implementation
+//        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //This means no encoder to enforce internal PID, not that we do not get readings
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        turret.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -75,8 +75,8 @@ public class Turret {
     }
 
     public static void prime() {
-//        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos //Caden, I will do this later
     }

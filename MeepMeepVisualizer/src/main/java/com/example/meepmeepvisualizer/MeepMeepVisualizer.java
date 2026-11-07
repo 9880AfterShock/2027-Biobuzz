@@ -236,7 +236,11 @@ public class MeepMeepVisualizer {
         Pose2d preGardenPos;
         Pose2d gardenPos;
 
+        Pose2d prePartnerSavePos;
+        Pose2d partnerSavePos;
+
         Pose2d leftTransitPos;
+        Pose2d leftFlowerTransitPos;
         Pose2d rightTransitPos;
         Pose2d rightFlowerTransitPos;
 
@@ -263,13 +267,18 @@ public class MeepMeepVisualizer {
         double intakeTime = 3.0; //For garden vectoring. If we do change to sideways we want a speed of 5 in/sec to vector them in well
         double flowerTime = 2.0; //How long to wait at flower for balls to come down? Maybe just have addition to shoot time
 
-        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
         startPosRight = new Pose2d(posMultiplier*57.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10.0, posRotation+Math.toRadians(180.0));
 
         preGardenPos = new Pose2d(posMultiplier*56.0, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0));
         gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
 
+        prePartnerSavePos = new Pose2d(posMultiplier*36.0, posMultiplier*-10.0, posRotation+Math.toRadians(180.0));
+        partnerSavePos = new Pose2d(posMultiplier*58.0, posMultiplier*-12.75, posRotation+Math.toRadians(270.0));
+
         leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        leftFlowerTransitPos = new Pose2d(posMultiplier*-50, posMultiplier*-10, posRotation+Math.toRadians(180.0));
         rightTransitPos = new Pose2d(posMultiplier*40.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
         rightFlowerTransitPos = new Pose2d(posMultiplier*-25.0, posMultiplier*-36.0, posRotation+Math.toRadians(270.0));
 
@@ -285,12 +294,10 @@ public class MeepMeepVisualizer {
         preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
         parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
 
-        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-
 
         myBot.runAction(
                 new SequentialAction(
-//                        /*RIGHT START
+                        /*RIGHT START
                         //Set turret + shooter stuff
                         Paths.wait(myBot, shotTime), //preloads, 1st tip
                         Paths.directPath(myBot, centerStartPosRight, preGardenPos, driveSpeed), //put actual deploy here
@@ -342,6 +349,37 @@ public class MeepMeepVisualizer {
                         Paths.directPath(myBot, rightFlowerPos, preParkPosRightFlower, driveSpeed),
                         //Raise matchloader
                         Paths.directPath(myBot, preParkPosRightFlower, parkPosRightFlower, ramSpeed) //*/
+
+                        //* Left Side
+                        Paths.wait(myBot, shotTime), //Wait for vision
+
+                        /*/IF worked fine:
+                        Paths.directPath(myBot, startPosLeft, leftFlowerTransitPos, driveSpeed), //Right after here lower intake + matchloader (or do while pulling away?)
+                        Paths.directPath(myBot, leftFlowerTransitPos, preLeftFlowerPos, driveSpeed),
+//                        Paths.tangentLinearPath(myBot, startPosLeft, posRotation+Math.toRadians(0.0), preLeftFlowerPos, posRotation+Math.toRadians(270.0), driveSpeed), //Don't use, cuts flower too close
+                        Paths.directPath(myBot, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
+                        Paths.wait(myBot, shotTime),
+
+                        //Buddy park from left flower (dupe) TOOD: cut if we need time, as buddy park from left side is probably unneeded (or they will be way on the right start pos)
+                        Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
+                        Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed) //*/
+
+                        //*/IF partner failed, instead:
+                        Paths.directPath(myBot, startPosLeft, prePartnerSavePos, driveSpeed), //Right after here lower intake + matchloader
+                        Paths.directPath(myBot, prePartnerSavePos, partnerSavePos, driveSpeed),
+                        Paths.wait(myBot, shotTime), //Shoot here to cover partner missing
+
+                        Paths.tangentSplinePath(myBot, partnerSavePos, posRotation+Math.toRadians(240.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
+                        //Intake down here
+                        Paths.directPath(myBot, rightTransitPos, leftTransitPos, driveSpeed),
+                        Paths.tangentSplinePath(myBot, leftTransitPos, posRotation+Math.toRadians(180.0), preLeftFlowerPos, posRotation+Math.toRadians(135.0), driveSpeed),
+
+                        //Do left flower like normal, (same as end of the if it worked auto:
+                        Paths.directPath(myBot, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
+                        Paths.wait(myBot, shotTime),
+                        //Buddy park from left flower (dupe) TOOD: cut if we need time, as buddy park from left side is probably unneeded (or they will be way on the right start pos)
+                        Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
+                        Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed) //*/
                 )
         );//*/
 

@@ -137,7 +137,7 @@ public class Intake {
                 }
                 extend();
 //                setPivotPowered(!lowered());
-                return (!lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
+                return (!lowered() && timer.seconds() <= 1.0) && checkSwitch; //Timeout, can change
             }
         };
     }
@@ -152,7 +152,7 @@ public class Intake {
                     first = false;
                 }
                 retract();
-                return (lowered() && timer.seconds() <= 3.0) && checkSwitch; //Timeout, can change
+                return (lowered() && timer.seconds() <= 2.0) && checkSwitch; //Timeout, can change
             }
         };
     }

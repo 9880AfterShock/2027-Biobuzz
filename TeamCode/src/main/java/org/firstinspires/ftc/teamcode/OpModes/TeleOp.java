@@ -73,6 +73,9 @@ public class TeleOp extends LinearOpMode {
         BallTunnel.init(this);
         BallGate.init(this);
         Turret.init(this);
+        if (!afterAuto) {
+            Turret.prime(); //Reset Encoders
+        }
         Shooter.init(this);
         LEDs.init(this);
 //        Gyro.init(this);
@@ -84,6 +87,7 @@ public class TeleOp extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
+        afterAuto = false;
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);

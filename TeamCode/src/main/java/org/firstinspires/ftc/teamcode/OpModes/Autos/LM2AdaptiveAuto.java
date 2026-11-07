@@ -60,7 +60,11 @@ public class LM2AdaptiveAuto extends LinearOpMode {
     Pose2d preGardenPos;
     Pose2d gardenPos;
 
+    Pose2d prePartnerSavePos;
+    Pose2d partnerSavePos;
+
     Pose2d leftTransitPos;
+    Pose2d leftFlowerTransitPos;
     Pose2d rightTransitPos;
     Pose2d rightFlowerTransitPos;
 
@@ -204,13 +208,18 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         double flowerTime = 2.0; //How long to wait at flower for balls to come down? Maybe just have addition to shoot time
 
         //Poses here
-        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        centerStartPosRight = new Pose2d(posMultiplier*63.591043, posMultiplier*-12.75, posRotation+Math.toRadians(0.0));
         startPosRight = new Pose2d(posMultiplier*57.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //3 inches away from the intake touching the wall when it is down
+        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10.0, posRotation+Math.toRadians(180.0));
 
         preGardenPos = new Pose2d(posMultiplier*56.0, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0));
         gardenPos = new Pose2d(posMultiplier*60.3816067182, posMultiplier*-63.01968019, posRotation+Math.toRadians(0.0)); //Consider moving outwards in each direction to make it center on the corner
 
+        prePartnerSavePos = new Pose2d(posMultiplier*36.0, posMultiplier*-10.0, posRotation+Math.toRadians(180.0));
+        partnerSavePos = new Pose2d(posMultiplier*58.0, posMultiplier*-12.75, posRotation+Math.toRadians(270.0));
+
         leftTransitPos = new Pose2d(posMultiplier*-30.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
+        leftFlowerTransitPos = new Pose2d(posMultiplier*-50, posMultiplier*-10, posRotation+Math.toRadians(180.0));
         rightTransitPos = new Pose2d(posMultiplier*40.0, posMultiplier*-36.0, posRotation+Math.toRadians(180.0));
         rightFlowerTransitPos = new Pose2d(posMultiplier*-25.0, posMultiplier*-36.0, posRotation+Math.toRadians(270.0));
 
@@ -226,8 +235,6 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
         parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
 
-        startPosLeft = new Pose2d(posMultiplier*-63.591043, posMultiplier*-10, posRotation+Math.toRadians(180.0)); //Opposite side of the field
-
         goalPos = new Pose2d(posMultiplier*Turret.goalDepth, posMultiplier*-Turret.goalCenter, 0.0);
 
         double startPosRPM = Shooter.RPMRegression(Turret.calcGoalDistance(centerStartPosRight, goalPos));
@@ -238,6 +245,8 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         double preFlowerHoodAngle = Shooter.hoodRegression(Turret.calcGoalDistance(preLeftFlowerPos, goalPos));
         double flowerRPM = Shooter.RPMRegression(Turret.calcGoalDistance(leftFlowerPos, goalPos));
         double flowerHoodAngle = Shooter.hoodRegression(Turret.calcGoalDistance(leftFlowerPos, goalPos));
+        double partnerSaveRPM = Shooter.RPMRegression(Turret.calcGoalDistance(partnerSavePos, goalPos));
+        double partnerSaveAngle = Shooter.hoodRegression(Turret.calcGoalDistance(partnerSavePos, goalPos));
 
         MecanumDrive drive;
         if (startingSide == Side.RIGHT) {
@@ -368,100 +377,79 @@ public class LM2AdaptiveAuto extends LinearOpMode {
         //LEFT SIDE BELOW, RIGHT SIDE ABOVE
 
 
-//TODO: make left side real
-//        Action leftSideVisionWait = new RaceAction(
-//                new ParallelAction(
-//                        Shooter.autoSetTargetRPM(startPosRPM),
-//                        new RaceAction(
-//                                Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
-//                                new SequentialAction(
-//                                        Limelight.waitForTag(allianceColor),
-//                                        Paths.wait(drive, 2) //Because we see tags about 1 sec early, being safe
-//                                )
-//                        ),
-//                        Shooter.autoWaitForSpeed(50, 4)
-//                ),
-//                tickFunctions
-//        );
+
+        Action leftSideStart = new RaceAction(
+                new SequentialAction(
+                        Shooter.autoSetTargetRPM(startPosRPM),
+                        Shooter.autoSetHoodAngle(startPosHoodAngle),
+                        Turret.setTarget(centerStartPosRight, goalPos, false) //TODO: fix this sloppy solution for making it point straight (we are on goal anyway and the PID could be more error then it would save)
+                ),
+                tickFunctions
+        );
+
+        Action leftSideVisionWait = new RaceAction(
+                new ParallelAction(
+                        Shooter.autoSetTargetRPM(startPosRPM),
+                        new RaceAction(
+                                Paths.wait(drive, delay), //TODO: make race action or just be polling LL here
+                                new SequentialAction(
+                                        Limelight.waitForTag(allianceColor),
+                                        Paths.wait(drive, 2) //Because we see tags about 1 sec early, being safe
+                                )
+                        ),
+                        Shooter.autoWaitForSpeed(50, 2)
+                ),
+                tickFunctions
+        );
+
+        Action leftSideBlindWait = new RaceAction(
+                new ParallelAction(
+                        Shooter.autoSetTargetRPM(startPosRPM),
+                        Paths.wait(drive, delay),
+                        Shooter.autoWaitForSpeed(50, 0.5)
+                ),
+                tickFunctions
+        );
 //
-//        Action leftSideBlindWait = new RaceAction(
-//                new ParallelAction(
-//                        Shooter.autoSetTargetRPM(startPosRPM),
-//                        Paths.wait(drive, delay),
-//                        Shooter.autoWaitForSpeed(50, 0.5)
-//                ),
-//                tickFunctions
-//        );
-//
-//        Action leftSideVisionCheck = new RaceAction(
-//                new SequentialAction(
-//                        Limelight.setFacing(false),
-//                        Limelight.checkTip(allianceColor, 20, 2) //TODO: see about not waiting at all since this only triggers if our partner has not tipped anyway
-//                ),
-//                tickFunctions
-//        );
-//
-//        Action leftSideCrossField = new RaceAction(
-//                new SequentialAction(
-//                        Shooter.autoSetTargetRPM(wallRPM),
-//                        Intake.autoIntakeUp(false),
-//                        Paths.directPath(drive, shootPosLeft, rotatePosRight, driveSpeed), //TODO: make it just park if there isnt time to go cross-field
-//                        Paths.directSplinePath(drive, rotatePosRight, shootPosRight, driveSpeed),
-//                        shootSequence
-//                ),
-//                tickFunctions
-//        );
-//
-//
-//
-//
-//
-//        //Park Below
-//
-//        Action rightSidePark = new RaceAction(
-//                new SequentialAction(
-//                        Intake.autoIntakeDown(false),
-//                        Paths.directPath(drive, shootPosRight, preParkPosRight, driveSpeed), //get ready to ram
-//                        Paths.directPath(drive, preParkPosRight, parkPosRight, ramSpeed) //to park
-//                ),
-//                tickFunctions
-//        );
-//
-//        Action leftSideStartBuddyPark = new RaceAction(
-//                new SequentialAction(
-//                        Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-//                        Intake.autoIntakeDown(false),
-//                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
-//                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
-//                ),
-//                tickFunctions
-//        );
-//
-//        Action leftSideStartPark = new RaceAction(
-//                new SequentialAction(
-//                        Paths.tangentLinearPath(drive, startPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-//                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
-//                ),
-//                tickFunctions
-//        );
-//
-//        Action leftSideBuddyPark = new RaceAction( //NOT left start pos buddy park, that's above
-//                new SequentialAction(
-//                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-//                        Intake.autoIntakeDown(false),
-//                        Paths.directPath(drive, clearPosLeft, preParkPosLeft, driveSpeed), //get ready to ram
-//                        Paths.directPath(drive, preParkPosLeft, parkPosLeft, ramSpeed)
-//                ),
-//                tickFunctions
-//        );
-//
-//        Action leftSidePark = new RaceAction( //NOT left start pos park, that's above
-//                new SequentialAction(
-//                        Paths.tangentLinearPath(drive, shootPosLeft, posRotation+Math.toRadians(0.0), clearPosLeft, posRotation+Math.toRadians(0.0), driveSpeed),
-//                        Paths.tangentLinearPath(drive, clearPosLeft,posRotation+Math.toRadians(0.0), parkPosLeft,posRotation+Math.toRadians(180.0), ramSpeed)
-//                ),
-//                tickFunctions
-//        );
+        Action leftSideVisionCheck = new RaceAction(
+                new SequentialAction(
+                        Limelight.setFacing(false),
+                        Limelight.checkTip(allianceColor, 20, 2) //Waiting 2 sec as this is the hive tip time (to tag visible), to give a last chance to see the tag and not shoot on wrong side
+                ),
+                tickFunctions
+        );
+
+        Action leftSideToFlower = new RaceAction(
+                new SequentialAction(
+                        Shooter.autoSetTargetRPM(flowerRPM),
+                        Shooter.autoSetHoodAngle(flowerHoodAngle),
+                        Turret.setTarget(leftFlowerPos, goalPos, false),
+                        Paths.directPath(drive, startPosLeft, leftFlowerTransitPos, driveSpeed),
+                        new ParallelAction(
+                                MatchLoader.autoDeploy(),
+                                Intake.autoIntakeDown(true), //TODO: check if this is working still
+                                Paths.directPath(drive, leftFlowerTransitPos, preLeftFlowerPos, driveSpeed)
+                        )
+                ),
+                tickFunctions
+        );
+
+        Action leftSidePartnerSave = new RaceAction(
+                new SequentialAction(
+                        Shooter.autoSetTargetRPM(partnerSaveRPM),
+                        Shooter.autoSetHoodAngle(partnerSaveAngle),
+                        Turret.setTarget(partnerSavePos, goalPos, false),
+                        Paths.directPath(drive, startPosLeft, prePartnerSavePos, driveSpeed),
+                        Paths.directPath(drive, prePartnerSavePos, partnerSavePos, driveSpeed),
+                        shootSequence,
+                        Paths.tangentSplinePath(drive, partnerSavePos, posRotation+Math.toRadians(240.0), rightTransitPos, posRotation+Math.toRadians(180.0), driveSpeed),
+                        MatchLoader.autoDeploy(),
+                        Intake.autoIntakeDown(false),
+                        Paths.directPath(drive, rightTransitPos, leftTransitPos, driveSpeed),
+                        Paths.tangentSplinePath(drive, leftTransitPos, posRotation+Math.toRadians(180.0), preLeftFlowerPos, posRotation+Math.toRadians(135.0), driveSpeed)
+                ),
+                tickFunctions
+        );
 
 
 
@@ -521,14 +509,17 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
 
 
-        } /*else { //LEFT SIDE
+        } else { //LEFT SIDE
+
+
+
+            CustomActions.runBlockingBulkRead(leftSideStart, allHubs);
 
             if (useVision) {
                 CustomActions.runBlockingBulkRead(leftSideVisionWait, allHubs);
             } else {
                 CustomActions.runBlockingBulkRead(leftSideBlindWait, allHubs);
             }
-
 
             boolean partnerTipped;
             if (useVision) { //Update LL to check for hive
@@ -542,19 +533,15 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
             if (!partnerTipped) {
                 currentSide = Side.RIGHT;
-                CustomActions.runBlockingBulkRead(leftSideCrossField, allHubs);
+                CustomActions.runBlockingBulkRead(leftSidePartnerSave, allHubs);
             } else {
-                CustomActions.runBlockingBulkRead(
-                        new RaceAction(
-                                new SequentialAction(
-                                        shootSequence
-                                ),
-                                tickFunctions
-                        ), allHubs
-                );
+                CustomActions.runBlockingBulkRead(leftSideToFlower, allHubs);
             }
 
-        } */
+            CustomActions.runBlockingBulkRead(leftFlower, allHubs);
+            CustomActions.runBlockingBulkRead(leftFlowerBuddyPark, allHubs);
+
+        } //*/
         LEDs.update(LEDColor.RED, false, runtime);
     }
 }
