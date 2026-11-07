@@ -256,6 +256,8 @@ public class MeepMeepVisualizer {
         Pose2d parkPosRight;
         Pose2d preParkPosLeft;
         Pose2d parkPosLeft;
+        Pose2d preParkPosLeftNoBuddy;
+        Pose2d parkPosLeftNoBuddy;
 
         int posMultiplier = 1;
         double posRotation = Math.toRadians(90 - posMultiplier*90);
@@ -293,6 +295,8 @@ public class MeepMeepVisualizer {
 
         preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
         parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
+        preParkPosLeftNoBuddy = new Pose2d(posMultiplier*-20.0, posMultiplier*-44.0, posRotation+Math.toRadians(180.0));
+        parkPosLeftNoBuddy = new Pose2d(posMultiplier*-20.0, posMultiplier*-56.0, posRotation+Math.toRadians(180.0));
 
 
         myBot.runAction(
@@ -353,7 +357,7 @@ public class MeepMeepVisualizer {
                         //* Left Side
                         Paths.wait(myBot, shotTime), //Wait for vision
 
-                        /*/IF worked fine:
+                        //*/IF worked fine:
                         Paths.directPath(myBot, startPosLeft, leftFlowerTransitPos, driveSpeed), //Right after here lower intake + matchloader (or do while pulling away?)
                         Paths.directPath(myBot, leftFlowerTransitPos, preLeftFlowerPos, driveSpeed),
 //                        Paths.tangentLinearPath(myBot, startPosLeft, posRotation+Math.toRadians(0.0), preLeftFlowerPos, posRotation+Math.toRadians(270.0), driveSpeed), //Don't use, cuts flower too close
@@ -364,7 +368,7 @@ public class MeepMeepVisualizer {
                         Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
                         Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed) //*/
 
-                        //*/IF partner failed, instead:
+                        /*/IF partner failed, instead:
                         Paths.directPath(myBot, startPosLeft, prePartnerSavePos, driveSpeed), //Right after here lower intake + matchloader
                         Paths.directPath(myBot, prePartnerSavePos, partnerSavePos, driveSpeed),
                         Paths.wait(myBot, shotTime), //Shoot here to cover partner missing
@@ -377,7 +381,12 @@ public class MeepMeepVisualizer {
                         //Do left flower like normal, (same as end of the if it worked auto:
                         Paths.directPath(myBot, preLeftFlowerPos, leftFlowerPos, flowerSpeed),
                         Paths.wait(myBot, shotTime),
-                        //Buddy park from left flower (dupe) TOOD: cut if we need time, as buddy park from left side is probably unneeded (or they will be way on the right start pos)
+
+//                        //Actually normal park
+//                        Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeftNoBuddy, posRotation+Math.toRadians(0.0), driveSpeed),
+//                        Paths.tangentLinearPath(myBot, preParkPosLeftNoBuddy, posRotation+Math.toRadians(0.0), parkPosLeftNoBuddy, posRotation+Math.toRadians(180.0), driveSpeed)
+
+//                        Buddy park from left flower (dupe) TOOD: cut if we need time, as buddy park from left side is probably unneeded (or they will be way on the right start pos)
                         Paths.tangentLinearPath(myBot, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeft, posRotation+Math.toRadians(340.0), driveSpeed),
                         Paths.directPath(myBot, preParkPosLeft, parkPosLeft, ramSpeed) //*/
                 )

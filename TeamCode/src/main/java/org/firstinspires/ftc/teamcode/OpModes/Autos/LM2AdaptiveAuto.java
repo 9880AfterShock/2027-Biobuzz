@@ -80,6 +80,10 @@ public class LM2AdaptiveAuto extends LinearOpMode {
     Pose2d parkPosRight;
     Pose2d preParkPosLeft;
     Pose2d parkPosLeft;
+    Pose2d preParkPosLeftNoBuddy;
+    Pose2d parkPosLeftNoBuddy;
+
+
 
     Pose2d goalPos;
 
@@ -234,6 +238,10 @@ public class LM2AdaptiveAuto extends LinearOpMode {
 
         preParkPosLeft = new Pose2d(posMultiplier*24.0, posMultiplier*-48.0, posRotation+Math.toRadians(180.0));
         parkPosLeft = new Pose2d(posMultiplier*-25.0, posMultiplier*-60.0, posRotation+Math.toRadians(180.0));
+        preParkPosLeftNoBuddy = new Pose2d(posMultiplier*-20.0, posMultiplier*-44.0, posRotation+Math.toRadians(180.0));
+        parkPosLeftNoBuddy = new Pose2d(posMultiplier*-20.0, posMultiplier*-56.0, posRotation+Math.toRadians(180.0));
+
+
 
         goalPos = new Pose2d(posMultiplier*Turret.goalDepth, posMultiplier*-Turret.goalCenter, 0.0);
 
@@ -451,6 +459,16 @@ public class LM2AdaptiveAuto extends LinearOpMode {
                 tickFunctions
         );
 
+        Action leftFlowerNoBuddyPark = new RaceAction(
+                new SequentialAction(
+                        Shooter.autoSetTargetRPM(0),
+                        Paths.tangentLinearPath(drive, leftFlowerPos, posRotation+Math.toRadians(320.0), preParkPosLeftNoBuddy, posRotation+Math.toRadians(0.0), driveSpeed),
+                        MatchLoader.autoRetract(),
+                        Paths.tangentLinearPath(drive, preParkPosLeftNoBuddy, posRotation+Math.toRadians(0.0), parkPosLeftNoBuddy, posRotation+Math.toRadians(180.0), driveSpeed)
+                ),
+                tickFunctions
+        );
+
 
 
 
@@ -539,7 +557,11 @@ public class LM2AdaptiveAuto extends LinearOpMode {
             }
 
             CustomActions.runBlockingBulkRead(leftFlower, allHubs);
-            CustomActions.runBlockingBulkRead(leftFlowerBuddyPark, allHubs);
+            if (partnerTipped) {
+                CustomActions.runBlockingBulkRead(leftFlowerBuddyPark, allHubs);
+            } else {
+                CustomActions.runBlockingBulkRead(leftFlowerNoBuddyPark, allHubs); //If partner failed we have no time for this safe route, and no clue where they are
+            }
 
         } //*/
         LEDs.update(LEDColor.RED, false, runtime);
