@@ -54,7 +54,7 @@ public class Turret {
     public static void init(OpMode opmode) {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
         //Rev encoder is in encoder port for the turret motor
-        absEncoder = opmode.hardwareMap.get(AnalogInput.class, "sensOrange"); // plugged into Control Hub 2/3
+        absEncoder = opmode.hardwareMap.get(AnalogInput.class, "sensOrange"); //Port n/n+1 on _ hub
 
         resetFromAbs(); //TODO: test this, may need to reverse
 
