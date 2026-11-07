@@ -135,7 +135,7 @@ public class TeleOp extends LinearOpMode {
             double drive = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
             double turn = gamepad1.right_stick_x;
-            boolean slowMode = false;
+//            boolean slowMode = false; //Match loader rn
 
             boolean intakeButton = gamepad1.left_trigger > 0.5;
             boolean ejectButton = gamepad1.left_bumper;
@@ -170,7 +170,7 @@ public class TeleOp extends LinearOpMode {
 
 
             //Tick Functions
-            Drivetrain.updateDrive(strafe, drive, turn, slowMode, resetGyro);
+            Drivetrain.updateDrive(strafe, drive, turn, matchLoaderButton, resetGyro);
             Pinpoint.update(snapCorner, resetOrigin, alliance);  //TODO: get controls working, integrate with gyro reset (give reset to driver?)
             Intake.update(intakeButton, ejectButton, !intakeButton && (liftIntake || (useSensors && I2CDistance.ballsSecured() >= 4)), depowerIntake); //TODO: figure out if we actually want intaking to override raising manually or just automatically
             MatchLoader.update(matchLoaderButton);
