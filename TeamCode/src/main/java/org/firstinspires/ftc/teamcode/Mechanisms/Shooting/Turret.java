@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,12 +25,15 @@ public class Turret {
     private static final double turretPositionOffset = -85.38998 * 0.0393701; //How far (currently backwards) the turret is from the center of the robot in inches
     //Finals for each hive pos? or just flip based on color/side?
     private static DcMotorEx turret;
+    private static AnalogInput absEncoder; //Sensorange encoder (Abs reset)
     private static OpMode opmode;
     private static double turretPower;
     private static double targetPos;
     private static final double minRotation = -120; //TBD
     private static final double maxRotation = 120; //TBD
-    private static final double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
+    public static double absOffset = 0.0; //Set to offset of a raw abs reading and center position (home)
+    private static double absPosition = 0.0;
+    private static double quadOffset = 0.0;
 
     private static PID nearTurretPIDController;
     private static PID farTurretPIDController;
@@ -50,6 +54,9 @@ public class Turret {
     public static void init(OpMode opmode) {
         turret = opmode.hardwareMap.get(DcMotorEx.class, "turret"); //Port 0 on expansion hub, Rev Throughbore is plugged in instead of normal
         //Rev encoder is in encoder port for the turret motor
+        absEncoder = opmode.hardwareMap.get(AnalogInput.class, "sensOrange"); // plugged into Control Hub 2/3
+
+        resetFromAbs(); //TODO: test this
 
         nearTurretPIDController = new PID(nearP, nearI, nearD);
         farTurretPIDController = new PID(farP, farI, farD);
@@ -75,10 +82,32 @@ public class Turret {
     }
 
     public static void prime() {
+        absPosition = 0.0;
+        quadOffset = 0.0;
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //TODO: read last encoder (or 0 if after auto) + abs encoder to get exact pos //Caden, I will do this later
+    }
+
+    private static double getAbsRaw() {
+        return (absEncoder.getVoltage()-0.043)/3.1*360 - absOffset;
+    }
+
+    private static void updateAbsEncoder(){
+        double diff = getAbsRaw() - ((absPosition % 360 + 360) % 360);
+
+        if (diff > 180) {
+            diff -= 360;
+        } else if (diff < -180) {
+            diff += 360;
+        }
+
+        absPosition += diff;
+    }
+
+    private static void resetFromAbs(){
+        quadOffset = absPosition * (36.0/105.0);
     }
 
     private static void setTurretPower(double power) {
@@ -94,7 +123,7 @@ public class Turret {
     }
 
     public static double getCurrentPosition(){ //Doing conversion here because it means the PID will not need to be modified on a different encoder
-        return turret.getCurrentPosition() * (36.0/105.0) / 8192.0 * 360; //Multiply by the pulley ratio, divide by encoder resolution, times by 360 to get degrees
+        return turret.getCurrentPosition() * (36.0/105.0) / 8192.0 * 360 - quadOffset; //Multiply by the pulley ratio, divide by encoder resolution, times by 360 to get degrees
     }
 
     public static double calcTurretAngle(Pose2d robotPos, Pose2d goalPos) { //In radians, be careful
@@ -129,6 +158,7 @@ public class Turret {
         farTurretPIDController.d = farD;
 
         //TODO: encoder tracking, abs and quad, read and reset and update
+        updateAbsEncoder();
 
         //Flip Goal based on what side of the field and what alliance
         int sideSign;
@@ -154,6 +184,8 @@ public class Turret {
 
         opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
         opmode.telemetry.addData("GOAL ANGLE", calcTurretAngle(Pinpoint.getPose(), goalPos));
+
+        opmode.telemetry.addData("Abs Raw Position", absPosition);
     }
 
     public static void updateTest(double x, double y, boolean change, double deltaTime, SideColor alliance) { //Ignore this, temp wrapper for the test program
@@ -200,6 +232,7 @@ public class Turret {
                 }
 //                update(deltaTime, alliance);
                 updateTurretPower(deltaTime);
+                updateAbsEncoder();
                 deltaTime = turretLooptimer.milliseconds() - lastLoopTimestamp;
                 lastLoopTimestamp = turretLooptimer.milliseconds();
                 return true;
