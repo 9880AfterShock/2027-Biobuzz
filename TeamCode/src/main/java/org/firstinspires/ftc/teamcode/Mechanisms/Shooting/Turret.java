@@ -56,7 +56,7 @@ public class Turret {
         //Rev encoder is in encoder port for the turret motor
         absEncoder = opmode.hardwareMap.get(AnalogInput.class, "sensOrange"); // plugged into Control Hub 2/3
 
-        resetFromAbs(); //TODO: test this
+        resetFromAbs(); //TODO: test this, may need to reverse
 
         nearTurretPIDController = new PID(nearP, nearI, nearD);
         farTurretPIDController = new PID(farP, farI, farD);
@@ -185,7 +185,9 @@ public class Turret {
         opmode.telemetry.addData("GOAL DISTANCE", calcGoalDistance(Pinpoint.getPose(), goalPos));
         opmode.telemetry.addData("GOAL ANGLE", calcTurretAngle(Pinpoint.getPose(), goalPos));
 
-        opmode.telemetry.addData("Abs Raw Position", absPosition);
+        opmode.telemetry.addData("Abs Raw Position", getAbsRaw());
+        opmode.telemetry.addData("Abs Rotation", absPosition);
+        opmode.telemetry.addData("Abs Reading", absPosition * 36.0/105.0);
     }
 
     public static void updateTest(double x, double y, boolean change, double deltaTime, SideColor alliance) { //Ignore this, temp wrapper for the test program
